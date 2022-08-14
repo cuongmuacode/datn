@@ -38,14 +38,14 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
     TextView textHoaDonNhapTenKhachHang;
     TextView textHoaDonNhapTenSanPham;
 
+    Toast toast;
+
     EditText tIETextGiaBan;
     EditText tIETextGiaNhap;
     EditText tIETextSoLuong;
 
-
     LinearLayout layoutChonKhachHang;
     LinearLayout layoutChonSanPham;
-
 
     Button appCompatButton;
     Button appCompatButtonNo;
@@ -116,23 +116,17 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
         textHoaDonNhapTenKhachHang.setText(str);
         appCompatButtonNo = view.findViewById(R.id.hoadonNhap_donhangnhap_no);
         appCompatButtonNo.setOnClickListener(new View.OnClickListener() {
-            int clickProcess = 0;
             @Override
             public void onClick(View view) {
-                if (tIETextGiaBan.getText().toString().isEmpty() ||
-                        tIETextSoLuong.getText().toString().isEmpty() ||
-                        tIETextGiaNhap.getText().toString().isEmpty())
-                    if (clickProcess < 5) {
-                        clickProcess++;
-                        Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
+                if (tIETextGiaBan.getText().toString().trim().isEmpty() ||
+                        tIETextSoLuong.getText().toString().trim().isEmpty() ||
+                        tIETextGiaNhap.getText().toString().trim().isEmpty()){
+                        displayToast("Không được để trống !!!");
                         return;
                     }
-                clickProcess = 0;
+
                 if (selectSanPham != null) {
                     if (!selectKhachHang.getMaKH().equals("MaKH01")) {
-                        if(Integer.parseInt(tIETextSoLuong.getText().toString())+selectSanPham.getSoLuongSP()>=999999999)
-                            Toast.makeText(getContext(), "Số lượng sản phẩm quá lớn!!", Toast.LENGTH_SHORT).show();
-                        else {
                             hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
                                     selectSanPham.getMaSP(),
                                     MainActivity.nhanVien.getMaNV(),
@@ -148,39 +142,41 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
                                 selectSanPham.setSoLuongSP(hoaDonNhap.getSoLuong() + Integer.parseInt(tIETextSoLuong.getText().toString()));
                                 selectSanPham.setGiaSP(hoaDonNhap.getGiaBan());
                                 database.updateSanPham(selectSanPham);
-                                if (getActivity() != null)
-                                    getActivity().onBackPressed();
+                                tIETextGiaBan.setText("");
+                                tIETextGiaNhap.setText("");
+                                tIETextSoLuong.setText("");
+                                textHoaDonNhapTenKhachHang.setText("Khách hàng :");
+                                textHoaDonNhapTenSanPham.setText("Sản phẩm :");
+                                selectSanPham = null;
+                                selectKhachHang = null;
+
                             } else {
-                                Toast.makeText(getContext(), "Thử lại xem !!!", Toast.LENGTH_SHORT).show();
+                                displayToast("Thử lại xem !!!");
                                 soHDNhap = Math.abs(random.nextLong());
                             }
-                        }
+
                     } else
-                        Toast.makeText(getContext(), "Khách lẻ không được nợ !!", Toast.LENGTH_SHORT).show();
+                    displayToast("Khách lẻ không được nợ !!");
                 }
                 else
-                    Toast.makeText(getContext(), "Chọn sản phẩm !!!", Toast.LENGTH_SHORT).show();
+                displayToast("Chọn sản phẩm !!!");
             }
         });
 
          appCompatButton = view.findViewById(R.id.buttonaddHoaDonNhap);
          appCompatButton.setOnClickListener(new View.OnClickListener() {
-             int clickProcess = 0;
+
              @Override
              public void onClick(View view) {
                  if (tIETextGiaBan.getText().toString().isEmpty() ||
-                         tIETextSoLuong.getText().toString().isEmpty() ||
-                         tIETextGiaNhap.getText().toString().isEmpty())
-                     if (clickProcess < 5) {
-                         clickProcess++;
-                         Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
-                         return;
-                     }
-                 clickProcess = 0;
+                         tIETextSoLuong.getText().toString().trim().isEmpty() ||
+                         tIETextGiaNhap.getText().toString().trim().isEmpty()) {
+                        displayToast("Không được để trống !!!");
+                     return;
+                 }
+
+
                  if (selectSanPham != null) {
-                     if(Integer.parseInt(tIETextSoLuong.getText().toString())>=999999999)
-                         Toast.makeText(getContext(), "Số lượng sản phẩm quá lớn!!", Toast.LENGTH_SHORT).show();
-                     else {
                          hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
                                  selectSanPham.getMaSP(),
                                  MainActivity.nhanVien.getMaNV(),
@@ -196,15 +192,19 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
                              selectSanPham.setSoLuongSP(Integer.parseInt(tIETextSoLuong.getText().toString()));
                              selectSanPham.setGiaSP(hoaDonNhap.getGiaBan());
                              database.updateSanPham(selectSanPham);
-                             if (getActivity() != null)
-                                 getActivity().onBackPressed();
+                             tIETextGiaBan.setText("");
+                             tIETextGiaNhap.setText("");
+                             tIETextSoLuong.setText("");
+                             textHoaDonNhapTenKhachHang.setText("Khách hàng :");
+                             textHoaDonNhapTenSanPham.setText("Sản phẩm :");
+                             selectSanPham = null;
+                             selectKhachHang = null;
                          } else {
-                             Toast.makeText(getContext(), "Thử lại xem !!!", Toast.LENGTH_SHORT).show();
-                             soHDNhap = Math.abs(random.nextLong());
+                             displayToast("Thử lại xem !!!");soHDNhap = Math.abs(random.nextLong());
                          }
-                     }
+
                  } else
-                     Toast.makeText(getContext(), "Chọn sản phẩm !!!", Toast.LENGTH_SHORT).show();
+             displayToast("Chọn sản phẩm !!!");
              }
          });
     }
@@ -240,5 +240,11 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
         fragmentTransaction.replace(R.id.framelayoutcontentthongtin, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

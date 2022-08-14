@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:minHeight="60dp"
             android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="10dp"
             />
 
         <EditText
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:minHeight="60dp"
             android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="10dp"
             />
 
         <EditText
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:minHeight="60dp"
             android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="10dp"
             />
 
         <EditText
@@ -64,10 +64,11 @@
             android:layout_height="wrap_content"
             android:minHeight="60dp"
             android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="10dp"
             />
 
         <EditText
+            android:paddingTop="15dp"
             android:id="@+id/inputedittext_GhiChu"
             android:layout_width="match_parent"
             android:background="@drawable/bg_edittext"
@@ -80,7 +81,7 @@
             android:textAlignment="gravity"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="10dp"
             />
         <Button
             android:layout_marginTop="5dp"

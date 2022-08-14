@@ -37,6 +37,7 @@ import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
+import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Serializable,IClickItemListenerRecycer<SanPham> {
+public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Serializable, iClickitemHoaDon<SanPham> {
     private List<SanPham> sanPhamList = new ArrayList<>();
     private RecyclerView recyclerView;
     private Button buttonAdd;
@@ -59,6 +60,7 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     private TextView textTenKhachhang;
     private TextView textTenNhanVien;
     private TextView textTongTien;
+    Toast toast;
     private Random random = new Random(System.currentTimeMillis());
     private Long soHD;
     long triGia = 0;
@@ -118,25 +120,6 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if(getActivity()==null) return;
-        getActivity().getMenuInflater().inflate(R.menu.menu_model,menu);
-        MenuItem menuItemSoLuong = menu.findItem(R.id.menu_model_soluong);
-        MenuItem menuItemSua = menu.findItem(R.id.menu_model_sua);
-        MenuItem menuItemXoa = menu.findItem(R.id.menu_model_xoa);
-        menuItemSoLuong.setVisible(true);
-        menuItemSua.setVisible(false);
-        menuItemXoa.setVisible(false);
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull  MenuItem item) {
-        if(item.getItemId()==R.id.menu_model_soluong)
-            replaceFragment(new FragmentThemSoLuong(selectSanPham));
-        return super.onContextItemSelected(item);
-    }
 
     @Override
     public void onClickSanPham(SanPham sanPham) {
@@ -170,22 +153,27 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     }
 
     @Override
-    public void onClickItemModel(SanPham sanPham) {
-        if(getActivity()!=null)
-          getActivity().setResult(Activity.RESULT_CANCELED);
-        sanPhamList.remove(sanPham);
-        if(FragmentBanHang.countSanPham>0)
-            FragmentBanHang.countSanPham--;
-        if(!sanPhamList.isEmpty()) {
-            triGia = 0;
-            for (SanPham sp : sanPhamList)
-                triGia += sp.getSoLuongSP() * sp.getGiaSP();
-            String str =   triGia+" VND";
-            textTongTien.setText(str);
+    public void onClickItemModel(SanPham sanPham, int check) {
+        if(check == 1){
+            if(getActivity()!=null)
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            sanPhamList.remove(sanPham);
+            if(FragmentBanHang.countSanPham>0)
+                FragmentBanHang.countSanPham--;
+            if(!sanPhamList.isEmpty()) {
+                triGia = 0;
+                for (SanPham sp : sanPhamList)
+                    triGia += sp.getSoLuongSP() * sp.getGiaSP();
+                String str =   triGia+" VND";
+                textTongTien.setText(str);
+            }
+            else
+                textTongTien.setText("0 VND");
+            matHangAdapterRecycler.notifyDataSetChanged();
         }
-        else
-            textTongTien.setText("0 VND");
-        matHangAdapterRecycler.notifyDataSetChanged();
+        else if(check == 2){
+            replaceFragment(new FragmentThemSoLuong(sanPham));
+        }
     }
 
     @Override
@@ -204,7 +192,6 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         }
 
         recyclerView.setAdapter(matHangAdapterRecycler);
-        registerForContextMenu(recyclerView);
 
         String str = getResources().getString(R.string.addhoadon_sohoadon)+soHD;
         textSoHoaDon.setText(str);
@@ -232,7 +219,6 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         else textTongTien.setText("0 VND");
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
-            int processingClick = 0;
 
             @Override
             public void onClick(View view) {
@@ -248,7 +234,7 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
                             1
                     );
                     if(database.addHoaDon(hoaDon)) {
-                        Toast.makeText(getContext(), getResources().getString(R.string.toast_thanhcong), Toast.LENGTH_SHORT).show();
+                        displayToast( getResources().getString(R.string.toast_thanhcong));
                         for(SanPham sp:sanPhamList){
                             int a = database.getSanPham(sp.getMaSP()).getSoLuongSP()-sp.getSoLuongSP();
                             SanPham sanPham = database.getSanPham(sp.getMaSP());
@@ -263,18 +249,14 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
                     }
                     else {
                         soHD =  Math.abs(random.nextLong());
-                        Toast.makeText(getContext(), getResources().getString(R.string.toast_thulai), Toast.LENGTH_SHORT).show();
+                        displayToast(getResources().getString(R.string.toast_thulai));
                     }
                 }
-                else if (processingClick < 5) {
-                    processingClick++;
-                    Toast.makeText(getContext(), getResources().getString(R.string.toast_chuachonsanpham), Toast.LENGTH_SHORT).show();
-                }
+                else displayToast(getResources().getString(R.string.toast_chuachonsanpham));
             }
         });
 
         buttonNo.setOnClickListener(new View.OnClickListener() {
-            int processingClick = 0;
 
             @Override
             public void onClick(View view) {
@@ -290,11 +272,11 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
                             0
                     );
                     if(selectKhachhang.getMaKH().equals("MaKH01")){
-                        Toast.makeText(getContext(), "Khách lẻ không được ghi nợ !!!", Toast.LENGTH_SHORT).show();
+                        displayToast("Khách lẻ không được ghi nợ !!!");
                         return;
                     }
                     if(database.addHoaDon(hoaDon)) {
-                        Toast.makeText(getContext(), getResources().getString(R.string.toast_thanhcong), Toast.LENGTH_SHORT).show();
+                        displayToast(getResources().getString(R.string.toast_thanhcong));
                         for(SanPham sp:sanPhamList){
                             int a = database.getSanPham(sp.getMaSP()).getSoLuongSP()-sp.getSoLuongSP();
                             SanPham sanPham = database.getSanPham(sp.getMaSP());
@@ -309,13 +291,12 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
                     }
                     else {
                         soHD =  Math.abs(random.nextLong());
-                        Toast.makeText(getContext(), getResources().getString(R.string.toast_thulai), Toast.LENGTH_SHORT).show();
+                        displayToast(getResources().getString(R.string.toast_thulai));
                     }
                 }
-                else if (processingClick < 5) {
-                    processingClick++;
-                    Toast.makeText(getContext(), getResources().getString(R.string.toast_chuachonsanpham), Toast.LENGTH_SHORT).show();
-                }
+                else
+                    displayToast(getResources().getString(R.string.toast_chuachonsanpham));
+
             }
         });
     }
@@ -327,6 +308,13 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
 
 
 

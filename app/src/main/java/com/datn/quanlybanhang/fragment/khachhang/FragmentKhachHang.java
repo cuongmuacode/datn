@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.adapter.KhachHangAdapterRecycler;
@@ -48,6 +49,7 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
     MySQLiteHelper database;
     KhachHangAdapterRecycler khachHangAdapterRecycler;
     List<KhachHang> listKhachHang;
+    Toast toast;
     public static final int SUA_KHACH_HANG = 0;
     public static final int ADD_KHACH_HANG = 1;
     static Random random = new Random(System.currentTimeMillis());
@@ -223,6 +225,7 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
             @Override
             public void onClick(View view) {
                 if(i==1){
+                    displayToast("Sắp xếp A - Z");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
                     Collections.sort(listKhachHang, new Comparator<KhachHang>() {
                         @Override
@@ -235,6 +238,7 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
                     i=2;
                 }
                 else if((i==2)){
+                    displayToast("Sắp xếp Z - A");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
                     Collections.sort(listKhachHang, new Comparator<KhachHang>() {
                         @Override
@@ -247,6 +251,7 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
                     i=3;
                 }
                 else if(i==3){
+                    displayToast("Sắp xếp mặc định");
                     imageView.setImageResource(R.drawable.ic_baseline_sort_24);
                     listKhachHang.clear();
                     listKhachHang.addAll(database.getListKhachHang());
@@ -273,5 +278,10 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }

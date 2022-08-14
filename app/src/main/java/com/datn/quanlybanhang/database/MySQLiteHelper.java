@@ -5,7 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.datn.quanlybanhang.model.DanhMuc;
+import com.datn.quanlybanhang.model.DonViTinh;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.HoaDonNhap;
 import com.datn.quanlybanhang.model.KhachHang;
@@ -76,12 +79,23 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NHAPHANG_NGAYNHAP = "NHAPHANG_NGAYNHAP";
     private static final String COLUMN_NHAPHANG_NO = "NHAPHANG_NO";
 
+    private static final String TABLE_DONVITINH ="DONVITINH";
+    private static final String COLUMN_DONVITINH_MADVT = "DONVITINH_MADVT";
+    private static final String COLUMN_DONVITINH_TENDVT = "DONVITINH_TENDVT";
+
+    private static final String TABLE_DANHMUC ="DANHMUC";
+    private static final String COLUMN_DANHMUC_MADM = "DANHMUC_MADM";
+    private static final String COLUMN_DANHMUC_TENDM = "DANHMUC_TENDM";
+
+
 
 
 
     public MySQLiteHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
+
+
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -137,6 +151,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 + COLUMN_NHAPHANG_SL+" INTEGER, "
                 + COLUMN_NHAPHANG_NO+" INTEGER ) ";
 
+        String script6 = " CREATE TABLE "+TABLE_DANHMUC+" ( "+
+                COLUMN_DANHMUC_MADM + " TEXT PRIMARY KEY,"+
+                COLUMN_DANHMUC_TENDM +" TEXT ) ";
+
+        String script7 = " CREATE TABLE "+TABLE_DONVITINH+" ( "+
+                COLUMN_DONVITINH_MADVT + " TEXT PRIMARY KEY,"+
+                COLUMN_DONVITINH_TENDVT +" TEXT ) ";
 
         sqLiteDatabase.execSQL(script0);
         sqLiteDatabase.execSQL(script1);
@@ -144,6 +165,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(script3);
         sqLiteDatabase.execSQL(script4);
         sqLiteDatabase.execSQL(script5);
+        sqLiteDatabase.execSQL(script6);
+        sqLiteDatabase.execSQL(script7);
+
     }
 
     @Override
@@ -154,8 +178,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NHANVIEN);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_SANPHAM);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NHAPHANG);
-        onCreate(sqLiteDatabase);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_DONVITINH);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_DANHMUC);
 
+        onCreate(sqLiteDatabase);
     }
 
     public Cursor execSQLSelect(String sql,String[] args){
@@ -166,6 +192,99 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         return cursor;
     }
+
+    public boolean addDanhMuc(String maDanhMuc,String tenDanhMuc){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Log.i("hicuong",maDanhMuc+tenDanhMuc);
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DANHMUC_MADM,maDanhMuc);
+        values.put(COLUMN_DANHMUC_TENDM,tenDanhMuc);
+        long i = sqLiteDatabase.insert(TABLE_DANHMUC, null, values);
+        sqLiteDatabase.close();
+        return i > 0;
+    }
+
+    public List<DanhMuc> getListDanhMuc(){
+        List<DanhMuc> list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM "+TABLE_DANHMUC;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+        if(cursor.moveToFirst()){
+            do {
+                list.add(new DanhMuc(cursor.getString(0),cursor.getString(1)));
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        sqLiteDatabase.close();
+        return list;
+    }
+
+    public int updateDanhMuc(String maDanhMuc,String tenDanhMuc){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DANHMUC_TENDM,tenDanhMuc);
+
+        int i =  sqLiteDatabase.update(TABLE_DANHMUC,values,COLUMN_DANHMUC_MADM+ " = ?",
+                new String[]{maDanhMuc});
+        sqLiteDatabase.close();
+        return i;
+    }
+
+    public boolean deleteDanhMuc(String maDanhMuc){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        int i = sqLiteDatabase.delete(TABLE_DANHMUC,COLUMN_DANHMUC_MADM+" = ?",
+                new String[]{maDanhMuc});
+        sqLiteDatabase.close();
+        return i>0;
+    }
+
+
+    public boolean addDonViTinh(String maDonViTinh,String tenDonViTinh){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DONVITINH_MADVT,maDonViTinh);
+        values.put(COLUMN_DONVITINH_TENDVT,tenDonViTinh);
+        long i = sqLiteDatabase.insert(TABLE_DONVITINH, null, values);
+        sqLiteDatabase.close();
+        return i > 0;
+    }
+
+    public List<DonViTinh> getListDonViTinh(){
+        List<DonViTinh> list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM "+TABLE_DONVITINH;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+        if(cursor.moveToFirst()){
+            do {
+                list.add(new DonViTinh(cursor.getString(0),cursor.getString(1)));
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        sqLiteDatabase.close();
+        return list;
+    }
+
+    public int updateDonViTinh(String maDonViTinh,String tenDonViTinh){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DONVITINH_TENDVT,tenDonViTinh);
+
+        int i =  sqLiteDatabase.update(TABLE_DONVITINH,values,COLUMN_DONVITINH_MADVT+ " = ?",
+                new String[]{maDonViTinh});
+        sqLiteDatabase.close();
+        return i;
+    }
+
+    public boolean deleteDonViTinh(String maDonViTinh){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        int i = sqLiteDatabase.delete(TABLE_DONVITINH,COLUMN_DONVITINH_MADVT+" = ?",
+                new String[]{maDonViTinh});
+        sqLiteDatabase.close();
+        return i>0;
+    }
+
+
+
     // CRUD SanPham
     public boolean addHoaDonNhap(HoaDonNhap hoaDonNhap){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -239,6 +358,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         return list;
     }
+
     public int getCountHoaDonNhap(){
         String selectQuery = "SELECT * FROM "+TABLE_NHAPHANG;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -557,6 +677,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     // CRUD Khach Hang
     public void initKhachHang(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        onUpgrade(sqLiteDatabase,1,1);
         ContentValues values = new ContentValues();
         values.put(COLUMN_KHACHHANG_ID,"MaKH01");
         values.put(COLUMN_KHACHHANG_HOTEN,"Khách Lẻ");

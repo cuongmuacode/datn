@@ -1,28 +1,25 @@
 package com.datn.quanlybanhang.fragment.hoadon;
 
-import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.ContextMenu;
+
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,9 +28,13 @@ import android.widget.Toast;
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.activityy.ActivityThongTin;
 import com.datn.quanlybanhang.adapter.HoaDonAdapterRecycler;
+import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.fragment.FragmentBanHang;
 import com.datn.quanlybanhang.fragment.FragmentXemThem;
 import com.datn.quanlybanhang.model.HoaDon;
+import com.datn.quanlybanhang.model.KhachHang;
+import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class FragmentHoaDon extends Fragment implements IClickItemListenerRecycer<HoaDon> {
-
     RecyclerView recyclerViewHoaDon;
     List<HoaDon> hoaDonList;
     List<HoaDon> hoaDonListQuery = new ArrayList<>();
@@ -54,10 +54,11 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
     HoaDon selectHoaDon;
     TextView textViewHoaDonFilter;
     ImageView imageViewSort;
-    SearchView searchView;
     Spinner spinner;
+    Toast toast;
     Fragment_ChiTietHoaDon fragment_chiTietHoaDon;
     int i = 3;
+    EditText editText;
     String textItemSprinner;
 
     public FragmentHoaDon() {
@@ -75,7 +76,6 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
     @Override
     public void onViewCreated(@NonNull  View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        searchView = view.findViewById(R.id.search_viewHoaDOn);
         textViewHoaDonFilter = view.findViewById(R.id.textHoaDonFilter);
         imageViewSort = view.findViewById(R.id.sort_img_hoadon);
         recyclerViewHoaDon = view.findViewById(R.id.recyclerHoaDon);
@@ -88,10 +88,11 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
         hoaDonList = database.getListHoaDon();
         hoaDonAdapterRecycler = new HoaDonAdapterRecycler(this.getContext(),hoaDonList,this);
         recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-        registerForContextMenu(recyclerViewHoaDon);
+        editText = view.findViewById(R.id.search_hoadon);
         spinner = view.findViewById(R.id.spinnerHoaDonFilter);
         xuLySearch();
         xuLySort();
+
     }
 
 
@@ -183,6 +184,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
             @Override
             public void onClick(View view) {
                 if(i==1){
+                    displayToast("Sắp xếp giảm dần");
                     imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
                     Collections.sort(hoaDonList, new Comparator<HoaDon>() {
                         @Override
@@ -198,6 +200,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
                     i=2;
                 }
                 else if(i==2){
+                    displayToast("Sắp xếp tăng dần");
                     imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
                     Collections.sort(hoaDonList, new Comparator<HoaDon>() {
                         @Override
@@ -208,12 +211,12 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
                                 return 1;
                             else
                                 return -1;
-
                         }
                     });
                     i=3;
                 }
                 else if(i==3){
+                    displayToast("Sắp xếp mặc định");
                     imageViewSort.setImageResource(R.drawable.ic_baseline_sort_24);
                     hoaDonList.clear();
                     hoaDonList.addAll(database.getListHoaDon());
@@ -225,38 +228,37 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
     }
 
     private void xuLySearch() {
-        if(getActivity()==null) return;
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if(getContext()==null)return;
-                if (view == searchView) {
-                    if (b) {
-                        // Open keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                showSoftInput(searchView, InputMethodManager.SHOW_FORCED);
-                    } else {
-                        // Close keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                    }
-                }
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                hoaDonAdapterRecycler.getFilter().filter(query);
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                hoaDonAdapterRecycler.getFilter().filter(newText);
-                return false;
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String search = editable.toString();
+                if(search.isEmpty()) {
+                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
+                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
+
+                }
+                else{
+                    hoaDonListQuery.clear();
+                    for(HoaDon hoaDon: hoaDonList){
+                        KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
+
+                        if(khachHang.getTenKH().contains(search)||
+                                (hoaDon.getTriGia()+"").contains(search))
+                            hoaDonListQuery.add(hoaDon);
+                    }
+                    recyclerViewHoaDon.setAdapter(new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this));
+                }
+                hoaDonAdapterRecycler.notifyDataSetChanged();
             }
         });
 
@@ -268,7 +270,6 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
         super.onStart();
         i=3;
         imageViewSort.setImageResource(R.drawable.ic_baseline_sort_24);
-        searchView.setIconified(true);
         hoaDonList.clear();
         hoaDonList.addAll(database.getListHoaDon());
         hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,this);
@@ -282,70 +283,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
 
     }
 
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if(getActivity()==null)return;
-        getActivity().getMenuInflater().inflate(R.menu.menu_model,menu);
-        MenuItem menuItemTT = menu.findItem(R.id.menu_model_dathanhtoan);
-        MenuItem menuItemXoa = menu.findItem(R.id.menu_model_xoa);
-        MenuItem menuItemSua = menu.findItem(R.id.menu_model_sua);
-        menuItemTT.setVisible(true);
-        menuItemTT.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_thanhtoan);
-                builder.setMessage("Bạn muốn thanh toán ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        selectHoaDon.setHoaDonNo(1);
-                        if(database.updateHoaDon(selectHoaDon)>0)
-                            Toast.makeText(getContext(), "Thành công", Toast.LENGTH_SHORT).show();
-                        hoaDonAdapterRecycler.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                return false;
-            }
-        });
-        menuItemXoa.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_xoa);
-                builder.setMessage("Bạn có chắc không ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        database.deleteHoaDon(selectHoaDon);
-                        hoaDonList.remove(selectHoaDon);
-                        hoaDonAdapterRecycler.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                return false;
-            }
-        });
-        menuItemSua.setVisible(false);
-    }
+
 
     @Override
     public void onClickItemModel(HoaDon hoaDon) {
@@ -363,5 +301,10 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
         if(getActivity()!=null)
         getActivity().startActivity(intent);
     }
-
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }

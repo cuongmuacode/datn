@@ -24,6 +24,7 @@ public class FragmentAddKhachHang extends Fragment {
     EditText editTextSODT;
     EditText editTextEmail;
     EditText editTextDiaChi;
+    Toast toast;
     EditText editTextGhiChu;
     IAddEditModel<KhachHang> iAddEditModel;
     KhachHang khachHang;
@@ -71,17 +72,12 @@ public class FragmentAddKhachHang extends Fragment {
         if(addOREdit == FragmentKhachHang.ADD_KHACH_HANG) buttonAdd.setText("Thêm");
         else if(addOREdit == FragmentKhachHang.SUA_KHACH_HANG) buttonAdd.setText("Sửa");
         buttonAdd.setOnClickListener(new View.OnClickListener() {
-            int processingClick = 0;
-            int Clickprosess = 0;
             @Override
             public void onClick(View view) {
-                if(editTextDiaChi.getText()==null||editTextEmail.getText()==null
-                        ||editTextHoTen.getText()==null||
-                        editTextSODT.getText()==null) {
-                    if(Clickprosess<5){
-                        Clickprosess++;
-                        Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
-                    }
+                if(editTextDiaChi.getText().toString().trim().isEmpty()||editTextEmail.getText().toString().trim().isEmpty()
+                        ||editTextHoTen.getText().toString().trim().isEmpty()||
+                        editTextSODT.getText().toString().trim().isEmpty()) {
+                    displayToast("Không được để trống !!!");
                 }
                 else {
                     String str;
@@ -98,15 +94,18 @@ public class FragmentAddKhachHang extends Fragment {
                             str
                     );
                     if(iAddEditModel.processModel(khachHang, addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
-                    else if (processingClick < 5) {
-                            processingClick++;
-                            Toast.makeText(getContext(), "Không gửi được thử lại xem ?", Toast.LENGTH_SHORT).show();
-                        }
+                    else
+                        displayToast("Không gửi được thử lại xem ?");
                 }
             }
         });
     }
-
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 
 }

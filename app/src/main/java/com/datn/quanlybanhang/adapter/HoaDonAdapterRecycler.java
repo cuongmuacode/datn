@@ -1,6 +1,7 @@
 package com.datn.quanlybanhang.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRecycler.HoaDonViewHoler> implements Filterable {
+public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRecycler.HoaDonViewHoler> {
 
 
     Context context;
@@ -90,41 +91,6 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
     public int getItemCount() {
         if(hoaDonList != null) return hoaDonList.size();
         return 0;
-    }
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String strSearch = charSequence.toString();
-                if(strSearch.isEmpty())
-                    hoaDonList = filterHoaDonList;
-                else{
-                    List<HoaDon> list = new ArrayList<>();
-                    for(HoaDon hoaDon : hoaDonList){
-                        KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
-                        if(hoaDon.getTriGia().toString().toLowerCase().contains(strSearch.toLowerCase())
-                                || ("HD"+hoaDon.getSoHD()).toLowerCase().contains(strSearch.toLowerCase())
-                                || hoaDon.getSoHD().toLowerCase().contains(strSearch.toLowerCase())
-                                || khachHang.getTenKH().toLowerCase().contains(strSearch.toLowerCase())
-                        )
-                            list.add(hoaDon);
-                    }
-                    hoaDonList = list;
-                }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = hoaDonList;
-
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                hoaDonList = (List<HoaDon>) filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
     }
 
 

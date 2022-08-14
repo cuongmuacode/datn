@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +47,7 @@ import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 
 import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
+import com.datn.quanlybanhang.model.DanhMuc;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
@@ -67,12 +69,12 @@ import java.util.List;
     List<SanPham> sanPhamSpinners = new ArrayList<>();
     MySQLiteHelper database;
     List<SanPham> listSanPham = new ArrayList<>();
-    String textItemSprinner;
     boolean check = true;
     private FrameLayout redCircle;
     private TextView countTextView;
     public static boolean checkState = true;
     public static int countSanPham = 1;
+    Toast toast;
     public static IClickItemSanPham iClickItemSanPham = new FragmentAddHoaDon();
 
     public FragmentBanHang() {
@@ -138,11 +140,8 @@ import java.util.List;
         listSanPham = database.getListSanPham();
         matHangAdapterRecycler = new MatHangAdapterRecycler(this,listSanPham);
         recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-        xulyEditText();
         xuLySort();
     }
-
-
 
 
     @Override
@@ -160,6 +159,7 @@ import java.util.List;
         }
         if(!checkState)
            countSanPhamm();
+        xulyEditText();
     }
 
 
@@ -239,14 +239,20 @@ import java.util.List;
 
      @Override
     public void onClickItemModel(SanPham sanPham) {
-        if(sanPham.getSoLuongSP()<=0) Toast.makeText(getContext(),getResources().getString(R.string.toast_hethang),Toast.LENGTH_SHORT).show();
+        if(sanPham.getSoLuongSP()<=0)
+            displayToast(getResources().getString(R.string.toast_hethang));
         else {
             iClickItemSanPham.onClickSanPham(sanPham);
             countSanPhamm();
             checkState = false;
         }
     }
-
+     public void displayToast(String message) {
+         if(toast != null)
+             toast.cancel();
+         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+         toast.show();
+     }
     @Override
     public void onClickChiTietModel(SanPham sanPham) {
 
@@ -255,91 +261,41 @@ import java.util.List;
 
 
     private void xulyEditText() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.arrstr_danhmuc, android.R.layout.simple_spinner_item);
+        ArrayList<String> listString = new ArrayList<>();
+        listString.add("Tất cả mặt hàng");
+        List<DanhMuc> list = database.getListDanhMuc();
+        for(DanhMuc danhMuc : list){
+            listString.add(danhMuc.getTenDanhMuc());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item,listString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                textItemSprinner = adapterView.getItemAtPosition(i).toString();
+
                 listSanPham.clear();
                 listSanPham = database.getListSanPham();
 
-               if(textItemSprinner.equals("Trái cây")){
-                    sanPhamSpinners.clear();
-                    for(SanPham sanPham : listSanPham)
-                        if(sanPham.getLoaiSP().equals("Trái cây"))
-                            sanPhamSpinners.add(sanPham);
-                        listSanPham.clear();
-                        listSanPham.addAll(sanPhamSpinners);
+                if(listString.get(i).equals("Tất cả mặt hàng")){
                     matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
                     recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
                 }
-                else if(textItemSprinner.equals("Đồ ăn vặt")) {
+                else {
+
                     sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Đồ ăn vặt"))
+                    for (SanPham sanPham : listSanPham) {
+                        if (sanPham.getLoaiSP().equals(listString.get(i)))
                             sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Rau củ")) {
-                    sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Rau củ"))
-                            sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Thịt")) {
-                    sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Thịt"))
-                            sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Cá")) {
-                    sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Cá"))
-                            sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Gia vị")) {
-                    sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Gia vị"))
-                            sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Đồ uống")) {
-                    sanPhamSpinners.clear();
-                    for (SanPham sanPham : listSanPham)
-                        if (sanPham.getLoaiSP().equals("Đồ uống"))
-                            sanPhamSpinners.add(sanPham);
-                   listSanPham.clear();
-                   listSanPham.addAll(sanPhamSpinners);
-                   matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
-                   recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-               }
-                else if(textItemSprinner.equals("Tất cả mặt hàng")){
-                    matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham);
+                    }
+                    listSanPham.clear();
+                    listSanPham.addAll(sanPhamSpinners);
+                    matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this, listSanPham);
                     recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
                 }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -387,6 +343,7 @@ import java.util.List;
             public void onClick(View view) {
                 if(i==1){
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
+                    displayToast("Sắp xếp từ A - Z");
                     Collections.sort(listSanPham, new Comparator<SanPham>() {
                         @Override
                         public int compare(SanPham sanPham, SanPham sanPham1) {
@@ -398,6 +355,7 @@ import java.util.List;
                     i=2;
                 }
                 else if(i==2) {
+                    displayToast("Sắp xếp từ Z - A");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
                     Collections.sort(listSanPham, new Comparator<SanPham>() {
                         @Override
@@ -410,6 +368,7 @@ import java.util.List;
                     i=3;
                 }
                 else if(i == 3){
+                    displayToast("Sắp xếp mặc định");
                     imageView.setImageResource(R.drawable.baseline_sort_by_alpha_24);
                     listSanPham.clear();
                     listSanPham.addAll(database.getListSanPham());

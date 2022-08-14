@@ -38,7 +38,7 @@
                 />
             <ImageView
                 android:id="@+id/imageview_sanpham_sort_banhang"
-                android:src="@drawable/ic_baseline_sort_24"
+                android:src="@drawable/baseline_sort_by_alpha_24"
                 android:scaleType="centerCrop"
                 android:layout_width="40dp"
                 android:paddingEnd="10dp"

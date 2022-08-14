@@ -36,7 +36,7 @@ public class ActivityLoginn extends AppCompatActivity {
         MySQLiteHelper database = new MySQLiteHelper(this);
 
 
-
+       //database.initKhachHang();
         if(database.getCountKhachHang()<=0) database.initKhachHang();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

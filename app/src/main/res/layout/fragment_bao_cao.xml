@@ -26,7 +26,6 @@
             android:layout_height="match_parent"
             android:gravity="start|center"
             android:layout_weight="1"
-            android:background="@drawable/bg_edittext"
             />
 
         <ImageView

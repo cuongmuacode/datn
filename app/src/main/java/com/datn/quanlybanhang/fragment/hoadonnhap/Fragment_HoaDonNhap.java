@@ -50,6 +50,7 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
     MySQLiteHelper database;
     List<HoaDonNhap> filterListHoaDonNhap = new ArrayList<>();
     HoaDonNhap selectHoaDonNhap;
+    Toast toast;
     public Fragment_HoaDonNhap() {
         // Required empty public constructor
     }
@@ -92,53 +93,14 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
         menuItemDaThanhToan.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_thanhtoan);
-                builder.setMessage("Bạn muốn thanh toán ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        selectHoaDonNhap.setHoaDonNhapNo(1);
-                        if(database.updateHoaDonNhap(selectHoaDonNhap)>0)
-                            Toast.makeText(getContext(), "Thành công", Toast.LENGTH_SHORT).show();
-                        hoaDonNhapAdapterRecycler.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+
                 return false;
             }
         });
         menuItemXoa.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_xoa);
-                builder.setMessage("Bạn có chắc không ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        database.deleteHoaDonNhap(selectHoaDonNhap);
-                        hoaDonNhaps.remove(selectHoaDonNhap);
-                        hoaDonNhapAdapterRecycler.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+
                 return false;
             }
         });
@@ -212,6 +174,7 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
             @Override
             public void onClick(View view) {
                 if(i==1){
+                    displayToast("Sắp xếp giảm dần theo giá !!!");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
                     Collections.sort(hoaDonNhaps, new Comparator<HoaDonNhap>() {
                         @Override
@@ -227,6 +190,7 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
                     i=2;
                 }
                 else if(i==2) {
+                    displayToast("Sắp xếp tăng dần theo giá !!!");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
                     Collections.sort(hoaDonNhaps, new Comparator<HoaDonNhap>() {
                         @Override
@@ -242,6 +206,7 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
                     i=3;
                 }
                 else if(i == 3){
+                    displayToast("Săp xếp mặc định !!!");
                     imageView.setImageResource(R.drawable.ic_baseline_sort_24);
                     hoaDonNhaps.clear();
                     hoaDonNhaps.addAll(database.getListHoaDonNhap());
@@ -260,5 +225,12 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
     @Override
     public void onClickChiTietModel(HoaDonNhap hoaDonNhap) {
         selectHoaDonNhap = hoaDonNhap;
+    }
+
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

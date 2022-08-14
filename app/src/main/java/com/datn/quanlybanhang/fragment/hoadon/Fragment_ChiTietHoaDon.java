@@ -1,5 +1,7 @@
 package com.datn.quanlybanhang.fragment.hoadon;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 
@@ -13,9 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.adapter.SanPhamAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.HoaDon;
@@ -40,6 +45,9 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
     RecyclerView recyclerView;
     SanPhamAdapterRecycler sanPhamAdapterRecycler;
     MySQLiteHelper database;
+    Button buttonThanhToan;
+    Button buttonXoa;
+    Toast toast;
 
 
     public Fragment_ChiTietHoaDon(HoaDon hoaDon) {
@@ -63,6 +71,8 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
         textTongTien = view.findViewById(R.id.ChiTiet_tongtienhoadon);
         textNgayHD = view.findViewById(R.id.ChiTiet_ngayHoaDon);
         recyclerView = view.findViewById(R.id.ChiTiet_recycer_hoadon);
+        buttonThanhToan = view.findViewById(R.id.buttonthanhtoanchitieethoadon);
+        buttonXoa = view.findViewById(R.id.buttonxoachitiethoadon);
         if(getContext()!=null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
@@ -70,6 +80,55 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
         }
         sanPhamAdapterRecycler = new SanPhamAdapterRecycler(sanPhamList);
         recyclerView.setAdapter(sanPhamAdapterRecycler);
+
+
+            buttonXoa.setVisibility(View.VISIBLE);
+            buttonXoa.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle(R.string.nav_model_xoa);
+                    builder.setMessage("Bạn có chắc không ?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            database.deleteHoaDon(hoaDon);
+                            if(getActivity()!=null)
+                                getActivity().onBackPressed();
+                            displayToast("Thành công !!!");
+                        }
+                    });
+                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
+
+
+        if(hoaDon.getHoaDonNo()==0){
+            buttonThanhToan.setVisibility(View.VISIBLE);
+            buttonThanhToan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    hoaDon.setHoaDonNo(1);
+                    if(database.updateHoaDon(hoaDon)>0){
+                      if(getActivity()!=null)
+                        getActivity().onBackPressed();
+                        displayToast("Thành công !!!");
+                    }
+                }
+            });
+        }
+        else if(hoaDon.getHoaDonNo()==1){
+            buttonThanhToan.setVisibility(View.GONE);
+        }
+
 
         String str = "Số hóa đơn : "+hoaDon.getSoHD();
         textSoHoaDon.setText(str);
@@ -97,5 +156,11 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
             textTongTien.setText(str);
         }
         else textTongTien.setText("0 VND");
+    }
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

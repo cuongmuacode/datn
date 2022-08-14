@@ -27,12 +27,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.model.DanhMuc;
+import com.datn.quanlybanhang.model.DonViTinh;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IAddEditModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Fragment_Add_SanPham extends Fragment {
@@ -44,11 +49,13 @@ public class Fragment_Add_SanPham extends Fragment {
     EditText textInputEditTextChiTietSP;
     EditText textInputEditTextGiaSP;
     Button appCompatButton;
+    Toast toast;
     IAddEditModel<SanPham> iAddEditModel;
     int addOREdit,soLuong = 0;
     String strDonViTinh;
     String strDanhMuc;
     SanPham sanPham;
+    MySQLiteHelper database;
 
 
     public Fragment_Add_SanPham(IAddEditModel<SanPham> iAddEditModel) {
@@ -60,6 +67,7 @@ public class Fragment_Add_SanPham extends Fragment {
         this.addOREdit = Fragment_San_Pham.SUA_SAN_PHAM;
         this.sanPham = sanPham;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,17 +109,34 @@ public class Fragment_Add_SanPham extends Fragment {
         spinnerDonViTinh = view.findViewById(R.id.sprinnerDonViTinh);
         spinnerDanhMuc =view.findViewById(R.id.sprinnerDanhMuc);
         appCompatButton = view.findViewById(R.id.buttonaddSanPham);
+        if(getContext()!=null)
+            database =new  MySQLiteHelper(getContext());
         if(addOREdit==Fragment_San_Pham.ADD_SAN_PHAM)
             appCompatButton.setText("Thêm");
         else if(addOREdit==Fragment_San_Pham.SUA_SAN_PHAM)
             appCompatButton.setText("Sửa");
-        ArrayAdapter<CharSequence> adapterDonViTinh = ArrayAdapter.createFromResource(getContext(),
-                R.array.arrstr_donvitinh, android.R.layout.simple_spinner_item);
+
+        List<DonViTinh> listDonViTinh = database.getListDonViTinh();
+        List<String> listStringDonViTinh = new ArrayList<String>();
+
+        for(DonViTinh donViTinh : listDonViTinh){
+            listStringDonViTinh.add(donViTinh.getTenDVT());
+        }
+
+        ArrayAdapter<CharSequence> adapterDonViTinh = new ArrayAdapter(getContext(),
+                 android.R.layout.simple_spinner_item,listStringDonViTinh);
         adapterDonViTinh.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDonViTinh.setAdapter(adapterDonViTinh);
 
-        ArrayAdapter<CharSequence> adapterDanhMuc = ArrayAdapter.createFromResource(getContext(),
-                R.array.arrstr_danhmuc, android.R.layout.simple_spinner_item);
+        List<DanhMuc> listDanhMuc = database.getListDanhMuc();
+        List<String> listStringDanhMuc = new ArrayList<String>();
+
+        for(DanhMuc danhMuc : listDanhMuc){
+            listStringDanhMuc.add(danhMuc.getTenDanhMuc());
+        }
+
+        ArrayAdapter<CharSequence> adapterDanhMuc = new ArrayAdapter(getContext(),
+                 android.R.layout.simple_spinner_item,listStringDanhMuc);
         adapterDanhMuc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDanhMuc.setAdapter(adapterDanhMuc);
         spinnerDanhMuc.setSelection(1);
@@ -119,7 +144,7 @@ public class Fragment_Add_SanPham extends Fragment {
         spinnerDonViTinh.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                strDonViTinh = adapterView.getItemAtPosition(i).toString();
+                strDonViTinh = listStringDonViTinh.get(i);
             }
 
             @Override
@@ -131,7 +156,7 @@ public class Fragment_Add_SanPham extends Fragment {
         spinnerDanhMuc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                strDanhMuc = adapterView.getItemAtPosition(i).toString();
+                strDanhMuc = listStringDanhMuc.get(i);
             }
 
             @Override
@@ -141,7 +166,6 @@ public class Fragment_Add_SanPham extends Fragment {
         });
 
         if(sanPham!=null){
-
             byte[] bytes = sanPham.getImgSP();
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             imageViewSanPham.setImageBitmap(bitmap);
@@ -172,18 +196,13 @@ public class Fragment_Add_SanPham extends Fragment {
         });
 
         appCompatButton.setOnClickListener(new View.OnClickListener() {
-            int processingClick = 0;
-            int clickProcess = 0;
             @Override
             public void onClick(View view) {
-                if (textInputEditTextChiTietSP.getText().toString().isEmpty() ||
-                        textInputEditTextGiaSP.getText().toString().isEmpty() ||
-                        textInputEditTextNuocSX.getText().toString().isEmpty() ||
-                        textInputEditTextTenSP.getText().toString().isEmpty()){
-                        if(clickProcess<5){
-                            clickProcess++;
-                            Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
-                        }
+                if (textInputEditTextChiTietSP.getText().toString().trim().isEmpty() ||
+                        textInputEditTextGiaSP.getText().toString().trim().isEmpty() ||
+                        textInputEditTextNuocSX.getText().toString().trim().isEmpty() ||
+                        textInputEditTextTenSP.getText().toString().trim().isEmpty()){
+                    displayToast("Không được để trống !!!");
                 }
                 else{
                     if(addOREdit == Fragment_San_Pham.ADD_SAN_PHAM) soLuong = 0;
@@ -204,14 +223,11 @@ public class Fragment_Add_SanPham extends Fragment {
                             strDanhMuc
                     );
                     if(iAddEditModel.processModel(sanPham,addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
-                    else if (processingClick < 5) {
-                            processingClick++;
-                            Toast.makeText(getContext(), "Thử lại xem !!", Toast.LENGTH_SHORT).show();
-                        }
+                    else
+                        displayToast("Thử lại xem !!!!");
                 }
             }
         });
-
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -226,6 +242,12 @@ public class Fragment_Add_SanPham extends Fragment {
             return stretch_height;
         else
             return stretch_width;
+    }
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }

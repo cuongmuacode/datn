@@ -6,29 +6,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
 import com.datn.quanlybanhang.fragment.FragmentBanHang;
+import com.datn.quanlybanhang.fragment.hoadon.FragmentThemSoLuong;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
+import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
 
 import java.util.List;
 
 public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterRecycler.ProductViewHoler>{
 
-    IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer;
+    iClickitemHoaDon<SanPham> iClickitemHoaDon;
+    IClickItemListenerRecycer<SanPham>  iClickItemListenerRecycer;
     List<SanPham> sanPhamList;
 
+    public MatHangAdapterRecycler(iClickitemHoaDon<SanPham> iClickitemHoaDon, List<SanPham> sanPhamList ) {
+        this.iClickitemHoaDon = iClickitemHoaDon;
+        this.sanPhamList = sanPhamList;
+    }
     public MatHangAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList ) {
         this.iClickItemListenerRecycer = iClickItemListenerRecycer;
         this.sanPhamList = sanPhamList;
     }
-
     @NonNull
     @Override
     public ProductViewHoler onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
@@ -49,24 +59,32 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
         byte[] bytes = sanPham.getImgSP();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         holder.imgProduct.setImageBitmap(bitmap);
-        if(iClickItemListenerRecycer.getClass().getName().equals(FragmentAddHoaDon.class.getName())) {
+        if(iClickitemHoaDon != null) {
             holder.textRemove.setBackgroundResource(R.drawable.ic_baseline_close_24);
             holder.textRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    iClickItemListenerRecycer.onClickItemModel(sanPham);
+                    iClickitemHoaDon.onClickItemModel(sanPham,1);
+
                 }
             });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iClickitemHoaDon.onClickItemModel(sanPham,2);
+                }
+            });
+
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    iClickItemListenerRecycer.onClickChiTietModel(sanPham);
+                    iClickitemHoaDon.onClickChiTietModel(sanPham);
                     return false;
                 }
             });
         }
 
-        if(iClickItemListenerRecycer.getClass().getName().equals(FragmentBanHang.class.getName())) {
+        if(iClickItemListenerRecycer!=null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -75,6 +93,7 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
             });
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -90,6 +109,8 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
         private TextView textSoLuong;
         private TextView textGiaProduct;
         private TextView textRemove;
+        private LinearLayout linearLayout;
+
 
         public ProductViewHoler(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +119,8 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
             textGiaProduct = itemView.findViewById(R.id.productGia);
             textSoLuong = itemView.findViewById(R.id.productSoLuong);
             textRemove = itemView.findViewById(R.id.textItemRecycProductRemove);
+            linearLayout = itemView.findViewById(R.id.linearAddHoaDon);
+
         }
     }
 }

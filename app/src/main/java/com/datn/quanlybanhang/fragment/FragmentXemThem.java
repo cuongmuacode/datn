@@ -27,7 +27,7 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
     TextView textViewNhapHang;
     TextView textViewCaiDat;
     TextView textViewMatHang;
-
+    Toast toast;
     public static final int ACT_KHACHHANG = 1;
     public static final int ACT_TAIKHOAN = 2;
     public static final int ACT_DONVITINH = 3;
@@ -73,8 +73,10 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
                     intent = new Intent(this.getContext(), ActivityThongTin.class);
                     intent.putExtra("Data", ACT_NHAPHANG);
                     startActivity(intent);
-                    break;
                 }
+                else
+                    displayToast("Bạn không phải là admin !!");
+                break;
             case R.id.xem_mayin:
                 intent = new Intent(this.getContext(), ActivityThongTin.class);
                 intent.putExtra("Data",ACT_MAYIN);
@@ -107,7 +109,7 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
                     startActivity(intent);
                 }
                 else
-                    Toast.makeText(getContext(),"Bạn không phải là admin !!",Toast.LENGTH_SHORT).show();
+                    displayToast("Bạn không phải là admin !!");
                 break;
             case R.id.xemthem_khachang:
                 intent = new Intent(this.getContext(), ActivityThongTin.class);
@@ -143,5 +145,11 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
         textViewCaiDat.setOnClickListener(this);
         textViewMatHang.setOnClickListener(this);
 
+    }
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
