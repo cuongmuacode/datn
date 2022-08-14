@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">Bán Hàng</string>
+    <string name="icon">nhãn</string>
+
+    <string name="nav_gioithieu">Giới thiệu</string>
+    <string name="nav_chiase">Chia sẻ</string>
+    <string name="nav_huongdan">Hướng dẫn</string>
+    <string name="nav_dangxuat">Đăng xuất</string>
+    <string name="nav_doimatkhau">Đổi mật khẩu</string>
+
+    <string name="nav_account">Account</string>
+    <string name="nav_myprofile">MyProfile</string>
+    <string name="nav_password">Password</string>
+    <string name="nav_banhang">Bán Hàng</string>
+    <string name="nav_hoadon">Hóa Đơn</string>
+    <string name="nav_baocao">Báo Cáo</string>
+    <string name="nav_xemthem">Thông tin</string>
+    <string name="nav_caidat">Cài Đặt</string>
+    <string name="nav_muahang">Mua Hàng</string>
+    <string name="nav_don_hang">Đơn hàng</string>
+    <string name="nav_thoat">Thoát</string>
+    <string name="nav_add">Thêm mới</string>
+    <string name="edit_timkiem">Tìm Kiếm</string>
+
+    <string name="nav_model_sua">Sửa</string>
+    <string name="nav_model_xoa">Xóa</string>
+    <string name="nav_model_them">Thêm số lượng</string>
+    <string name="nav_model_thanhtoan">Thanh toán</string>
+
+
+    <string name="obs_skip">Bỏ qua</string>
+    <string name="obs_next">Tiếp</string>
+
+    <!--thong tin-->
+    <string name="xemthem_khachhang">Khách Hàng</string>
+    <string name="xemthem_taikhoan">Tài Khoản</string>
+    <string name="xemthem_donvitinh">Đơn Vị Tính</string>
+    <string name="xemthem_baocaotonghop">Báo Cáo Tổng Hợp</string>
+    <string name="xemthem_nhaphang">Nhập Hàng</string>
+    <string name="xemthem_danhmuc">Danh Mục</string>
+    <string name="xemthem_mayin">Máy In</string>
+    <string name="xemthem_mathang">Mặt hàng</string>
+    <string name="xemthem_thietlap">Thiết lập</string>
+    <string name="xemthem_khac">Khác</string>
+
+    <string name="addhoadon_tongtien">Tổng tiền :</string>
+    <string name="addhoadon_luuhoadon">Lưu hóa đơn</string>
+    <string name="addhoadon_luuhoadon_no">Ghi nợ</string>
+    <string name="addhoadon_tenkhachhanh">Tên khách hàng :\u0020</string>
+    <string name="addhoadon_tennhanvien">Tên nhân viên :\u0020</string>
+    <string name="addhoadon_sohoadon">Số hóa đơn :\u0020</string>
+
+    <string name="chitietkhachhang_thongtincoban">Thông tin cơ bản</string>
+
+
+    <string name="toast_thanhcong">Thành công !!!!</string>
+    <string name="toast_khong_trong">Không được để trống !!!!</string>
+    <string name="toast_thulai">Thử lại xem !!!!</string>
+    <string name="toast_hethang">Hết hàng !!!!</string>
+    <string name="toast_chuachonsanpham">Chưa chọn sản phảm !!</string>
+
+
+    <!--Chi tiet moi thu-->
+    <string name="chitietSanPham_MoTa"><![CDATA[<html><body><b>Mô tả</b></body></html>]]></string>
+    <string name="chitietSanPham_TenSP"><![CDATA[<html><body><b>Tên sản phẩm</b></body></html>]]></string>
+    <string name="chitietSanPham_NuocSX"><![CDATA[<html><body><b>Nước sản xuất</b></body></html>]]></string>
+    <string name="chitietSanPham_Gia"><![CDATA[<html><body><b>Giá sản phẩm</b></body></html>]]></string>
+    <string name="chitietSanPham_DonViTinh"><![CDATA[<html><body><b>Đơn vị tính</b></body></html>]]></string>
+    <string name="chitietSanPham_SoLuong"><![CDATA[<html><body><b>Số lượng</b></body></html>]]></string>
+    <string name="chitietSanPham_DanhMuc"><![CDATA[<html><body><b>Loại</b></body></html>]]></string>
+
+
+    <string name="name_Dev">Lưu Mạnh Cường</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_colse">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="arrstr_day">
+        <item>Tất cả</item>
+        <item>Thứ hai</item>
+        <item>Thứ ba</item>
+        <item>Thứ tư</item>
+        <item>Thứ năm</item>
+        <item>Thứ sáu</item>
+        <item>Thứ bảy</item>
+        <item>Chủ nhật</item>
+        <item>Nợ</item>
+    </string-array>
+
+    <string-array name="arrstr_donvitinh">
+        <item>Cái</item>
+        <item>Quả</item>
+        <item>Chai</item>
+        <item>Chiếc</item>
+        <item>Đôi</item>
+        <item>Kg</item>
+        <item>Lọ</item>
+        <item>Thùng</item>
+        <item>Củ</item>
+        <item>Hộp</item>
+        <item>Lon</item>
+        <item>Gói</item>
+
+    </string-array>
+
+
+    <string-array name="arrstr_danhmuc">
+        <item>Tất cả mặt hàng</item>
+        <item>Trái cây</item>
+        <item>Rau củ</item>
+        <item>Thịt</item>
+        <item>Cá</item>
+        <item>Gia vị</item>
+        <item>Đồ uống</item>
+        <item>Đồ ăn vặt</item>
+    </string-array>
+
+    <string name="hint_username">Tên tài khoản</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="button_sign_in">Đăng nhập</string>
+    <string name="button_sign_up">Đăng ký</string>
+    <string name="button_send">Gửi</string>
+    <string name="text_forgot_password">Quên mật khẩu ?</string>
+    <string name="text_signin_message">Nhập tài khoản hoặc mật khẩu</string>
+    <string name="text_signin_social_media">khác</string>
+    <string name="text_signup_social_media">khác</string>
+    <string name="text_signin_signup">Chưa có tài khoản ? <b>Đăng ký</b></string>
+    <string name="text_signup_terms">Bạn đồng ý với các <b>điều khoản và điều kiện của chúng tôi</b></string>
+    <string name="text_signup_message">Đăng Ký</string>
+
+    <string name="text_forgot_password_title">Quên mật khẩu</string>
+    <string name="text_forgot_password_message">Chúng tôi sẽ gửi mật khẩu của bạn ở đây</string>
+
+    <string name="hint_email">Email</string>
+    <string name="hint_phone">Số điện thoại</string>
+    <string name="hint_confirm_password">Nhập lại mật khẩu</string>
+
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_banhang" android:title="@string/nav_banhang" android:icon="@drawable/ic_baseline_shopping_bag_24" />
+    <item android:id="@+id/nav_hoadon" android:title="@string/nav_hoadon" android:icon="@drawable/ic_baseline_insert_drive_file_24" />
+    <item android:id="@+id/nav_baocao" android:title="@string/nav_baocao" android:icon="@drawable/ic_baseline_insert_chart_outlined_24" />
+    <item android:id="@+id/nav_xemthem" android:title="@string/nav_xemthem" android:icon="@drawable/ic_baseline_dashboard_24" />
+</menu>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.hoadon.FragmentAddHoaDon">
+    <TextView
+        android:id="@+id/ChiTiet_SoHoaDon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginTop="10dp"
+        android:text="Số hóa đơn : "
+        android:textSize="17sp"
+        android:layout_marginBottom="1dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentTop="true"
+        />
+    <TextView
+        android:id="@+id/ChiTiet_tenNhanVienHoaDon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginBottom="1dp"
+        android:text="Nhân viên : "
+        android:textSize="17sp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_below="@+id/ChiTiet_SoHoaDon"
+        />
+    <TextView
+        android:id="@+id/ChiTiet_ngayHoaDon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginBottom="1dp"
+        android:text="Ngày : "
+        android:textSize="17sp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_below="@+id/ChiTiet_tenNhanVienHoaDon"
+        />
+
+    <TextView
+        android:id="@+id/ChiTiet_tenkhachhang_hoadon"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Chọn Khách hàng : "
+        android:background="@drawable/bg_edittext"
+        android:textSize="17sp"
+        android:clickable="true"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/ChiTiet_ngayHoaDon"
+        android:focusable="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ChiTiet_recycer_hoadon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:layout_marginBottom="50dp"
+        android:layout_below="@+id/ChiTiet_tenkhachhang_hoadon"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_edittext"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:layout_gravity="center_vertical"
+            android:text="Tổng tiền : "
+            android:textSize="17sp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+
+            />
+        <TextView
+            android:id="@+id/ChiTiet_tongtienhoadon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="$200"
+            android:textSize="17sp"
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
+            android:gravity="end"
+            android:clickable="true"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:focusable="true" />
+    </LinearLayout>
+</RelativeLayout>

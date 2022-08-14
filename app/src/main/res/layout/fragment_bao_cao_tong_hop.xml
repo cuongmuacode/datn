@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.baocao.FragmentBaoCaoTongHop">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_textview_bg_2"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Báo cáo kho"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/baocaotonghop_xuatnhapkho"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Báo cáo xuất nhập kho"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:background="@drawable/bg_textview"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/baocaotonghop_tonkho"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Báo cáo tồn kho"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:background="@drawable/bg_textview"
+        android:focusable="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_textview_bg_2"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Báo cáo khác"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/baocaotonghop_congnokhach"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Báo cáo công nợ khách hàng"
+        android:background="@drawable/bg_textview"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/baocaotonghop_loinhuantheongay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Lợi nhận theo ngày"
+        android:background="@drawable/bg_textview"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:focusable="true" />
+    <TextView
+        android:id="@+id/baocaotonghop_loinhuantheomathang"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Lợi nhận theo mặt hàng"
+        android:background="@drawable/bg_textview"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:focusable="true" />
+
+
+    <TextView
+        android:id="@+id/baocaotonghop_mathangdabantheongay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Mặt hàng đã bán theo ngày"
+        android:background="@drawable/bg_textview"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:focusable="true" />
+
+</LinearLayout>

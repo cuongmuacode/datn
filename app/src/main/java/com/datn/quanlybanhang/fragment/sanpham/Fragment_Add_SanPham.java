@@ -1,0 +1,231 @@
+package com.datn.quanlybanhang.fragment.sanpham;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.model.SanPham;
+import com.datn.quanlybanhang.myinterface.IAddEditModel;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+
+public class Fragment_Add_SanPham extends Fragment {
+    EditText textInputEditTextTenSP;
+    Spinner spinnerDonViTinh;
+    Spinner spinnerDanhMuc;
+    ImageView imageViewSanPham;
+    EditText textInputEditTextNuocSX;
+    EditText textInputEditTextChiTietSP;
+    EditText textInputEditTextGiaSP;
+    Button appCompatButton;
+    IAddEditModel<SanPham> iAddEditModel;
+    int addOREdit,soLuong = 0;
+    String strDonViTinh;
+    String strDanhMuc;
+    SanPham sanPham;
+
+
+    public Fragment_Add_SanPham(IAddEditModel<SanPham> iAddEditModel) {
+        this.iAddEditModel = iAddEditModel;
+        this.addOREdit = Fragment_San_Pham.ADD_SAN_PHAM;
+    }
+    public Fragment_Add_SanPham(IAddEditModel<SanPham> iAddEditModel, SanPham sanPham) {
+        this.iAddEditModel = iAddEditModel;
+        this.addOREdit = Fragment_San_Pham.SUA_SAN_PHAM;
+        this.sanPham = sanPham;
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment__add__san_pham, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull  View view,  Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+                    Uri uri = result.getData().getData();
+                    try {
+                        if(getActivity()==null)return;
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeStream(inputStream,null, options);
+                        options.inSampleSize = calculateInSampleSize(options,200,200);
+                        options.inJustDecodeBounds = false;
+                        inputStream = getActivity().getContentResolver().openInputStream(uri);
+                        Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
+                        imageViewSanPham.setImageBitmap(smallBitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        textInputEditTextTenSP = view.findViewById(R.id.inputedittext_tenSanPham);
+        textInputEditTextNuocSX = view.findViewById(R.id.inputedittext_NuocSX);
+        textInputEditTextChiTietSP = view.findViewById(R.id.inputedittext_ChiTietSanPham);
+        textInputEditTextGiaSP  = view.findViewById(R.id.inputedittext_Gia);
+        imageViewSanPham = view.findViewById(R.id.imgSanPham);
+        spinnerDonViTinh = view.findViewById(R.id.sprinnerDonViTinh);
+        spinnerDanhMuc =view.findViewById(R.id.sprinnerDanhMuc);
+        appCompatButton = view.findViewById(R.id.buttonaddSanPham);
+        if(addOREdit==Fragment_San_Pham.ADD_SAN_PHAM)
+            appCompatButton.setText("Thêm");
+        else if(addOREdit==Fragment_San_Pham.SUA_SAN_PHAM)
+            appCompatButton.setText("Sửa");
+        ArrayAdapter<CharSequence> adapterDonViTinh = ArrayAdapter.createFromResource(getContext(),
+                R.array.arrstr_donvitinh, android.R.layout.simple_spinner_item);
+        adapterDonViTinh.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDonViTinh.setAdapter(adapterDonViTinh);
+
+        ArrayAdapter<CharSequence> adapterDanhMuc = ArrayAdapter.createFromResource(getContext(),
+                R.array.arrstr_danhmuc, android.R.layout.simple_spinner_item);
+        adapterDanhMuc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDanhMuc.setAdapter(adapterDanhMuc);
+        spinnerDanhMuc.setSelection(1);
+
+        spinnerDonViTinh.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                strDonViTinh = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spinnerDanhMuc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                strDanhMuc = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        if(sanPham!=null){
+
+            byte[] bytes = sanPham.getImgSP();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            imageViewSanPham.setImageBitmap(bitmap);
+
+            soLuong = sanPham.getSoLuongSP();
+            textInputEditTextTenSP.setText(sanPham.getTenSP());
+            textInputEditTextNuocSX.setText(sanPham.getNuocSX());
+            textInputEditTextChiTietSP.setText(sanPham.getChiTietSP());
+            String str = sanPham.getGiaSP()+"";
+            textInputEditTextGiaSP.setText(str);
+            for(int i=0;i<spinnerDonViTinh.getAdapter().getCount();i++){
+                if(spinnerDonViTinh.getAdapter().getItem(i).toString().contains(sanPham.getDonViTinh()))
+                    spinnerDonViTinh.setSelection(i);
+            }
+            for(int i=0;i<spinnerDanhMuc.getAdapter().getCount();i++){
+                if(spinnerDanhMuc.getAdapter().getItem(i).toString().contains(sanPham.getLoaiSP()))
+                    spinnerDanhMuc.setSelection(i);
+            }
+        }
+
+        imageViewSanPham.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                launcher.launch(intent);
+            }
+        });
+
+        appCompatButton.setOnClickListener(new View.OnClickListener() {
+            int processingClick = 0;
+            int clickProcess = 0;
+            @Override
+            public void onClick(View view) {
+                if (textInputEditTextChiTietSP.getText().toString().isEmpty() ||
+                        textInputEditTextGiaSP.getText().toString().isEmpty() ||
+                        textInputEditTextNuocSX.getText().toString().isEmpty() ||
+                        textInputEditTextTenSP.getText().toString().isEmpty()){
+                        if(clickProcess<5){
+                            clickProcess++;
+                            Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
+                        }
+                }
+                else{
+                    if(addOREdit == Fragment_San_Pham.ADD_SAN_PHAM) soLuong = 0;
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) imageViewSanPham.getDrawable();
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                    byte [] bytes = outputStream.toByteArray();
+                    SanPham sanPham = new SanPham(
+                        "MaSP",
+                            textInputEditTextTenSP.getText().toString(),
+                            strDonViTinh,
+                            textInputEditTextNuocSX.getText().toString(),
+                            textInputEditTextChiTietSP.getText().toString(),
+                            Long.parseLong(textInputEditTextGiaSP.getText().toString()),
+                            soLuong,
+                            bytes,
+                            strDanhMuc
+                    );
+                    if(iAddEditModel.processModel(sanPham,addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
+                    else if (processingClick < 5) {
+                            processingClick++;
+                            Toast.makeText(getContext(), "Thử lại xem !!", Toast.LENGTH_SHORT).show();
+                        }
+                }
+            }
+        });
+
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+
+        int stretch_width = Math.round((float)width / (float)reqWidth);
+        int stretch_height = Math.round((float)height / (float)reqHeight);
+
+        if (stretch_width <= stretch_height)
+            return stretch_height;
+        else
+            return stretch_width;
+    }
+
+}

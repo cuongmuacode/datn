@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.sanpham.Fragment_Add_SanPham">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:id="@+id/imgSanPham"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:clickable="true"
+            android:background="@drawable/bg_edittext"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/shopbag"
+            android:focusable="true"
+            android:contentDescription="@string/icon" />
+
+        <EditText
+            android:id="@+id/inputedittext_tenSanPham"
+            android:layout_width="match_parent"
+            android:maxLength="24"
+            android:background="@drawable/bg_edittext"
+            android:inputType="text"
+            android:textSize="17sp"
+            android:hint="Tên mặt hàng"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:minHeight="60dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/icon" />
+
+        <Spinner
+            android:id="@+id/sprinnerDonViTinh"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_textview"
+            android:paddingStart="20dp"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="0dp"
+            />
+        <Spinner
+            android:id="@+id/sprinnerDanhMuc"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_textview"
+            android:layout_height="60dp"
+            android:paddingStart="20dp"
+            android:gravity="center_vertical"
+            android:paddingEnd="0dp"
+            />
+
+        <EditText
+            android:id="@+id/inputedittext_NuocSX"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_edittext"
+            android:inputType="textEmailAddress"
+            android:maxLength="100"
+            android:textSize="17sp"
+            android:hint="Nước sản xuất"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:minHeight="60dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/icon" />
+
+
+        <EditText
+            android:id="@+id/inputedittext_Gia"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_edittext"
+            android:inputType="number"
+            android:textSize="17sp"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:maxLength="18"
+            android:minHeight="60dp"
+            android:hint="Giá sản phẩm"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/icon" />
+
+
+
+        <EditText
+            android:id="@+id/inputedittext_ChiTietSanPham"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_edittext"
+            android:inputType="textMultiLine"
+            android:textSize="17sp"
+            android:hint="Ghi chú"
+            android:minLines="5"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+
+            android:maxLength="1000"
+            android:gravity="top"
+            android:textAlignment="gravity"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/icon" />
+
+        <Button
+            android:layout_marginTop="5dp"
+            android:id="@+id/buttonaddSanPham"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Send"
+            />
+    </LinearLayout>
+</ScrollView>

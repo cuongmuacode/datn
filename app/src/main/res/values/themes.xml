@@ -1,0 +1,30 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Banhang" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/md_green_200</item>
+        <item name="colorPrimaryVariant">@color/md_grey_600</item>
+        <item name="colorOnPrimary">@color/md_blue_grey_900</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/md_green_100</item>
+        <item name="colorSecondaryVariant">@color/md_green_300</item>
+        <item name="colorOnSecondary">@color/md_blue_grey_900</item>
+        <item name="colorOnBackground">@color/white</item>
+
+
+
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorSecondary">@color/md_green_100</item>
+        <item name="colorPrimaryVariant">@color/md_grey_600</item>
+        <item name="colorSecondaryVariant">@color/md_green_300</item>
+        <item name="android:windowBackground">@drawable/ic_splash_screen</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+</resources>

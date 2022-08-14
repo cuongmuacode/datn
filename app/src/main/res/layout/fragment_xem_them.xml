@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.FragmentXemThem"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_thietlap"
+            android:textSize="17sp"
+            android:background="@drawable/ic_textview_bg_2"
+            />
+
+        <TextView
+            android:id="@+id/xemthem_khachang"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_baseline_person_outline_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_khachhang"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="20sp"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/xemthem_taikhoan"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_baseline_account_circle_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_taikhoan"
+            android:textSize="20sp"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/xemthem_donvitinh"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_speed_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_donvitinh"
+            android:textSize="20sp"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/xem_mayin"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_baseline_print_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_mayin"
+            android:textSize="20sp"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/xemthem_danhmuc"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_snippet_folder_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_danhmuc"
+            android:textSize="20sp"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/xemthem_mathang"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:clickable="true"
+            android:background="@drawable/bg_textview"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_store_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_mathang"
+            android:textSize="20sp"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:background="@drawable/ic_textview_bg_2"
+            android:text="@string/xemthem_khac"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/xemthem_baocaotonghop"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_data_usage_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_baocaotonghop"
+            android:textSize="20sp"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/xemthem_nhaphang"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_textview"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_wysiwyg_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/xemthem_nhaphang"
+            android:textSize="20sp"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/xemthem_caidat"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:clickable="true"
+            android:background="@drawable/bg_textview"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_settings_24"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:text="@string/nav_caidat"
+            android:textSize="20sp"
+            android:focusable="true"
+            android:layout_marginBottom="60dp"
+            />
+    </LinearLayout>
+
+</ScrollView>

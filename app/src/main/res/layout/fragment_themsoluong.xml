@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".fragment.hoadon.FragmentThemSoLuong">
+
+        <EditText
+            android:id="@+id/inputedittext_add_SoLuong"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_edittext"
+            android:inputType="number"
+            android:textSize="17dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:maxLength="9"
+            android:hint="Nhập Số lượng"
+            android:layout_height="60dp"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_add_soluong"
+        android:layout_width="match_parent"
+        android:layout_marginTop="2dp"
+        android:layout_height="60dp"
+        android:text="Send"
+        />
+</LinearLayout>

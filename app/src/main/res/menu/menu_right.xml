@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:checkable="true"
+    >
+    <item android:title="@string/edit_timkiem"
+        android:id="@+id/menu_right_search"
+        />
+    <item
+        android:id="@+id/menu_right_muahang"
+        android:title="@string/nav_muahang"
+
+        />
+    <item
+        android:id="@+id/menu_right_add"
+        android:title="@string/nav_add"
+        />
+
+</menu>

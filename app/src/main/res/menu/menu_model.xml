@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_model_dathanhtoan"
+        android:title="@string/nav_model_thanhtoan"
+        android:visible="false"
+        />
+    <item android:id="@+id/menu_model_sua"
+        android:title="@string/nav_model_sua" />
+    <item android:id="@+id/menu_model_xoa"
+        android:title="@string/nav_model_xoa" />
+    <item
+        android:id="@+id/menu_model_soluong"
+        android:title="@string/nav_model_them"
+        android:visible="false"
+        />
+
+</menu>
