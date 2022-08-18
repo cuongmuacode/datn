@@ -1,17 +1,15 @@
 package com.datn.quanlybanhang.activityy;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.adapter.ViewPagerOnBoarding;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,23 +35,16 @@ public class ActivityOnBoardingScreen extends AppCompatActivity {
         viewPager2.setAdapter(viewPagerOnBoarding);
         circleIndicator.setViewPager(viewPager2);
 
-
-        textViewNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(viewPager2.getCurrentItem()<3)
-                   viewPager2.setCurrentItem(viewPager2.getCurrentItem()+1);
-            }
+        textViewNext.setOnClickListener(view -> {
+            if(viewPager2.getCurrentItem()<3)
+               viewPager2.setCurrentItem(viewPager2.getCurrentItem()+1);
         });
 
-        textViewSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ActivityOnBoardingScreen.this,ActivityLoginn.class);
-                setDataCache(60);
-                startActivity(intent);
-                finish();
-            }
+        textViewSkip.setOnClickListener(view -> {
+            Intent intent = new Intent(ActivityOnBoardingScreen.this,ActivityLoginn.class);
+            setDataCache(60);
+            startActivity(intent);
+            finish();
         });
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

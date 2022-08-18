@@ -1,13 +1,13 @@
 package com.datn.quanlybanhang.activityy;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -16,15 +16,12 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(getData()==0)
-                    startActivity(new Intent(SplashScreen.this,ActivityOnBoardingScreen.class));
-                else
-                    startActivity(new Intent(SplashScreen.this,ActivityLoginn.class));
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            if(getData()==0)
+                startActivity(new Intent(SplashScreen.this,ActivityOnBoardingScreen.class));
+            else
+                startActivity(new Intent(SplashScreen.this,ActivityLoginn.class));
+            finish();
         },0);
     }
     public int getData(){

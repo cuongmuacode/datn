@@ -62,37 +62,23 @@ public class KhachHangAdapterRecycler extends RecyclerView.Adapter<KhachHangAdap
             holder.textViewSDTKH.setText(str);
             str = "Email : "+nhanVien.getEmailNhanVien();
             holder.textViewEmail.setText(str);
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    nhanVienIAddEditModel.processModel(nhanVien,1);
-                    return false;
-                }
+            holder.itemView.setOnLongClickListener(view -> {
+                nhanVienIAddEditModel.processModel(nhanVien,1);
+                return false;
             });
         }
         if(clickItemListener!=null) {
             KhachHang khachHang = khachHangList.get(position);
             if (khachHang == null) return;
-            holder.imageViewKhachHang.setImageResource(R.drawable.ic_baseline_person_outline_24);
             String str = "Họ tên : "+khachHang.getTenKH();
             holder.textViewNameKH.setText(str);
             str = "SDT : "+khachHang.getSoDT();
             holder.textViewSDTKH.setText(str);
             str = "Email : "+khachHang.getEmail();
             holder.textViewEmail.setText(str);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickItemListener.onClickItemModel(khachHang);
-                }
-            });
+            holder.itemView.setOnClickListener(view -> clickItemListener.onClickItemModel(khachHang));
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickItemListener.onClickChiTietModel(khachHang);
-                }
-            });
+            holder.itemView.setOnClickListener(view -> clickItemListener.onClickChiTietModel(khachHang));
         }
     }
 

@@ -71,32 +71,29 @@ public class FragmentAddKhachHang extends Fragment {
         }
         if(addOREdit == FragmentKhachHang.ADD_KHACH_HANG) buttonAdd.setText("Thêm");
         else if(addOREdit == FragmentKhachHang.SUA_KHACH_HANG) buttonAdd.setText("Sửa");
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(editTextDiaChi.getText().toString().trim().isEmpty()||editTextEmail.getText().toString().trim().isEmpty()
-                        ||editTextHoTen.getText().toString().trim().isEmpty()||
-                        editTextSODT.getText().toString().trim().isEmpty()) {
-                    displayToast("Không được để trống !!!");
-                }
-                else {
-                    String str;
-                    if(editTextGhiChu.getText()==null)
-                        str = "";
-                    else
-                        str = editTextGhiChu.getText().toString();
-                    KhachHang khachHang = new KhachHang(
-                            "MAKH",
-                            editTextHoTen.getText().toString(),
-                            editTextDiaChi.getText().toString(),
-                            editTextEmail.getText().toString(),
-                            editTextSODT.getText().toString(),
-                            str
-                    );
-                    if(iAddEditModel.processModel(khachHang, addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
-                    else
-                        displayToast("Không gửi được thử lại xem ?");
-                }
+        buttonAdd.setOnClickListener(view1 -> {
+            if(editTextDiaChi.getText().toString().trim().isEmpty()||editTextEmail.getText().toString().trim().isEmpty()
+                    ||editTextHoTen.getText().toString().trim().isEmpty()||
+                    editTextSODT.getText().toString().trim().isEmpty()) {
+                displayToast("Không được để trống !!!");
+            }
+            else {
+                String str;
+                if(editTextGhiChu.getText()==null)
+                    str = "";
+                else
+                    str = editTextGhiChu.getText().toString();
+                KhachHang khachHang = new KhachHang(
+                        "MAKH",
+                        editTextHoTen.getText().toString(),
+                        editTextDiaChi.getText().toString(),
+                        editTextEmail.getText().toString(),
+                        editTextSODT.getText().toString(),
+                        str
+                );
+                if(iAddEditModel.processModel(khachHang, addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
+                else
+                    displayToast("Không gửi được thử lại xem ?");
             }
         });
     }

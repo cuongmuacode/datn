@@ -1,9 +1,13 @@
 package com.datn.quanlybanhang.fragment.hoadon;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -11,20 +15,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.datn.quanlybanhang.R;
-import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.adapter.SanPhamAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhachHang;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.NhanVien;
 import com.datn.quanlybanhang.model.SanPham;
 
@@ -33,10 +29,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
     HoaDon hoaDon;
     List<SanPham> sanPhamList;
+    List<KhoHang> khoHangList;
     TextView textSoHoaDon;
     TextView tenKhachHang;
     TextView textTenNhanVien;
@@ -53,6 +51,7 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
     public Fragment_ChiTietHoaDon(HoaDon hoaDon) {
         this.hoaDon = hoaDon;
         this.sanPhamList = hoaDon.getSanPhamList();
+        this.khoHangList = hoaDon.getKhoList();
     }
 
     @Override
@@ -73,55 +72,40 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
         recyclerView = view.findViewById(R.id.ChiTiet_recycer_hoadon);
         buttonThanhToan = view.findViewById(R.id.buttonthanhtoanchitieethoadon);
         buttonXoa = view.findViewById(R.id.buttonxoachitiethoadon);
-        if(getContext()!=null) {
+        if(getContext()==null) return;
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
             database = new MySQLiteHelper(getContext());
-        }
-        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(sanPhamList);
+        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(sanPhamList,getContext(),khoHangList);
         recyclerView.setAdapter(sanPhamAdapterRecycler);
 
 
             buttonXoa.setVisibility(View.VISIBLE);
-            buttonXoa.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.nav_model_xoa);
-                    builder.setMessage("Bạn có chắc không ?");
-                    builder.setCancelable(true);
-                    builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            database.deleteHoaDon(hoaDon);
-                            if(getActivity()!=null)
-                                getActivity().onBackPressed();
-                            displayToast("Thành công !!!");
-                        }
-                    });
-                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+            buttonXoa.setOnClickListener(view1 -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.nav_model_xoa);
+                builder.setMessage("Bạn có chắc không ?");
+                builder.setCancelable(true);
+                builder.setPositiveButton("Có", (dialogInterface, i) -> {
+                    database.deleteHoaDon(hoaDon);
+                    if(getActivity()!=null)
+                        getActivity().onBackPressed();
+                    displayToast("Thành công !!!");
+                });
+                builder.setNegativeButton("Không", (dialogInterface, i) -> dialogInterface.cancel());
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             });
 
 
         if(hoaDon.getHoaDonNo()==0){
             buttonThanhToan.setVisibility(View.VISIBLE);
-            buttonThanhToan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    hoaDon.setHoaDonNo(1);
-                    if(database.updateHoaDon(hoaDon)>0){
-                      if(getActivity()!=null)
-                        getActivity().onBackPressed();
-                        displayToast("Thành công !!!");
-                    }
+            buttonThanhToan.setOnClickListener(view12 -> {
+                hoaDon.setHoaDonNo(1);
+                if(database.updateHoaDon(hoaDon)>0){
+                  if(getActivity()!=null)
+                    getActivity().onBackPressed();
+                    displayToast("Thành công !!!");
                 }
             });
         }
@@ -132,7 +116,7 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
 
         String str = "Số hóa đơn : "+hoaDon.getSoHD();
         textSoHoaDon.setText(str);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy '| Giờ : ' hh:mm");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy '| Giờ : ' HH:mm",new Locale("vi", "VN"));
         str = "Ngày : "+dateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD())));
         textNgayHD.setText(str);
         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
@@ -147,15 +131,8 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
                 str = str + khachHang.getTenKH();
                 tenKhachHang.setText(str);
             }
-
-        if(!sanPhamList.isEmpty()) {
-            long triGia = 0;
-            for (SanPham sp : sanPhamList)
-                triGia += sp.getSoLuongSP() * sp.getGiaSP();
-            str = triGia + " VND";
+            str = hoaDon.getTriGia()+" VND";
             textTongTien.setText(str);
-        }
-        else textTongTien.setText("0 VND");
     }
     public void displayToast(String message) {
         if(toast != null)

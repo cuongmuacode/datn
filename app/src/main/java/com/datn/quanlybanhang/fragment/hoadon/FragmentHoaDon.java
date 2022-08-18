@@ -3,15 +3,6 @@ package com.datn.quanlybanhang.fragment.hoadon;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -25,27 +16,30 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.activityy.ActivityThongTin;
 import com.datn.quanlybanhang.adapter.HoaDonAdapterRecycler;
-import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
-import com.datn.quanlybanhang.fragment.FragmentBanHang;
 import com.datn.quanlybanhang.fragment.FragmentXemThem;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhachHang;
-import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FragmentHoaDon extends Fragment implements IClickItemListenerRecycer<HoaDon> {
+public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecycer<HoaDon> {
     RecyclerView recyclerViewHoaDon;
     List<HoaDon> hoaDonList;
     List<HoaDon> hoaDonListQuery = new ArrayList<>();
@@ -56,6 +50,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
     ImageView imageViewSort;
     Spinner spinner;
     Toast toast;
+    List<String> listSpiner;
     Fragment_ChiTietHoaDon fragment_chiTietHoaDon;
     int i = 3;
     EditText editText;
@@ -97,23 +92,20 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
 
 
     private void xuLySort() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.arrstr_day, android.R.layout.simple_spinner_item);
+        listSpiner = getMonth();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,listSpiner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                textItemSprinner = adapterView.getItemAtPosition(i).toString();
-                SimpleDateFormat simpleDateFormat =new SimpleDateFormat("EEEE", new Locale("en", "UK"));
-                if(textItemSprinner.equals("Chủ nhật")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Sunday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
+                textItemSprinner = listSpiner.get(i).toLowerCase();
+                SimpleDateFormat simpleDateFormat =new SimpleDateFormat("MMMM", new Locale("vi", "VN"));
+                if(textItemSprinner.equals("tất cả")){
+                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
                 }
-                else if(textItemSprinner.equals("Nợ")){
+                else if(textItemSprinner.equals("nợ")){
                     hoaDonListQuery.clear();
                     for(HoaDon hoaDon : hoaDonList)
                         if(hoaDon.getHoaDonNo() == 0)
@@ -121,57 +113,12 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
                 }
-                else if(textItemSprinner.equals("Thứ hai")){
+                else{
                     hoaDonListQuery.clear();
                     for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Monday"))
+                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner))
                             hoaDonListQuery.add(hoaDon);
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-                else if(textItemSprinner.equals("Thứ ba")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Tuesday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-                else if(textItemSprinner.equals("Thứ tư")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Wednesday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-
-                else if(textItemSprinner.equals("Thứ năm")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Thursday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-                else if(textItemSprinner.equals("Thứ sáu")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Friday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-                else if(textItemSprinner.equals("Thứ bảy")){
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Saturday"))
-                            hoaDonListQuery.add(hoaDon);
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
-                    recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-                }
-                else if(textItemSprinner.equals("Tất cả")){
-                    hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
                 }
             }
@@ -180,50 +127,41 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
 
             }
         });
-        imageViewSort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(i==1){
-                    displayToast("Sắp xếp giảm dần");
-                    imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
-                    Collections.sort(hoaDonList, new Comparator<HoaDon>() {
-                        @Override
-                        public int compare(HoaDon hoaDon, HoaDon hoaDon1) {
-                                if(hoaDon.getTriGia() - hoaDon1.getTriGia()==0)
-                                    return 0;
-                                else if(hoaDon.getTriGia() - hoaDon1.getTriGia()>0)
-                                    return 1;
-                                else
-                                    return -1;
-                        }
-                    });
-                    i=2;
-                }
-                else if(i==2){
-                    displayToast("Sắp xếp tăng dần");
-                    imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
-                    Collections.sort(hoaDonList, new Comparator<HoaDon>() {
-                        @Override
-                        public int compare(HoaDon hoaDon, HoaDon hoaDon1) {
-                            if(hoaDon1.getTriGia() - hoaDon.getTriGia()==0)
-                                return 0;
-                            else if(hoaDon1.getTriGia() - hoaDon.getTriGia()>0)
-                                return 1;
-                            else
-                                return -1;
-                        }
-                    });
-                    i=3;
-                }
-                else if(i==3){
-                    displayToast("Sắp xếp mặc định");
-                    imageViewSort.setImageResource(R.drawable.ic_baseline_sort_24);
-                    hoaDonList.clear();
-                    hoaDonList.addAll(database.getListHoaDon());
-                    i=1;
-                }
-                hoaDonAdapterRecycler.notifyDataSetChanged();
+        imageViewSort.setOnClickListener(view -> {
+            if(i==1){
+                displayToast("Sắp xếp giảm dần");
+                imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
+                Collections.sort(hoaDonList, (hoaDon, hoaDon1) -> {
+                        if(hoaDon.getTriGia() - hoaDon1.getTriGia()==0)
+                            return 0;
+                        else if(hoaDon.getTriGia() - hoaDon1.getTriGia()>0)
+                            return 1;
+                        else
+                            return -1;
+                });
+                i=2;
             }
+            else if(i==2){
+                displayToast("Sắp xếp tăng dần");
+                imageViewSort.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
+                Collections.sort(hoaDonList, (hoaDon, hoaDon1) -> {
+                    if(hoaDon1.getTriGia() - hoaDon.getTriGia()==0)
+                        return 0;
+                    else if(hoaDon1.getTriGia() - hoaDon.getTriGia()>0)
+                        return 1;
+                    else
+                        return -1;
+                });
+                i=3;
+            }
+            else if(i==3){
+                displayToast("Sắp xếp mặc định");
+                imageViewSort.setImageResource(R.drawable.ic_baseline_sort_24);
+                hoaDonList.clear();
+                hoaDonList.addAll(database.getListHoaDon());
+                i=1;
+            }
+            hoaDonAdapterRecycler.notifyDataSetChanged();
         });
     }
 
@@ -306,5 +244,23 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
             toast.cancel();
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+    List<String> getMonth(){
+        List<String> list = new ArrayList<>();
+        list.add("Tất cả");
+        list.add("Nợ");
+        list.add("Tháng 1");
+        list.add("Tháng 2");
+        list.add("Tháng 3");
+        list.add("Tháng 4");
+        list.add("Tháng 5");
+        list.add("Tháng 6");
+        list.add("Tháng 7");
+        list.add("Tháng 8");
+        list.add("Tháng 9");
+        list.add("Tháng 10");
+        list.add("Tháng 11");
+        list.add("Tháng 12");
+        return list;
     }
 }

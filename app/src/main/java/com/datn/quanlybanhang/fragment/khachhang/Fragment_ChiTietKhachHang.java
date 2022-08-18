@@ -1,15 +1,7 @@
 package com.datn.quanlybanhang.fragment.khachhang;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +10,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.datn.quanlybanhang.R;
-import com.datn.quanlybanhang.adapter.KhachHangAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.myinterface.IAddEditModel;
@@ -60,44 +57,30 @@ public class Fragment_ChiTietKhachHang extends Fragment implements IAddEditModel
         textViewSoDT.setText(Html.fromHtml("<b>Số điện thoại</b> : "+khachHang.getSoDT()));
         textViewGhiChu.setText(Html.fromHtml("<b>Ghi chú</b> : "+khachHang.getGhiChu()));
 
-        buttonSua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(khachHang.getMaKH().equals("MaKH01")) {
-                    Toast.makeText(getContext(), "Không được phép sửa!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                replaceFragment(new FragmentAddKhachHang(Fragment_ChiTietKhachHang.this,khachHang));
+        buttonSua.setOnClickListener(view1 -> {
+            if(khachHang.getMaKH().equals("MaKH01")) {
+                Toast.makeText(getContext(), "Không được phép sửa!!", Toast.LENGTH_SHORT).show();
+                return;
             }
+            replaceFragment(new FragmentAddKhachHang(Fragment_ChiTietKhachHang.this,khachHang));
         });
-        buttonXoa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(khachHang.getMaKH().equals("MaKH01")) {
-                    Toast.makeText(getContext(), "Không được phép xóa!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_xoa);
-                builder.setMessage("Bạn có chắc không ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        database.deleteKhachHang(khachHang);
-                        if(getActivity()!=null)
-                            getActivity().onBackPressed();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+        buttonXoa.setOnClickListener(view12 -> {
+            if(khachHang.getMaKH().equals("MaKH01")) {
+                Toast.makeText(getContext(), "Không được phép xóa!!", Toast.LENGTH_SHORT).show();
+                return;
             }
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.nav_model_xoa);
+            builder.setMessage("Bạn có chắc không ?");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Có", (dialogInterface, i) -> {
+                database.deleteKhachHang(khachHang);
+                if(getActivity()!=null)
+                    getActivity().onBackPressed();
+            });
+            builder.setNegativeButton("Không", (dialogInterface, i) -> dialogInterface.cancel());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
     }
     public void replaceFragment(Fragment fragment){

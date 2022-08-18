@@ -1,5 +1,6 @@
 package com.datn.quanlybanhang.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -54,8 +55,7 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_xem_them, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_xem_them, container, false);
     }
 
     @Override
@@ -63,6 +63,8 @@ public class FragmentXemThem extends Fragment implements View.OnClickListener{
         super.onViewCreated(view, savedInstanceState);
         getWidget(view);
     }
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         int i = view.getId();

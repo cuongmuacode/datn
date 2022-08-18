@@ -1,21 +1,12 @@
 package com.datn.quanlybanhang.fragment.nhanvien;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.datn.quanlybanhang.R;
-import com.datn.quanlybanhang.activityy.MainActivity;
-import com.datn.quanlybanhang.activityy.ActivityLoginn;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
+import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.activityy.ActivityLoginn;
+import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.fragment.sanpham.Fragment_Add_SanPham;
 import com.datn.quanlybanhang.model.NhanVien;
@@ -48,6 +44,7 @@ public class Fragment_DoiMatKhau extends Fragment {
     EditText editTextConfirmPass;
     Button buttonDoiMatKhau;
     CircleImageView circleImageView;
+    Toast toast;
 
     MySQLiteHelper database;
 
@@ -81,41 +78,37 @@ public class Fragment_DoiMatKhau extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         circleImageView.setImageBitmap(bitmap);
 
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode()==getActivity().RESULT_OK&&result.getData()!=null){
-                    Uri uri = result.getData().getData();
-                    try {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeStream(inputStream,null, options);
-                        options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options,200,200);
-                        options.inJustDecodeBounds = false;
-                        inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
-                        circleImageView.setImageBitmap(smallBitmap);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if(result.getResultCode()== Activity.RESULT_OK &&result.getData()!=null){
+                Uri uri = result.getData().getData();
+                try {
+                    if(getActivity()==null) return;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeStream(inputStream,null, options);
+                    options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options,200,200);
+                    options.inJustDecodeBounds = false;
+                    inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
+                    circleImageView.setImageBitmap(smallBitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        circleImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                launcher.launch(intent);
-            }
+        circleImageView.setOnClickListener(view1 -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            launcher.launch(intent);
         });
 
         buttonDoiMatKhau.setOnClickListener(new View.OnClickListener() {
             int Clickprosess = 0;
             @Override
             public void onClick(View view) {
+                if(getActivity()==null)return;
                 if(editTextPassCu.getText().toString().isEmpty()&&
                         editTextPassMoi.getText().toString().isEmpty()&&
                         editTextConfirmPass.getText().toString().isEmpty()){
@@ -184,25 +177,11 @@ public class Fragment_DoiMatKhau extends Fragment {
 
                     }
                     else {
-                        if (Clickprosess < 5) {
-                            Clickprosess++;
-                            Toast.makeText(getContext(), "Mật khẩu mới không khớp !!!", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Clickprosess = 0;
-                        return;
-
+                        displayToast("Mật khẩu mới không khớp !!!");
                     }
                 }
                 else {
-                    if (Clickprosess < 5) {
-                        Clickprosess++;
-                        Toast.makeText(getContext(), "Mật khẩu cũ sai  !!!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Clickprosess = 0;
-                    return;
-
+                 displayToast("Mật khẩu cũ sai  !!!");
                 }
 
             }
@@ -210,21 +189,26 @@ public class Fragment_DoiMatKhau extends Fragment {
 
     }
     public void setDataCache(NhanVien nhanVien){
-        FileOutputStream fileOutputStream = null;
-        ObjectOutputStream objectOutputStream = null;
-        File file = null;
+        FileOutputStream fileOutputStream;
+        ObjectOutputStream objectOutputStream;
+        File file;
         try{
+            if(getActivity()==null) return;
             file = new File(getActivity().getCacheDir(),"User.txt");
             fileOutputStream = new FileOutputStream(file);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(nhanVien);
             objectOutputStream.close();
             fileOutputStream.close();
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
 
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }

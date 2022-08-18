@@ -7,9 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -18,19 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-
-import android.widget.Toast;
-
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.fragment.sanpham.Fragment_Add_SanPham;
 import com.datn.quanlybanhang.model.NhanVien;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -81,36 +76,30 @@ public class FragmentRegister extends Fragment {
         buttonSignup = view.findViewById(R.id.button_signin);
         circleImageView = view.findViewById(R.id.imgNhanVien);
 
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
-                    Uri uri = result.getData().getData();
-                    try {
-                        if(getActivity()==null)return;
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeStream(inputStream,null, options);
-                        options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options,200,200);
-                        options.inJustDecodeBounds = false;
-                        inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
-                        circleImageView.setImageBitmap(smallBitmap);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+                Uri uri = result.getData().getData();
+                try {
+                    if(getActivity()==null)return;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeStream(inputStream,null, options);
+                    options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options,200,200);
+                    options.inJustDecodeBounds = false;
+                    inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
+                    circleImageView.setImageBitmap(smallBitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        circleImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                launcher.launch(intent);
-            }
+        circleImageView.setOnClickListener(view1 -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            launcher.launch(intent);
         });
 
         database =  new MySQLiteHelper(getContext());

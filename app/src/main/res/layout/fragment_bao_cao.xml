@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.baocao.FragmentBaoCao">
-
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="70dp"
+        >
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -17,6 +22,7 @@
             android:id="@+id/textHoaDonFilter"
             android:layout_width="110dp"
             android:layout_height="50dp"
+            android:textStyle="bold"
             android:textSize="20sp"
             android:gravity="center_vertical"
             android:text="Báo cáo : " />
@@ -25,6 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="start|center"
+            android:background="@drawable/bg_edittext"
             android:layout_weight="1"
             />
 
@@ -40,380 +47,412 @@
             android:focusable="true"
             android:contentDescription="@string/icon" />
     </LinearLayout>
-    <ScrollView
-        android:layout_marginBottom="?attr/actionBarSize"
+
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:minHeight="40dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:cardBackgroundColor="?attr/colorOnBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+                android:orientation="vertical"
                 >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:background="@drawable/bg_textview"
-                    android:paddingTop="15dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:text="Doanh thu"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:background="@drawable/bg_textview"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="Lợi nhuận"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="40dp"
-                >
-
-                <TextView
-                    android:id="@+id/baocaoDoanhThu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_textview"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="0"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/baocaoLoiNhuan"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="0dp"
+                    android:padding="10dp"
                     android:textStyle="bold"
-                    android:background="@drawable/bg_textview"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
+                    android:textSize="24sp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_baseline_attach_money_24"
+                    android:text="Doanh thu : " />
+                <TextView
+                    android:id="@+id/text_baocao_doanhthu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="100000000000000000000 VND"
+                    android:textSize="20sp" />
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:minHeight="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:cardBackgroundColor="?attr/colorOnBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="6dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_baseline_trending_up_24"
+                    android:text="Lợi nhuận : " />
+                <TextView
+                    android:id="@+id/text_baocao_loinhuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="100000000000000000 VND"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Hóa đơn"
+            android:textSize="25sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="0dp"
-                android:paddingBottom="10dp"
-                android:text="Hóa đơn"
-                android:textSize="20sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:background="@drawable/bg_textview"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_weight="1"
-                    android:text="Số hóa đơn"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:background="@drawable/bg_textview"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Giá Trị"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:background="@drawable/bg_textview"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Tiền thuế"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_textview"
-                >
-                <TextView
-                    android:id="@+id/baocaoSoHoaDon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:textSize="15sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoGiaTri"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoTienThue"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:text="0"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_textview"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_weight="1"
-                    android:text="Giảm giá"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Tiền bán"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Tiền vốn"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/bg_textview"
-                >
-                <TextView
-                    android:id="@+id/baocaoGiamGia"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:textSize="15sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoTienBan"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoTienVon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:paddingStart="20dp"
-                android:paddingEnd="0dp"
-                android:paddingBottom="10dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="17dp"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
                 android:layout_weight="1"
-                android:textSize="20sp"
-                android:text="Thanh toán"
+                android:text="Số hóa đơn :"
                 />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3"
-                android:background="@drawable/bg_textview"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_weight="1"
-                    android:text="Tiền mặt"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Ngân hàng"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="17sp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="Khách Hàng"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_textview"
-                >
-                <TextView
-                    android:id="@+id/baocaoTienMat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:textSize="15sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoNganHang"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
-                <TextView
-                    android:id="@+id/baocaoKhachHang"
-                    android:layout_width="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="15dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textStyle="bold"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="0"
-                    />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/baocaoSoHoaDon"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textSize="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_weight="2"
+                android:text="0"
+                />
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:minHeight="40dp"
+            android:layout_weight="1"
+            android:text="Giá Trị : "
+            />
+        <TextView
+            android:id="@+id/baocaoGiaTri"
+            android:layout_width="0dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="2"
+            android:textSize="15dp"
+            android:text="0"
+            />
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Tiền nợ : "
+                />
+            <TextView
+                android:id="@+id/baocaoTienNo"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Giảm giá : "
+                />
+            <TextView
+                android:id="@+id/baocaoGiamGia"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Tiền bán : "
+                />
+            <TextView
+                android:id="@+id/baocaoTienBan"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Tiền vốn : "
+                />
+            <TextView
+                android:id="@+id/baocaoTienVon"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Hóa đơn nhập"
+            android:textSize="25sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="17dp"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Số hóa đơn :"
+                />
+            <TextView
+                android:id="@+id/baocaoSoHoaDonNhap"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textSize="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_weight="2"
+                android:text="0"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Tiền nợ : "
+                />
+            <TextView
+                android:id="@+id/baocaoTienNoNhap"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Giảm giá : "
+                />
+            <TextView
+                android:id="@+id/baocaoGiamGiaNhap"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:minHeight="40dp"
+                android:layout_weight="1"
+                android:text="Tiền vốn : "
+                />
+            <TextView
+                android:id="@+id/baocaoTienVonNhap"
+                android:layout_width="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="2"
+                android:textSize="15dp"
+                android:text="0"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

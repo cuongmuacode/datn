@@ -58,14 +58,8 @@ public class FragmentLogin extends Fragment  {
          buttonSignin = view.findViewById(R.id.button_signin);
          
         database =  new MySQLiteHelper(getContext());
-        textForgotPass.setOnClickListener(view1 -> {
-            replaceFragment(new FragmentForgotpassword());
-
-        });
-         textResgister.setOnClickListener(view12 -> {
-             replaceFragment(new FragmentRegister());
-
-         });
+        textForgotPass.setOnClickListener(view1 -> replaceFragment(new FragmentForgotpassword()));
+         textResgister.setOnClickListener(view12 -> replaceFragment(new FragmentRegister()));
         buttonSignin.setOnClickListener(new View.OnClickListener() {
             int Clickprosess =0;
             @Override

@@ -3,18 +3,6 @@ package com.datn.quanlybanhang.fragment.hoadon;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.ContextMenu;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
@@ -33,21 +30,20 @@ import com.datn.quanlybanhang.fragment.FragmentBanHang;
 import com.datn.quanlybanhang.fragment.khachhang.FragmentKhachHang;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhachHang;
-
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
-import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
 import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Random;
 
 
 public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Serializable, iClickitemHoaDon<SanPham> {
     private List<SanPham> sanPhamList = new ArrayList<>();
+    private List<KhoHang> khoHangList = new ArrayList<>();
     private RecyclerView recyclerView;
     private Button buttonAdd;
     private Button buttonNo;
@@ -71,9 +67,10 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     }
 
 
-    public FragmentAddHoaDon(List<SanPham> sanPhamList, SanPham selectSanPham, KhachHang selectKhachhang,
+    public FragmentAddHoaDon(List<SanPham> sanPhamList,List<KhoHang> khoHangList, SanPham selectSanPham, KhachHang selectKhachhang,
                              HoaDon hoaDon, Random random, long soHD) {
         this.sanPhamList = sanPhamList;
+        this.khoHangList = khoHangList;
         this.selectSanPham = selectSanPham;
         this.selectKhachhang = selectKhachhang;
         this.hoaDon = hoaDon;
@@ -110,30 +107,27 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menuItem.setTitle(R.string.nav_banhang);
         menuItem.setIcon(R.drawable.ic_baseline_zoom_out_map_24);
-        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                replaceFragment(new FragmentBanHang(false));
-                return false;
-            }
+        menuItem.setOnMenuItemClickListener(menuItem1 -> {
+            replaceFragment(new FragmentBanHang(false));
+            return false;
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
 
     @Override
-    public void onClickSanPham(SanPham sanPham) {
+    public void onClickSanPham(SanPham sanPham,KhoHang khoHang) {
         if(sanPham !=null)
             if (sanPhamList.isEmpty()) {
-                sanPham.setSoLuongSP(1);
                 sanPhamList.add(sanPham);
+                khoHangList.add(khoHang);
             } else {
                 for (SanPham sp : sanPhamList) {
                     if (sp.getMaSP().equals(sanPham.getMaSP()))
                         return;
                 }
-                sanPham.setSoLuongSP(1);
                 sanPhamList.add(sanPham);
+                khoHangList.add(khoHang);
                 FragmentBanHang.countSanPham++;
             }
     }
@@ -142,7 +136,7 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     public void onResume() {
         super.onResume();
         System.gc();
-        FragmentBanHang.iClickItemSanPham =  new FragmentAddHoaDon(FragmentAddHoaDon.this.sanPhamList,
+        FragmentBanHang.iClickItemSanPham =  new FragmentAddHoaDon(FragmentAddHoaDon.this.sanPhamList,FragmentAddHoaDon.this.khoHangList,
                 FragmentAddHoaDon.this.selectSanPham,FragmentAddHoaDon.this.selectKhachhang,FragmentAddHoaDon.this.hoaDon,
                 FragmentAddHoaDon.this.random,FragmentAddHoaDon.this.soHD);
     }
@@ -158,13 +152,24 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
             if(getActivity()!=null)
                 getActivity().setResult(Activity.RESULT_CANCELED);
             sanPhamList.remove(sanPham);
+            for (KhoHang khoHang : khoHangList){
+                if(khoHang.getMaSP().equals(sanPham.getMaSP())){
+                    khoHangList.remove(khoHang);
+                }
+            }
             if(FragmentBanHang.countSanPham>0)
                 FragmentBanHang.countSanPham--;
+
             if(!sanPhamList.isEmpty()) {
                 triGia = 0;
-                for (SanPham sp : sanPhamList)
-                    triGia += sp.getSoLuongSP() * sp.getGiaSP();
-                String str =   triGia+" VND";
+                for (SanPham sp : sanPhamList){
+                    for(KhoHang khoHang : khoHangList) {
+                        if(khoHang.getMaSP().equals(sp.getMaSP())) {
+                            triGia += khoHang.getSoLuong() * khoHang.getGia();
+                        }
+                    }
+                }
+                String str =  triGia + " VND";
                 textTongTien.setText(str);
             }
             else
@@ -172,7 +177,14 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
             matHangAdapterRecycler.notifyDataSetChanged();
         }
         else if(check == 2){
-            replaceFragment(new FragmentThemSoLuong(sanPham));
+            for(KhoHang khoHang : khoHangList) {
+                if(khoHang.getMaSP().equals(sanPham.getMaSP())){
+                    replaceFragment(new FragmentThemSoLuong(sanPham,khoHang));
+                    return;
+                }
+            }
+
+
         }
     }
 
@@ -184,12 +196,11 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
 
 
     private void xulyall() {
+        if(getContext()==null) return;
         matHangAdapterRecycler =  new MatHangAdapterRecycler(
-                FragmentAddHoaDon.this,sanPhamList);
-        if(getContext()!=null) {
+                FragmentAddHoaDon.this,sanPhamList,this.khoHangList,getContext());
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-        }
 
         recyclerView.setAdapter(matHangAdapterRecycler);
 
@@ -198,12 +209,7 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         str = getResources().getString(R.string.addhoadon_tennhanvien)+MainActivity.nhanVien.getHoTenNV();
         textTenNhanVien.setText(str);
 
-        textTenKhachhang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new FragmentKhachHang(FragmentAddHoaDon.this));
-            }
-        });
+        textTenKhachhang.setOnClickListener(view -> replaceFragment(new FragmentKhachHang(FragmentAddHoaDon.this)));
 
         if(selectKhachhang==null) selectKhachhang = database.getKhachHang("MaKH01");
         str = getResources().getString(R.string.addhoadon_tenkhachhanh)+selectKhachhang.getTenKH();
@@ -211,93 +217,91 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
 
         if(!sanPhamList.isEmpty()) {
             triGia = 0;
-            for (SanPham sp : sanPhamList)
-                triGia += sp.getSoLuongSP() * sp.getGiaSP();
+            for (SanPham sp : sanPhamList){
+                for (KhoHang khoHang : khoHangList) {
+                    if(sp.getMaSP().equals(khoHang.getMaSP()))
+                    triGia += khoHang.getSoLuong() * khoHang.getGia();
+                }
+            }
             str =  triGia + " VND";
             textTongTien.setText(str);
         }
         else textTongTien.setText("0 VND");
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
+        buttonAdd.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
-
-                if(!sanPhamList.isEmpty()){
-                    hoaDon = new HoaDon(
-                            "HD" + soHD,
-                            System.currentTimeMillis()+"",
-                            selectKhachhang.getMaKH(),
-                            MainActivity.nhanVien.getMaNV(),
-                            triGia,
-                            sanPhamList,
-                            1
-                    );
-                    if(database.addHoaDon(hoaDon)) {
-                        displayToast( getResources().getString(R.string.toast_thanhcong));
-                        for(SanPham sp:sanPhamList){
-                            int a = database.getSanPham(sp.getMaSP()).getSoLuongSP()-sp.getSoLuongSP();
-                            SanPham sanPham = database.getSanPham(sp.getMaSP());
-                            sanPham.setSoLuongSP(a);
-                            database.updateSanPham(sanPham);
-                        }
-                        if(getActivity()!=null) {
-                            getActivity().setResult(Activity.RESULT_OK);
-                            getActivity().onBackPressed();
-                        }
-
+            if(!sanPhamList.isEmpty()){
+                hoaDon = new HoaDon(
+                        "HD" + soHD,
+                        System.currentTimeMillis()+"",
+                        selectKhachhang.getMaKH(),
+                        MainActivity.nhanVien.getMaNV(),
+                        triGia,
+                        sanPhamList,
+                        khoHangList,
+                        1
+                );
+                if(database.addHoaDon(hoaDon)) {
+                    displayToast( getResources().getString(R.string.toast_thanhcong));
+                    for(KhoHang khoHang:khoHangList){
+                        KhoHang kho = database.getKhoHang(khoHang.getMaSP());
+                        int a = kho.getSoLuong() - khoHang.getSoLuong();
+                        kho.setSoLuong(a);
+                        database.updateKhoaHang(kho);
                     }
-                    else {
-                        soHD =  Math.abs(random.nextLong());
-                        displayToast(getResources().getString(R.string.toast_thulai));
+                    if(getActivity()!=null) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().onBackPressed();
                     }
+
                 }
-                else displayToast(getResources().getString(R.string.toast_chuachonsanpham));
+                else {
+                    soHD =  Math.abs(random.nextLong());
+                    displayToast(getResources().getString(R.string.toast_thulai));
+                }
             }
+            else displayToast(getResources().getString(R.string.toast_chuachonsanpham));
         });
 
-        buttonNo.setOnClickListener(new View.OnClickListener() {
+        buttonNo.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
-
-                if(!sanPhamList.isEmpty()){
-                    hoaDon = new HoaDon(
-                            "HD" + soHD,
-                            System.currentTimeMillis()+"",
-                            selectKhachhang.getMaKH(),
-                            MainActivity.nhanVien.getMaNV(),
-                            triGia,
-                            sanPhamList,
-                            0
-                    );
-                    if(selectKhachhang.getMaKH().equals("MaKH01")){
-                        displayToast("Khách lẻ không được ghi nợ !!!");
-                        return;
-                    }
-                    if(database.addHoaDon(hoaDon)) {
-                        displayToast(getResources().getString(R.string.toast_thanhcong));
-                        for(SanPham sp:sanPhamList){
-                            int a = database.getSanPham(sp.getMaSP()).getSoLuongSP()-sp.getSoLuongSP();
-                            SanPham sanPham = database.getSanPham(sp.getMaSP());
-                            sanPham.setSoLuongSP(a);
-                            database.updateSanPham(sanPham);
-                        }
-                        if(getActivity()!=null) {
-                            getActivity().setResult(Activity.RESULT_OK);
-                            getActivity().onBackPressed();
-                        }
-
-                    }
-                    else {
-                        soHD =  Math.abs(random.nextLong());
-                        displayToast(getResources().getString(R.string.toast_thulai));
-                    }
+            if(!sanPhamList.isEmpty()){
+                hoaDon = new HoaDon(
+                        "HD" + soHD,
+                        System.currentTimeMillis()+"",
+                        selectKhachhang.getMaKH(),
+                        MainActivity.nhanVien.getMaNV(),
+                        triGia,
+                        sanPhamList,
+                        khoHangList,
+                        0
+                );
+                if(selectKhachhang.getMaKH().equals("MaKH01")){
+                    displayToast("Khách lẻ không được ghi nợ !!!");
+                    return;
                 }
-                else
-                    displayToast(getResources().getString(R.string.toast_chuachonsanpham));
+                if(database.addHoaDon(hoaDon)) {
+                    displayToast( getResources().getString(R.string.toast_thanhcong));
+                    for(KhoHang khoHang:khoHangList){
+                        KhoHang kho = database.getKhoHang(khoHang.getMaSP());
+                        int a = kho.getSoLuong() - khoHang.getSoLuong();
+                        kho.setSoLuong(a);
+                        database.updateKhoaHang(kho);
+                    }
+                    if(getActivity()!=null) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().onBackPressed();
+                    }
 
+                }
+                else {
+                    soHD =  Math.abs(random.nextLong());
+                    displayToast(getResources().getString(R.string.toast_thulai));
+                }
             }
+            else
+                displayToast(getResources().getString(R.string.toast_chuachonsanpham));
+
         });
     }
     public void replaceFragment(Fragment fragment){

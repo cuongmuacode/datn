@@ -1,24 +1,18 @@
 package com.datn.quanlybanhang.activityy;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import android.os.Bundle;
-
-
-
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
-
 import com.datn.quanlybanhang.fragment.nhanvien.FragmentLogin;
-
 import com.datn.quanlybanhang.fragment.sanpham.Fragment_Add_SanPham;
 import com.datn.quanlybanhang.model.NhanVien;
 
@@ -33,11 +27,17 @@ public class ActivityLoginn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+       //this.deleteDatabase(MySQLiteHelper.DATABASE_NAME);
+
         MySQLiteHelper database = new MySQLiteHelper(this);
 
+        if(database.getCountKhachHang()<=0) database.initKhachHang();
+        if(database.getCountDanhMuc()<=0)
+           database.addDanhMuc("MaDVT01","Trái cây");
+         if(database.getCountDonViTinh()<=0)
+           database.addDonViTinh("MaDM01","Cái");
 
        //database.initKhachHang();
-        if(database.getCountKhachHang()<=0) database.initKhachHang();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.ssanh1, options);
@@ -47,12 +47,7 @@ public class ActivityLoginn extends AppCompatActivity {
         Bitmap smallBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ssanh1, options);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                smallBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            }
-        });
+        runOnUiThread(() -> smallBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos));
         byte[] bitmapdata = bos.toByteArray();
         if(database.getCountNhanVien()<=0) database.initNhanVien(bitmapdata);
 

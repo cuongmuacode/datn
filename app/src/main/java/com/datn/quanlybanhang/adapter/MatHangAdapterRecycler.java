@@ -1,24 +1,20 @@
 package com.datn.quanlybanhang.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.quanlybanhang.R;
-import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
-import com.datn.quanlybanhang.fragment.FragmentBanHang;
-import com.datn.quanlybanhang.fragment.hoadon.FragmentThemSoLuong;
+import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
@@ -30,14 +26,20 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
     iClickitemHoaDon<SanPham> iClickitemHoaDon;
     IClickItemListenerRecycer<SanPham>  iClickItemListenerRecycer;
     List<SanPham> sanPhamList;
+    List<KhoHang> khoHangList;
+    Context context;
+    MySQLiteHelper database;
 
-    public MatHangAdapterRecycler(iClickitemHoaDon<SanPham> iClickitemHoaDon, List<SanPham> sanPhamList ) {
+    public MatHangAdapterRecycler(iClickitemHoaDon<SanPham> iClickitemHoaDon, List<SanPham> sanPhamList,List<KhoHang> khoHangList,Context context ) {
         this.iClickitemHoaDon = iClickitemHoaDon;
         this.sanPhamList = sanPhamList;
+        this.khoHangList = khoHangList;
+        this.context = context;
     }
-    public MatHangAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList ) {
+    public MatHangAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList,Context context ) {
         this.iClickItemListenerRecycer = iClickItemListenerRecycer;
         this.sanPhamList = sanPhamList;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -51,46 +53,31 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
     public void onBindViewHolder(@NonNull  ProductViewHoler holder, int position) {
         SanPham sanPham = sanPhamList.get(position);
         if(sanPham == null) return;
-        String str="Số  lượng : "+sanPham.getSoLuongSP();
+        database = new MySQLiteHelper(context);
+        KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
+        String str="Số  lượng : "+khoHang.getSoLuong();
         holder.textNameProduct.setText(sanPham.getTenSP());
         holder.textSoLuong.setText(str);
-        str = "Giá : "+sanPham.getGiaSP()+" VND";
+        str = "Giá : "+khoHang.getGia()+" VND";
         holder.textGiaProduct.setText(str);
         byte[] bytes = sanPham.getImgSP();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         holder.imgProduct.setImageBitmap(bitmap);
         if(iClickitemHoaDon != null) {
+            khoHang = khoHangList.get(position);
+             str="Số  lượng : "+khoHang.getSoLuong();
+            holder.textSoLuong.setText(str);
+            str = "Giá : "+khoHang.getGia()+" VND";
+            holder.textGiaProduct.setText(str);
+
+
             holder.textRemove.setBackgroundResource(R.drawable.ic_baseline_close_24);
-            holder.textRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iClickitemHoaDon.onClickItemModel(sanPham,1);
-
-                }
-            });
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iClickitemHoaDon.onClickItemModel(sanPham,2);
-                }
-            });
-
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    iClickitemHoaDon.onClickChiTietModel(sanPham);
-                    return false;
-                }
-            });
+            holder.textRemove.setOnClickListener(view -> iClickitemHoaDon.onClickItemModel(sanPham,1));
+            holder.itemView.setOnClickListener(view -> iClickitemHoaDon.onClickItemModel(sanPham,2));
         }
 
         if(iClickItemListenerRecycer!=null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iClickItemListenerRecycer.onClickItemModel(sanPham);
-                }
-            });
+            holder.itemView.setOnClickListener(view -> iClickItemListenerRecycer.onClickItemModel(sanPham));
         }
     }
 
@@ -104,12 +91,12 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
 
 
     public static class ProductViewHoler extends RecyclerView.ViewHolder{
-        private ImageView imgProduct;
-        private TextView textNameProduct;
-        private TextView textSoLuong;
-        private TextView textGiaProduct;
-        private TextView textRemove;
-        private LinearLayout linearLayout;
+        private final ImageView imgProduct;
+        private final TextView textNameProduct;
+        private final TextView textSoLuong;
+        private final TextView textGiaProduct;
+        private final TextView textRemove;
+
 
 
         public ProductViewHoler(@NonNull View itemView) {
@@ -119,7 +106,7 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
             textGiaProduct = itemView.findViewById(R.id.productGia);
             textSoLuong = itemView.findViewById(R.id.productSoLuong);
             textRemove = itemView.findViewById(R.id.textItemRecycProductRemove);
-            linearLayout = itemView.findViewById(R.id.linearAddHoaDon);
+
 
         }
     }

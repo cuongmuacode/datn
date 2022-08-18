@@ -1,17 +1,7 @@
 package com.datn.quanlybanhang.fragment.hoadonnhap;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
@@ -23,6 +13,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.adapter.HoaDonNhapAdapterRecycler;
@@ -39,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerRecycer<HoaDonNhap> {
 
@@ -90,38 +88,23 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
         MenuItem menuItemDaThanhToan = menu.findItem(R.id.menu_model_dathanhtoan);
         menuItemSua.setVisible(false);
         menuItemDaThanhToan.setVisible(true);
-        menuItemDaThanhToan.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-
-                return false;
-            }
-        });
-        menuItemXoa.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-
-                return false;
-            }
-        });
+        menuItemDaThanhToan.setOnMenuItemClickListener(menuItem -> false);
+        menuItemXoa.setOnMenuItemClickListener(menuItem -> false);
 
     }
 
     private void xulyEditText() {
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(getContext()==null) return;
-                if (view == editText) {
-                    if (b) {
-                        // Open keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                    } else {
-                        // Close keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    }
+        editText.setOnFocusChangeListener((view, b) -> {
+            if(getContext()==null) return;
+            if (view == editText) {
+                if (b) {
+                    // Open keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                } else {
+                    // Close keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
             }
         });
@@ -146,16 +129,15 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
 
                 }
                 else{
-
                     filterListHoaDonNhap.clear();
-                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm",new Locale("vi","VN"));
                     for(HoaDonNhap hoaDonNhap : hoaDonNhaps){
                         KhachHang khachHang = database.getKhachHang(hoaDonNhap.getMaKH());
                         NhanVien nhanVien = database.getNhanVien(hoaDonNhap.getMaNV());
 
                         String dateSTR = dateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap())));
                         if((hoaDonNhap.getGiaNhap()+"").contains(search)||
-                                (hoaDonNhap.getGiaBan()+"").contains(search)||
+                                (hoaDonNhap.getGia()+"").contains(search)||
                                 dateSTR.contains(search)||
                                 nhanVien.getHoTenNV().contains(search)||
                                 khachHang.getTenKH().contains(search))
@@ -176,32 +158,27 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
                 if(i==1){
                     displayToast("Sắp xếp giảm dần theo giá !!!");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
-                    Collections.sort(hoaDonNhaps, new Comparator<HoaDonNhap>() {
-                        @Override
-                        public int compare(HoaDonNhap hoaDonNhap, HoaDonNhap hoaDonNhap1) {
-                            int a = Integer.compare(hoaDonNhap.getSoLuong(),hoaDonNhap1.getSoLuong());
-                            int b = Long.compare(hoaDonNhap.getGiaBan(),hoaDonNhap1.getGiaBan());
-                            int c = Long.compare(hoaDonNhap.getGiaNhap(),hoaDonNhap1.getGiaNhap());
-                            if(b!=0) return b;
-                            else if(a!=0) return c;
-                            else return a;
-                        }
+                    Collections.sort(hoaDonNhaps, (hoaDonNhap, hoaDonNhap1) -> {
+                        int a = Integer.compare(hoaDonNhap.getSoLuongNhap(),hoaDonNhap1.getSoLuongNhap());
+                        int b = Long.compare(hoaDonNhap.getGia(),hoaDonNhap1.getGia());
+                        int c = Long.compare(hoaDonNhap.getGiaNhap(),hoaDonNhap1.getGiaNhap());
+                        if(b!=0) return b;
+                        else if(a!=0) return c;
+                        else return a;
+
                     });
                     i=2;
                 }
                 else if(i==2) {
                     displayToast("Sắp xếp tăng dần theo giá !!!");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
-                    Collections.sort(hoaDonNhaps, new Comparator<HoaDonNhap>() {
-                        @Override
-                        public int compare(HoaDonNhap hoaDonNhap, HoaDonNhap hoaDonNhap1) {
-                            int a = Integer.compare(hoaDonNhap1.getSoLuong(),hoaDonNhap.getSoLuong());
-                            int b = Long.compare(hoaDonNhap1.getGiaBan(),hoaDonNhap.getGiaBan());
-                            int c = Long.compare(hoaDonNhap1.getGiaNhap(),hoaDonNhap.getGiaNhap());
-                            if(b!=0) return b;
-                            else if(a!=0) return c;
-                            else return a;
-                        }
+                    Collections.sort(hoaDonNhaps, (hoaDonNhap, hoaDonNhap1) -> {
+                        int a = Integer.compare(hoaDonNhap1.getSoLuongNhap(),hoaDonNhap.getSoLuongNhap());
+                        int b = Long.compare(hoaDonNhap1.getGia(),hoaDonNhap.getGia());
+                        int c = Long.compare(hoaDonNhap1.getGiaNhap(),hoaDonNhap.getGiaNhap());
+                        if(b!=0) return b;
+                        else if(a!=0) return c;
+                        else return a;
                     });
                     i=3;
                 }

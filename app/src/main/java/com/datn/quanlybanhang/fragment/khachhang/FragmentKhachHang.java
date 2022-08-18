@@ -2,17 +2,6 @@ package com.datn.quanlybanhang.fragment.khachhang;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
@@ -27,6 +16,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.adapter.KhachHangAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
@@ -34,11 +32,13 @@ import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.myinterface.IAddEditModel;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
+
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 
 public class FragmentKhachHang extends Fragment implements IClickItemListenerRecycer<KhachHang>,IAddEditModel<KhachHang> {
@@ -99,12 +99,9 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
     @Override
     public void onCreateOptionsMenu(@NonNull  Menu menu, @NonNull  MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem menuItem = menu.add(1,R.id.menu_right_add,1,R.string.nav_add).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                replaceFragment(new FragmentAddKhachHang(FragmentKhachHang.this));
-                return true;
-            }
+        MenuItem menuItem = menu.add(1,R.id.menu_right_add,1,R.string.nav_add).setOnMenuItemClickListener(menuItem1 -> {
+            replaceFragment(new FragmentAddKhachHang(FragmentKhachHang.this));
+            return true;
         });
         menuItem.setIcon(R.drawable.ic_baseline_add_24);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -150,37 +147,31 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
         return false;
     }
     private void xulyEditText() {
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(getContext()==null) return;
-                if (view == editText) {
-                    if (b) {
-                        // Open keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                    } else {
-                        // Close keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    }
+        editText.setOnFocusChangeListener((view, b) -> {
+            if(getContext()==null) return;
+            if (view == editText) {
+                if (b) {
+                    // Open keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                } else {
+                    // Close keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
             }
         });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(getContext()==null) return;
-                if (view == editText) {
-                    if (b) {
-                        // Open keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                    } else {
-                        // Close keyboard
-                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                                hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    }
+        editText.setOnFocusChangeListener((view, b) -> {
+            if(getContext()==null) return;
+            if (view == editText) {
+                if (b) {
+                    // Open keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                } else {
+                    // Close keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
             }
         });
@@ -209,8 +200,11 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
                 }
                 else{
                     for(KhachHang khachHang : listKhachHang){
-                        if(khachHang.getTenKH().contains(search)||
-                                (khachHang.getEmail()).contains(search))
+                        if(removeAccent(khachHang.getTenKH().toLowerCase()).contains(search)||
+                                removeAccent(khachHang.getTenKH()).contains(search)||
+                                khachHang.getTenKH().contains(search)||
+                                khachHang.getTenKH().toLowerCase().contains(search)||
+                                (khachHang.getSoDT().toLowerCase()).contains(search))
                             filterListKhachHang.add(khachHang);
                     }
                     recyclerView.setAdapter(new KhachHangAdapterRecycler(filterListKhachHang,FragmentKhachHang.this));
@@ -227,26 +221,20 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
                 if(i==1){
                     displayToast("Sắp xếp A - Z");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
-                    Collections.sort(listKhachHang, new Comparator<KhachHang>() {
-                        @Override
-                        public int compare(KhachHang khachHang, KhachHang khachHang1) {
-                            int a = khachHang.getTenKH().compareTo(khachHang1.getTenKH());
-                            if(a!=0) return a;
-                            else return   khachHang.getEmail().compareTo(khachHang1.getEmail());
-                        }
+                    Collections.sort(listKhachHang, (khachHang, khachHang1) -> {
+                        int a = khachHang.getTenKH().toLowerCase().compareTo(khachHang1.getTenKH().toLowerCase());
+                        if(a!=0) return a;
+                        else return   khachHang.getEmail().compareTo(khachHang1.getEmail());
                     });
                     i=2;
                 }
                 else if((i==2)){
                     displayToast("Sắp xếp Z - A");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
-                    Collections.sort(listKhachHang, new Comparator<KhachHang>() {
-                        @Override
-                        public int compare(KhachHang khachHang, KhachHang khachHang1) {
-                            int a = khachHang1.getTenKH().compareTo(khachHang.getTenKH());
-                            if(a!=0) return a;
-                            else return  khachHang1.getEmail().compareTo(khachHang.getEmail());
-                        }
+                    Collections.sort(listKhachHang, (khachHang, khachHang1) -> {
+                        int a = khachHang1.getTenKH().toLowerCase().compareTo(khachHang.getTenKH().toLowerCase());
+                        if(a!=0) return a;
+                        else return  khachHang1.getEmail().compareTo(khachHang.getEmail());
                     });
                     i=3;
                 }
@@ -283,5 +271,10 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
             toast.cancel();
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+    public static String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("");
     }
 }

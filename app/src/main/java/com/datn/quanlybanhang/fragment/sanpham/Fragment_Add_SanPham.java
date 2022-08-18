@@ -7,14 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +18,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.DanhMuc;
 import com.datn.quanlybanhang.model.DonViTinh;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IAddEditModel;
 
@@ -47,7 +45,6 @@ public class Fragment_Add_SanPham extends Fragment {
     ImageView imageViewSanPham;
     EditText textInputEditTextNuocSX;
     EditText textInputEditTextChiTietSP;
-    EditText textInputEditTextGiaSP;
     Button appCompatButton;
     Toast toast;
     IAddEditModel<SanPham> iAddEditModel;
@@ -78,25 +75,22 @@ public class Fragment_Add_SanPham extends Fragment {
     @Override
     public void onViewCreated(@NonNull  View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
-                    Uri uri = result.getData().getData();
-                    try {
-                        if(getActivity()==null)return;
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeStream(inputStream,null, options);
-                        options.inSampleSize = calculateInSampleSize(options,200,200);
-                        options.inJustDecodeBounds = false;
-                        inputStream = getActivity().getContentResolver().openInputStream(uri);
-                        Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
-                        imageViewSanPham.setImageBitmap(smallBitmap);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+                Uri uri = result.getData().getData();
+                try {
+                    if(getActivity()==null)return;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeStream(inputStream,null, options);
+                    options.inSampleSize = calculateInSampleSize(options,200,200);
+                    options.inJustDecodeBounds = false;
+                    inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
+                    imageViewSanPham.setImageBitmap(smallBitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -104,7 +98,6 @@ public class Fragment_Add_SanPham extends Fragment {
         textInputEditTextTenSP = view.findViewById(R.id.inputedittext_tenSanPham);
         textInputEditTextNuocSX = view.findViewById(R.id.inputedittext_NuocSX);
         textInputEditTextChiTietSP = view.findViewById(R.id.inputedittext_ChiTietSanPham);
-        textInputEditTextGiaSP  = view.findViewById(R.id.inputedittext_Gia);
         imageViewSanPham = view.findViewById(R.id.imgSanPham);
         spinnerDonViTinh = view.findViewById(R.id.sprinnerDonViTinh);
         spinnerDanhMuc =view.findViewById(R.id.sprinnerDanhMuc);
@@ -117,29 +110,29 @@ public class Fragment_Add_SanPham extends Fragment {
             appCompatButton.setText("Sửa");
 
         List<DonViTinh> listDonViTinh = database.getListDonViTinh();
-        List<String> listStringDonViTinh = new ArrayList<String>();
+        List<String> listStringDonViTinh = new ArrayList<>();
 
         for(DonViTinh donViTinh : listDonViTinh){
             listStringDonViTinh.add(donViTinh.getTenDVT());
         }
 
-        ArrayAdapter<CharSequence> adapterDonViTinh = new ArrayAdapter(getContext(),
-                 android.R.layout.simple_spinner_item,listStringDonViTinh);
+        ArrayAdapter<String> adapterDonViTinh = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, listStringDonViTinh);
         adapterDonViTinh.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDonViTinh.setAdapter(adapterDonViTinh);
 
         List<DanhMuc> listDanhMuc = database.getListDanhMuc();
-        List<String> listStringDanhMuc = new ArrayList<String>();
+        List<String> listStringDanhMuc = new ArrayList<>();
 
         for(DanhMuc danhMuc : listDanhMuc){
             listStringDanhMuc.add(danhMuc.getTenDanhMuc());
         }
 
-        ArrayAdapter<CharSequence> adapterDanhMuc = new ArrayAdapter(getContext(),
-                 android.R.layout.simple_spinner_item,listStringDanhMuc);
+        ArrayAdapter<String> adapterDanhMuc = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, listStringDanhMuc);
         adapterDanhMuc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDanhMuc.setAdapter(adapterDanhMuc);
-        spinnerDanhMuc.setSelection(1);
+
 
         spinnerDonViTinh.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -169,13 +162,11 @@ public class Fragment_Add_SanPham extends Fragment {
             byte[] bytes = sanPham.getImgSP();
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             imageViewSanPham.setImageBitmap(bitmap);
-
-            soLuong = sanPham.getSoLuongSP();
+            KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
+            soLuong = khoHang.getSoLuong();
             textInputEditTextTenSP.setText(sanPham.getTenSP());
             textInputEditTextNuocSX.setText(sanPham.getNuocSX());
             textInputEditTextChiTietSP.setText(sanPham.getChiTietSP());
-            String str = sanPham.getGiaSP()+"";
-            textInputEditTextGiaSP.setText(str);
             for(int i=0;i<spinnerDonViTinh.getAdapter().getCount();i++){
                 if(spinnerDonViTinh.getAdapter().getItem(i).toString().contains(sanPham.getDonViTinh()))
                     spinnerDonViTinh.setSelection(i);
@@ -186,46 +177,37 @@ public class Fragment_Add_SanPham extends Fragment {
             }
         }
 
-        imageViewSanPham.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                launcher.launch(intent);
-            }
+        imageViewSanPham.setOnClickListener(view12 -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            launcher.launch(intent);
         });
 
-        appCompatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (textInputEditTextChiTietSP.getText().toString().trim().isEmpty() ||
-                        textInputEditTextGiaSP.getText().toString().trim().isEmpty() ||
-                        textInputEditTextNuocSX.getText().toString().trim().isEmpty() ||
-                        textInputEditTextTenSP.getText().toString().trim().isEmpty()){
-                    displayToast("Không được để trống !!!");
-                }
-                else{
-                    if(addOREdit == Fragment_San_Pham.ADD_SAN_PHAM) soLuong = 0;
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) imageViewSanPham.getDrawable();
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-                    byte [] bytes = outputStream.toByteArray();
-                    SanPham sanPham = new SanPham(
-                        "MaSP",
-                            textInputEditTextTenSP.getText().toString(),
-                            strDonViTinh,
-                            textInputEditTextNuocSX.getText().toString(),
-                            textInputEditTextChiTietSP.getText().toString(),
-                            Long.parseLong(textInputEditTextGiaSP.getText().toString()),
-                            soLuong,
-                            bytes,
-                            strDanhMuc
-                    );
-                    if(iAddEditModel.processModel(sanPham,addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
-                    else
-                        displayToast("Thử lại xem !!!!");
-                }
+        appCompatButton.setOnClickListener(view1 -> {
+            if (textInputEditTextChiTietSP.getText().toString().trim().isEmpty() ||
+                    textInputEditTextNuocSX.getText().toString().trim().isEmpty() ||
+                    textInputEditTextTenSP.getText().toString().trim().isEmpty()){
+                displayToast("Không được để trống !!!");
+            }
+            else{
+                if(addOREdit == Fragment_San_Pham.ADD_SAN_PHAM) soLuong = 0;
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) imageViewSanPham.getDrawable();
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                byte [] bytes = outputStream.toByteArray();
+                SanPham sanPham = new SanPham(
+                    "MaSP",
+                        textInputEditTextTenSP.getText().toString(),
+                        strDonViTinh,
+                        textInputEditTextNuocSX.getText().toString(),
+                        textInputEditTextChiTietSP.getText().toString(),
+                        strDanhMuc,
+                        bytes
+                );
+                if(iAddEditModel.processModel(sanPham,addOREdit)&&getActivity()!=null) getActivity().onBackPressed();
+                else
+                    displayToast("Thử lại xem !!!!");
             }
         });
     }
@@ -238,10 +220,7 @@ public class Fragment_Add_SanPham extends Fragment {
         int stretch_width = Math.round((float)width / (float)reqWidth);
         int stretch_height = Math.round((float)height / (float)reqHeight);
 
-        if (stretch_width <= stretch_height)
-            return stretch_height;
-        else
-            return stretch_width;
+        return Math.max(stretch_width, stretch_height);
     }
     public void displayToast(String message) {
         if(toast != null)

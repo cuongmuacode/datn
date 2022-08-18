@@ -8,32 +8,16 @@ import java.util.Objects;
 
 public class SanPham implements Serializable{
     private String maSP,tenSP,donViTinh,nuocSX,chiTietSP,loaiSP;
-    private long giaSP;
-    private int soLuongSP;
     private byte[] imgSP;
 
-    public SanPham(String maSP, String tenSP, String donViTinh, String nuocSX,
-                   String chiTietSP, long giaSP, int soLuongSP,byte[] imgSP,String loaiSP) {
+    public SanPham(String maSP, String tenSP, String donViTinh, String nuocSX, String chiTietSP, String loaiSP, byte[] imgSP) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.donViTinh = donViTinh;
         this.nuocSX = nuocSX;
         this.chiTietSP = chiTietSP;
-        this.giaSP = giaSP;
-        this.soLuongSP = soLuongSP;
-        this.imgSP = imgSP;
         this.loaiSP = loaiSP;
-    }
-
-    public SanPham() {
-    }
-
-    public int getSoLuongSP() {
-        return soLuongSP;
-    }
-
-    public void setSoLuongSP(int soLuongSP) {
-        this.soLuongSP = soLuongSP;
+        this.imgSP = imgSP;
     }
 
     public String getMaSP() {
@@ -76,14 +60,6 @@ public class SanPham implements Serializable{
         this.chiTietSP = chiTietSP;
     }
 
-    public long getGiaSP() {
-        return giaSP;
-    }
-
-    public void setGiaSP(long giaSP) {
-        this.giaSP = giaSP;
-    }
-
     public String getLoaiSP() {
         return loaiSP;
     }
@@ -98,28 +74,5 @@ public class SanPham implements Serializable{
 
     public void setImgSP(byte[] imgSP) {
         this.imgSP = imgSP;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SanPham)) return false;
-        SanPham sanPham = (SanPham) o;
-        return getGiaSP() == sanPham.getGiaSP() &&
-                getSoLuongSP() == sanPham.getSoLuongSP() &&
-                Objects.equals(getMaSP(), sanPham.getMaSP()) &&
-                Objects.equals(getTenSP(), sanPham.getTenSP()) &&
-                Objects.equals(getDonViTinh(), sanPham.getDonViTinh()) &&
-                Objects.equals(getNuocSX(), sanPham.getNuocSX()) &&
-                Objects.equals(getChiTietSP(), sanPham.getChiTietSP()) &&
-                Objects.equals(getLoaiSP(), sanPham.getLoaiSP()) &&
-                Arrays.equals(getImgSP(), sanPham.getImgSP());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(getMaSP(), getTenSP(), getDonViTinh(), getNuocSX(), getChiTietSP(), getLoaiSP(), getGiaSP(), getSoLuongSP());
-        result = 31 * result + Arrays.hashCode(getImgSP());
-        return result;
     }
 }

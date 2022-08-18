@@ -1,11 +1,15 @@
+
 package com.datn.quanlybanhang.fragment.baocao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,7 @@ import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.HoaDonNhap;
+import com.datn.quanlybanhang.model.SanPham;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,23 +37,32 @@ public class FragmentBaoCao extends Fragment {
     TextView textViewLoiNhuan;
     TextView textViewSoHoaDon;
     TextView textViewGiaTri;
-    TextView textViewTienThue;
+    TextView textViewTienNo;
     TextView textViewGiamGia;
     TextView textViewTienBan;
     TextView textViewTienVon;
-    TextView textViewTienMat;
-    TextView textViewNganHang;
-    TextView textViewKhachHang;
+
+    TextView textViewSoHoaDonNhap;
+    TextView textViewVonNhap;
+    TextView textViewTienNoNhap;
+    TextView textViewGiamGiaNhap;
+
+
+
+
     ImageView imageView;
     Spinner spinner;
     MySQLiteHelper database;
     List<HoaDon> hoaDonList;
     List<HoaDon> hoaDonListQuery =new ArrayList<>();
+    List<SanPham> sanPhamList = new ArrayList<>();
 
     List<HoaDonNhap> hoaDonNhapList;
+    List<HoaDonNhap> hoaDonNhapListQuery = new ArrayList<>();
 
 
     String textItemSprinner;
+    List<String> listString;
 
     public FragmentBaoCao() {
         // Required empty public constructor
@@ -64,32 +78,37 @@ public class FragmentBaoCao extends Fragment {
     @Override
     public void onViewCreated(@NonNull  View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        textViewDoanhThu = view.findViewById(R.id.baocaoDoanhThu);
-        textViewLoiNhuan = view.findViewById(R.id.baocaoLoiNhuan);
+        textViewDoanhThu = view.findViewById(R.id.text_baocao_doanhthu);
+        textViewLoiNhuan = view.findViewById(R.id.text_baocao_loinhuan);
         textViewSoHoaDon = view.findViewById(R.id.baocaoSoHoaDon);
         textViewGiaTri = view.findViewById(R.id.baocaoGiaTri);
-        textViewTienThue = view.findViewById(R.id.baocaoTienThue);
+        textViewTienNo = view.findViewById(R.id.baocaoTienNo);
         textViewGiamGia = view.findViewById(R.id.baocaoGiamGia);
         textViewTienBan = view.findViewById(R.id.baocaoTienBan);
         textViewTienVon = view.findViewById(R.id.baocaoTienVon);
-        textViewTienMat = view.findViewById(R.id.baocaoTienMat);
-        textViewNganHang= view.findViewById(R.id.baocaoNganHang);
-        textViewKhachHang = view.findViewById(R.id.baocaoKhachHang);
+
+        textViewSoHoaDonNhap = view.findViewById(R.id.baocaoSoHoaDonNhap);
+        textViewVonNhap = view.findViewById(R.id.baocaoTienVonNhap);
+        textViewTienNoNhap = view.findViewById(R.id.baocaoTienNoNhap);
+        textViewGiamGiaNhap = view.findViewById(R.id.baocaoGiamGiaNhap);
+
         imageView = view.findViewById(R.id.sort_img_baocao);
         spinner = view.findViewById(R.id.spinnerBaoCaoFilter);
-         database = new MySQLiteHelper(getContext());
+        database = new MySQLiteHelper(getContext());
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
         spinner.setSelection(0);
-        xulysort();
-    }
+        xuLyFilter();
 
-    private void xulysort() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.arrstr_day, android.R.layout.simple_spinner_item);
+    }
+    public void xuLyFilter(){
+        listString = getMonth();
+        ArrayAdapter<String> adapter = new  ArrayAdapter<>(getContext()
+                , android.R.layout.simple_spinner_item,listString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -99,336 +118,137 @@ public class FragmentBaoCao extends Fragment {
             }
         });
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                textItemSprinner = adapterView.getItemAtPosition(i).toString();
-                SimpleDateFormat simpleDateFormat =new SimpleDateFormat("EEEE", new Locale("en", "UK"));
-                if(textItemSprinner.equals("Chủ nhật")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM-yyyy", new Locale("vi", "VN"));
+                SimpleDateFormat simpleDateFormatYear = new SimpleDateFormat("yyyy", new Locale("vi", "VN"));
+                textItemSprinner = listString.get(i).toLowerCase()+"-"+simpleDateFormatYear.format(new Date(System.currentTimeMillis()));
 
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
 
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
+                int soHoaDon;
+                long tienVon = 0, triGia = 0, loiNhuan,tienNo = 0;
 
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Sunday"))
-                            hoaDonListQuery.add(hoaDon);
+                soHoaDon = database.getCountHoaDon();
 
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
+                hoaDonList = database.getListHoaDon();
+                hoaDonNhapList = database.getListHoaDonNhap();
 
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-                }
-                else if(textItemSprinner.equals("Thứ hai")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Monday"))
-                            hoaDonListQuery.add(hoaDon);
-
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-                }
-                else if(textItemSprinner.equals("Thứ ba")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Tuesday"))
-                            hoaDonListQuery.add(hoaDon);
-
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-
-                }
-                else if(textItemSprinner.equals("Thứ tư")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Wednesday"))
-                            hoaDonListQuery.add(hoaDon);
-
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-
+                hoaDonListQuery.clear();
+                for (HoaDon hoaDon : hoaDonList){
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner)
+                            &&hoaDon.getHoaDonNo()==1)
+                        hoaDonListQuery.add(hoaDon);
                 }
 
-                else if(textItemSprinner.equals("Thứ năm")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Thursday"))
-                            hoaDonListQuery.add(hoaDon);
-
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-
+//                for (HoaDon hoaDon : hoaDonListQuery){
+//                    for(SanPham sanPham : hoaDon.getSanPhamList()){
+//                        triGia += sanPham.getGiaSP()*sanPham.getSoLuongSP();
+//                        tienVon += sanPham.getGiaNhapSP()*sanPham.getSoLuongSP();
+//                    }
+//                }
+                loiNhuan = triGia - tienVon;
+                hoaDonListQuery.clear();
+                for (HoaDon hoaDon : hoaDonList){
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner)
+                            &&hoaDon.getHoaDonNo()==0)
+                        hoaDonListQuery.add(hoaDon);
                 }
-                else if(textItemSprinner.equals("Thứ sáu")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Friday"))
-                            hoaDonListQuery.add(hoaDon);
-
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
-
+                for (HoaDon hoaDon : hoaDonListQuery){
+                    tienNo += hoaDon.getTriGia();
                 }
-                else if(textItemSprinner.equals("Thứ bảy")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
 
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
+//                String sql = "Select CTHD_MaSP From HOADON,CTHD Where CTHD_SoHD == HOADON_Sohd";
+//                String sql1 = "Select *From SanPham Where SANPHAM_MASP in " +
+//                        "(Select CTHD_MaSP From HOADON,CTHD Where CTHD_SoHD == HOADON_Sohd)";
+//                String sql2 = "Select *From SanPham Where SANPHAM_MASP in (Select Distinct NHAPHANG_MASP From NHAPHANG)";
+//                SQLiteDatabase sqLiteDatabase = database.getReadableDatabase();
+//                Cursor cursor = database.execSQLSelect(sql2,null,sqLiteDatabase);
+//                if(cursor.moveToFirst()) {
+//                    do {
+//                        SanPham sanPham = new SanPham(
+//                                cursor.getString(0),
+//                                cursor.getString(1),
+//                                cursor.getString(2),
+//                                cursor.getString(3),
+//                                cursor.getString(4),
+//                                cursor.getLong(9),
+//                                cursor.getInt(5),
+//                                cursor.getBlob(6),
+//                                cursor.getString(7),
+//                                cursor.getLong(8)
+//                        );
+//                        sanPhamList.add(sanPham);
+//
+//                    }while (cursor.moveToNext());
+//                }
+//                sqLiteDatabase.close();
 
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
+                textViewDoanhThu.setText(triGia+" VND");
+                textViewLoiNhuan.setText(loiNhuan+" VND");
 
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals("Saturday"))
-                            hoaDonListQuery.add(hoaDon);
-                    for(HoaDon hoaDon : hoaDonListQuery)
-                        triGia += hoaDon.getTriGia();
+                textViewTienBan.setText(triGia+ " VND");
+                textViewTienVon.setText(tienVon+" VND");
 
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
+                textViewSoHoaDon.setText(soHoaDon+" hóa đơn");
+                textViewGiaTri.setText(triGia+" VND");
 
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
+                textViewTienNo.setText(tienNo+" VND");
+                textViewGiamGia.setText("0 VND");
 
+                int soHoaDonNhap = database.getCountHoaDonNhap();
+                long tienVonNhap = 0, tienNoNhap = 0;
+
+                hoaDonNhapListQuery.clear();
+                for (HoaDonNhap hoaDonNhap : hoaDonNhapList){
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).equals(textItemSprinner)
+                            &&hoaDonNhap.getHoaDonNhapNo()==1)
+                        hoaDonNhapListQuery.add(hoaDonNhap);
                 }
-                else if(textItemSprinner.equals("Tất cả")){
-                    int soHoaDon = 0, soKhachHang =0;
-                    long tienVon = 0,tienBan= 0, triGia = 0, loiNhuan = 0;
-
-                    soKhachHang = database.getCountKhachHang();
-                    soHoaDon = database.getCountHoaDon();
-
-                    hoaDonList = database.getListHoaDon();
-                    hoaDonNhapList = database.getListHoaDonNhap();
-
-                    for (HoaDonNhap hoaDonNhap : hoaDonNhapList)
-                        tienVon += hoaDonNhap.getGiaNhap()*hoaDonNhap.getSoLuong();
-                    for(HoaDon hoaDon : hoaDonList)
-                        triGia += hoaDon.getTriGia();
-
-                    loiNhuan = triGia - tienVon;
-                    if(loiNhuan<0) loiNhuan = 0;
-
-                    String str = triGia+" VND";
-                    textViewDoanhThu.setText(str);
-                    str = loiNhuan+" VND";
-                    textViewLoiNhuan.setText(str);
-                    str = tienBan+" VND";
-                    textViewTienBan.setText(str);
-                    str = tienVon+" VND";
-                    textViewTienVon.setText(str);
-                    str = soHoaDon+"";
-                    textViewSoHoaDon.setText(str);
-                    str = triGia+" VND";
-                    textViewGiaTri.setText(str);
-                    str = triGia+" VND";
-                    textViewTienMat.setText(str);
-                    str = soKhachHang+"";
-                    textViewKhachHang.setText(str);
+                for(HoaDonNhap hoaDonNhap : hoaDonNhapListQuery){
+                    tienVonNhap += hoaDonNhap.getGiaNhap();
                 }
+
+                hoaDonNhapListQuery.clear();
+                for (HoaDonNhap hoaDonNhap : hoaDonNhapList){
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).equals(textItemSprinner)
+                            &&hoaDonNhap.getHoaDonNhapNo()==0)
+                        hoaDonNhapListQuery.add(hoaDonNhap);
+                }
+                for(HoaDonNhap hoaDonNhap : hoaDonNhapListQuery){
+                    tienNoNhap += hoaDonNhap.getGiaNhap();
+                }
+
+
+
+                textViewSoHoaDonNhap.setText(soHoaDonNhap+" hóa đơn");
+                textViewTienNoNhap.setText(tienNoNhap+" VND");
+                textViewVonNhap.setText(tienVonNhap+" VND");
+                textViewGiamGia.setText(" VND");
+
+
+
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
+    }
+    List<String> getMonth(){
+        List<String> list = new ArrayList<>();
+        list.add("Tháng 1");
+        list.add("Tháng 2");
+        list.add("Tháng 3");
+        list.add("Tháng 4");
+        list.add("Tháng 5");
+        list.add("Tháng 6");
+        list.add("Tháng 7");
+        list.add("Tháng 8");
+        list.add("Tháng 9");
+        list.add("Tháng 10");
+        list.add("Tháng 11");
+        list.add("Tháng 12");
+        return list;
     }
 }

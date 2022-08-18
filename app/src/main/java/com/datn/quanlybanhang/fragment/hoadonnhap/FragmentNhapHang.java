@@ -1,5 +1,6 @@
 package com.datn.quanlybanhang.fragment.hoadonnhap;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.datn.quanlybanhang.fragment.khachhang.FragmentKhachHang;
 import com.datn.quanlybanhang.fragment.sanpham.Fragment_San_Pham;
 import com.datn.quanlybanhang.model.HoaDonNhap;
 import com.datn.quanlybanhang.model.KhachHang;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
 
@@ -69,6 +71,7 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
         return inflater.inflate(R.layout.fragment_nhap_hang, container, false);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -81,18 +84,8 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
          layoutChonKhachHang = view.findViewById(R.id.linearchonkhachhang);
          layoutChonSanPham = view.findViewById(R.id.linearchonSanPham);
 
-         layoutChonKhachHang.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 replaceFragment(new FragmentKhachHang(FragmentNhapHang.this));
-             }
-         });
-        layoutChonSanPham.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new Fragment_San_Pham(FragmentNhapHang.this));
-            }
-        });
+         layoutChonKhachHang.setOnClickListener(view1 -> replaceFragment(new FragmentKhachHang(FragmentNhapHang.this)));
+        layoutChonSanPham.setOnClickListener(view12 -> replaceFragment(new Fragment_San_Pham(FragmentNhapHang.this)));
 
          tIETextGiaBan = view.findViewById(R.id.inputedittext_GiaBan);
          tIETextGiaNhap = view.findViewById(R.id.inputedittext_GiaNhap);
@@ -103,9 +96,10 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
          textHoaDonNhapTenNhanVien.setText(str);
 
          if(selectSanPham!=null) {
+             KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
              str = "Sản phẩm : "+selectSanPham.getTenSP();
              textHoaDonNhapTenSanPham.setText(str);
-             str = selectSanPham.getGiaSP()+"";
+             str = khoHang.getGia()+"";
             tIETextGiaBan.setText(str);
          }
          else
@@ -115,116 +109,110 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
         str = "Khách hàng : "+selectKhachHang.getTenKH();
         textHoaDonNhapTenKhachHang.setText(str);
         appCompatButtonNo = view.findViewById(R.id.hoadonNhap_donhangnhap_no);
-        appCompatButtonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tIETextGiaBan.getText().toString().trim().isEmpty() ||
-                        tIETextSoLuong.getText().toString().trim().isEmpty() ||
-                        tIETextGiaNhap.getText().toString().trim().isEmpty()){
-                        displayToast("Không được để trống !!!");
-                        return;
-                    }
-
-                if (selectSanPham != null) {
-                    if (!selectKhachHang.getMaKH().equals("MaKH01")) {
-                            hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
-                                    selectSanPham.getMaSP(),
-                                    MainActivity.nhanVien.getMaNV(),
-                                    selectKhachHang.getMaKH(),
-                                    "" + System.currentTimeMillis(),
-                                    Long.parseLong(tIETextGiaNhap.getText().toString()),
-                                    Long.parseLong(tIETextGiaBan.getText().toString()),
-                                    1,
-                                    0
-                            );
-                            boolean a = database.addHoaDonNhap(hoaDonNhap);
-                            if (a) {
-                                selectSanPham.setSoLuongSP(hoaDonNhap.getSoLuong() + Integer.parseInt(tIETextSoLuong.getText().toString()));
-                                selectSanPham.setGiaSP(hoaDonNhap.getGiaBan());
-                                database.updateSanPham(selectSanPham);
-                                tIETextGiaBan.setText("");
-                                tIETextGiaNhap.setText("");
-                                tIETextSoLuong.setText("");
-                                textHoaDonNhapTenKhachHang.setText("Khách hàng :");
-                                textHoaDonNhapTenSanPham.setText("Sản phẩm :");
-                                selectSanPham = null;
-                                selectKhachHang = null;
-
-                            } else {
-                                displayToast("Thử lại xem !!!");
-                                soHDNhap = Math.abs(random.nextLong());
-                            }
-
-                    } else
-                    displayToast("Khách lẻ không được nợ !!");
+        appCompatButtonNo.setOnClickListener(view13 -> {
+            if (tIETextGiaBan.getText().toString().trim().isEmpty() ||
+                    tIETextSoLuong.getText().toString().trim().isEmpty() ||
+                    tIETextGiaNhap.getText().toString().trim().isEmpty()){
+                    displayToast("Không được để trống !!!");
+                    return;
                 }
-                else
-                displayToast("Chọn sản phẩm !!!");
+
+            if (selectSanPham != null) {
+                if (!selectKhachHang.getMaKH().equals("MaKH01")) {
+                    KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
+                    hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
+                                selectSanPham.getMaSP(),
+                                MainActivity.nhanVien.getMaNV(),
+                                selectKhachHang.getMaKH(),
+                                "" + System.currentTimeMillis(),
+                                0,
+                                Integer.parseInt(tIETextSoLuong.getText().toString()),
+                                Long.parseLong(tIETextGiaNhap.getText().toString()),
+                                Long.parseLong(tIETextGiaBan.getText().toString())
+                        );
+                        boolean a = database.addHoaDonNhap(hoaDonNhap);
+                        if (a) {
+                            khoHang.setGiaNhap(Long.parseLong(tIETextGiaNhap.getText().toString()));
+                            khoHang.setGia(Long.parseLong(tIETextGiaBan.getText().toString()));
+                            khoHang.setSoLuong(Integer.parseInt(tIETextSoLuong.getText().toString()));
+                            database.updateKhoaHang(khoHang);
+                            tIETextGiaBan.setText("");
+                            tIETextGiaNhap.setText("");
+                            tIETextSoLuong.setText("");
+                            textHoaDonNhapTenKhachHang.setText("Khách hàng :");
+                            textHoaDonNhapTenSanPham.setText("Sản phẩm :");
+                            soHDNhap = Math.abs(random.nextLong());
+                            selectSanPham = null;
+                            selectKhachHang = null;
+
+                        } else {
+                            displayToast("Thử lại xem !!!");
+                            soHDNhap = Math.abs(random.nextLong());
+                        }
+
+                } else
+                displayToast("Khách lẻ không được nợ !!");
             }
+            else
+            displayToast("Chọn sản phẩm !!!");
         });
 
          appCompatButton = view.findViewById(R.id.buttonaddHoaDonNhap);
-         appCompatButton.setOnClickListener(new View.OnClickListener() {
-
-             @Override
-             public void onClick(View view) {
-                 if (tIETextGiaBan.getText().toString().isEmpty() ||
-                         tIETextSoLuong.getText().toString().trim().isEmpty() ||
-                         tIETextGiaNhap.getText().toString().trim().isEmpty()) {
-                        displayToast("Không được để trống !!!");
-                     return;
-                 }
-
-
-                 if (selectSanPham != null) {
-                         hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
-                                 selectSanPham.getMaSP(),
-                                 MainActivity.nhanVien.getMaNV(),
-                                 selectKhachHang.getMaKH(),
-                                 "" + System.currentTimeMillis(),
-                                 Long.parseLong(tIETextGiaNhap.getText().toString()),
-                                 Long.parseLong(tIETextGiaBan.getText().toString()),
-                                 Integer.parseInt(tIETextSoLuong.getText().toString()),
-                                 1
-                         );
-                         boolean a = database.addHoaDonNhap(hoaDonNhap);
-                         if (a) {
-                             selectSanPham.setSoLuongSP(Integer.parseInt(tIETextSoLuong.getText().toString()));
-                             selectSanPham.setGiaSP(hoaDonNhap.getGiaBan());
-                             database.updateSanPham(selectSanPham);
-                             tIETextGiaBan.setText("");
-                             tIETextGiaNhap.setText("");
-                             tIETextSoLuong.setText("");
-                             textHoaDonNhapTenKhachHang.setText("Khách hàng :");
-                             textHoaDonNhapTenSanPham.setText("Sản phẩm :");
-                             selectSanPham = null;
-                             selectKhachHang = null;
-                         } else {
-                             displayToast("Thử lại xem !!!");soHDNhap = Math.abs(random.nextLong());
-                         }
-
-                 } else
-             displayToast("Chọn sản phẩm !!!");
+         appCompatButton.setOnClickListener(view14 -> {
+             if (tIETextGiaBan.getText().toString().isEmpty() ||
+                     tIETextSoLuong.getText().toString().trim().isEmpty() ||
+                     tIETextGiaNhap.getText().toString().trim().isEmpty()) {
+                    displayToast("Không được để trống !!!");
+                 return;
              }
+             if (selectSanPham != null) {
+                 KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
+                 hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
+                             selectSanPham.getMaSP(),
+                             MainActivity.nhanVien.getMaNV(),
+                             selectKhachHang.getMaKH(),
+                             "" + System.currentTimeMillis(),
+                             1,
+                             Integer.parseInt(tIETextSoLuong.getText().toString()),
+                             Long.parseLong(tIETextGiaNhap.getText().toString()),
+                             Long.parseLong(tIETextGiaBan.getText().toString())
+                     );
+                     boolean a = database.addHoaDonNhap(hoaDonNhap);
+                     if (a) {
+                         khoHang.setGiaNhap(Long.parseLong(tIETextGiaNhap.getText().toString()));
+                         khoHang.setGia(Long.parseLong(tIETextGiaBan.getText().toString()));
+                         khoHang.setSoLuong(Integer.parseInt(tIETextSoLuong.getText().toString()));
+                         database.updateKhoaHang(khoHang);
+                         tIETextGiaBan.setText("");
+                         tIETextGiaNhap.setText("");
+                         tIETextSoLuong.setText("");
+                         textHoaDonNhapTenKhachHang.setText("Khách hàng :");
+                         textHoaDonNhapTenSanPham.setText("Sản phẩm :");
+                         soHDNhap = Math.abs(random.nextLong());
+                         selectSanPham = null;
+                         selectKhachHang = null;
+                     } else {
+                         displayToast("Thử lại xem !!!");soHDNhap = Math.abs(random.nextLong());
+                     }
+
+             } else
+         displayToast("Chọn sản phẩm !!!");
          });
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem menuItem = menu.add(1,2001,1,"Hóa Đơn Nhập").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                replaceFragment(new Fragment_HoaDonNhap());
-                return true;
-            }
+        MenuItem menuItem = menu.add(1,2001,1,"Hóa Đơn Nhập").setOnMenuItemClickListener(menuItem1 -> {
+            replaceFragment(new Fragment_HoaDonNhap());
+            return true;
         });
         menuItem.setIcon(R.drawable.ic_baseline_view_list_24);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
     @Override
-    public void onClickSanPham(SanPham sanPham) {
+    public void onClickSanPham(SanPham sanPham,KhoHang khoHang) {
         selectSanPham = sanPham;
     }
 

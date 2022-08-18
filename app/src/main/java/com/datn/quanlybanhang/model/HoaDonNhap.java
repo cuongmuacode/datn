@@ -2,19 +2,43 @@ package com.datn.quanlybanhang.model;
 
 public class HoaDonNhap {
     String soHDNhap,maSP,maNV,maKH,ngayNhap;
-    long giaNhap,giaBan;
-    int soLuong,hoaDonNhapNo;
+    int hoaDonNhapNo,soLuongNhap;
+    long giaNhap,gia;
 
-    public HoaDonNhap(String soHDNhap, String maSP, String maNV, String maKH, String ngayNhap, long giaNhap, long giaBan, int soLuong, int hoaDonNhapNo) {
+    public HoaDonNhap(String soHDNhap, String maSP, String maNV, String maKH, String ngayNhap, int hoaDonNhapNo, int soLuongNhap, long giaNhap, long gia) {
         this.soHDNhap = soHDNhap;
         this.maSP = maSP;
         this.maNV = maNV;
         this.maKH = maKH;
         this.ngayNhap = ngayNhap;
-        this.giaNhap = giaNhap;
-        this.giaBan = giaBan;
-        this.soLuong = soLuong;
         this.hoaDonNhapNo = hoaDonNhapNo;
+        this.soLuongNhap = soLuongNhap;
+        this.giaNhap = giaNhap;
+        this.gia = gia;
+    }
+
+    public int getSoLuongNhap() {
+        return soLuongNhap;
+    }
+
+    public void setSoLuongNhap(int soLuongNhap) {
+        this.soLuongNhap = soLuongNhap;
+    }
+
+    public long getGiaNhap() {
+        return giaNhap;
+    }
+
+    public void setGiaNhap(long giaNhap) {
+        this.giaNhap = giaNhap;
+    }
+
+    public long getGia() {
+        return gia;
+    }
+
+    public void setGia(long gia) {
+        this.gia = gia;
     }
 
     public int getHoaDonNhapNo() {
@@ -68,27 +92,4 @@ public class HoaDonNhap {
         this.ngayNhap = ngayNhap;
     }
 
-    public long getGiaNhap() {
-        return giaNhap;
-    }
-
-    public void setGiaNhap(long giaNhap) {
-        this.giaNhap = giaNhap;
-    }
-
-    public long getGiaBan() {
-        return giaBan;
-    }
-
-    public void setGiaBan(long giaBan) {
-        this.giaBan = giaBan;
-    }
-
-    public int getSoLuong() {
-        return soLuong;
-    }
-
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
-    }
 }

@@ -65,33 +65,22 @@ public class FragmentTaiKhoan extends Fragment implements IAddEditModel<NhanVien
         MenuItem menuItemXoa = menu.findItem(R.id.menu_model_xoa);
         menuItemSua.setVisible(false);
 
-        menuItemXoa.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.nav_model_xoa);
-                builder.setMessage("Bạn có chắc không ?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (!selectNhanVien.getMaNV().equals("MaNV01")) {
-                            nhanVienList.remove(selectNhanVien);
-                            database.deleteNhanVien(selectNhanVien);
-                        }
-                        nhanvienAdapter.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                return false;
-            }
+        menuItemXoa.setOnMenuItemClickListener(menuItem -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.nav_model_xoa);
+            builder.setMessage("Bạn có chắc không ?");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Có", (dialogInterface, i) -> {
+                if (!selectNhanVien.getMaNV().equals("MaNV01")) {
+                    nhanVienList.remove(selectNhanVien);
+                    database.deleteNhanVien(selectNhanVien);
+                }
+                nhanvienAdapter.notifyDataSetChanged();
+            });
+            builder.setNegativeButton("Không", (dialogInterface, i) -> dialogInterface.cancel());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return false;
         });
 
     }

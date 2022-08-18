@@ -36,15 +36,12 @@ public class FragmentOnBoardingStart extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.startIDButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ActivityLoginn.class);
-                setDataCache(60);
-                startActivity(intent);
-                if(getActivity()!=null)
-                getActivity().finish();
-            }
+        view.findViewById(R.id.startIDButton).setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), ActivityLoginn.class);
+            setDataCache(60);
+            startActivity(intent);
+            if(getActivity()!=null)
+            getActivity().finish();
         });
     }
     public void setDataCache(int i){

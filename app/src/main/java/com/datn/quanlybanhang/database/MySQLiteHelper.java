@@ -12,6 +12,7 @@ import com.datn.quanlybanhang.model.DonViTinh;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.HoaDonNhap;
 import com.datn.quanlybanhang.model.KhachHang;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.NhanVien;
 import com.datn.quanlybanhang.model.SanPham;
 
@@ -21,10 +22,8 @@ import java.util.List;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = "SQLite";
-
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "Quan_Ly_Ban_Hang";
+    public static final String DATABASE_NAME = "Quan_Ly_Ban_Hang";
 
     private static final String TABLE_KHACHHANG = "KHACHHANG";
     private static final String COLUMN_KHACHHANG_ID = "KHACHHANG_Id";
@@ -48,9 +47,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SANPHAM_TENSP = "SANPHAM_TENSP";
     private static final String COLUMN_SANPHAM_DVT = "SANPHAM_DVT";
     private static final String COLUMN_SANPHAM_NUOCSX ="SANPHAM_NUOCSX";
-    private static final String COLUMN_SANPHAM_GIA = "SANPHAM_GIA";
     private static final String COLUMN_SANPHAM_CHITIET = "SANPHAM_CHITIET";
-    private static final String COLUMN_SANPHAM_SOLUONG = "SANPHAM_SOLUONG";
     private static final String COLUMN_SANPHAM_IMAGE = "SANPHAM_IMAGE";
     private static final String COLUMN_SANPHAM_DANHMUC = "SANPHAM_DANHMUC";
 
@@ -67,17 +64,28 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CTHD_SOHD = "CTHD_SOHD";
     private static final String COLUMN_CTHD_MASP = "CTHD_MASP";
     private static final String COLUMN_CTHD_SL = "CTHD_SL";
+    private static final String COLUMN_CTHD_GIA = "CTHD_GIA";
+    private static final String COLUMN_CTHD_GIANHAP = "CTHD_GIA_NHAP";
+
+    private static final String TABLE_KHO ="KHO";
+    private static final String COLUMN_KHO_MAKHO = "KHO_MAKHO";
+    private static final String COLUMN_KHO_MASP = "KHO_MASP";
+    private static final String COLUMN_KHO_SOLUONG = "KHO_SOLUONG";
+    private static final String COLUMN_KHO_GIANHAP = "KHO_GIANHAP";
+    private static final String COLUMN_KHO_GIA = "KHO_GIA";
 
     private static final String TABLE_NHAPHANG ="NHAPHANG";
     private static final String COLUMN_NHAPHANG_SOHDNHAP = "NHAPHANG_SOHDNHAP";
     private static final String COLUMN_NHAPHANG_MASP = "NHAPHANG_MASP";
     private static final String COLUMN_NHAPHANG_MAKH = "NHAPHANG_MAKH";
-    private static final String COLUMN_NHAPHANG_SL = "NHAPHANG_SL";
-    private static final String COLUMN_NHAPHANG_GIANHAP = "NHAPHANG_GIANHAP";
-    private static final String COLUMN_NHAPHANG_GIABAN = "NHAPHANG_GIABAN";
     private static final String COLUMN_NHAPHANG_MANV = "NHAPHANG_MANV";
     private static final String COLUMN_NHAPHANG_NGAYNHAP = "NHAPHANG_NGAYNHAP";
     private static final String COLUMN_NHAPHANG_NO = "NHAPHANG_NO";
+    private static final String COLUMN_NHAPHANG_SOLUONG = "NHAPHANG_SOLUONG";
+    private static final String COLUMN_NHAPHANG_GIA = "NHAPHANG_GIA";
+    private static final String COLUMN_NHAPHANG_GIANHAP = "NHAPHANG_GIANHAP";
+
+
 
     private static final String TABLE_DONVITINH ="DONVITINH";
     private static final String COLUMN_DONVITINH_MADVT = "DONVITINH_MADVT";
@@ -121,15 +129,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 + COLUMN_SANPHAM_DVT+" TEXT, "
                 + COLUMN_SANPHAM_NUOCSX+" TEXT, "
                 + COLUMN_SANPHAM_CHITIET+" TEXT, "
-                + COLUMN_SANPHAM_SOLUONG+" INTEGER, "
                 + COLUMN_SANPHAM_IMAGE+" BLOB, "
-                + COLUMN_SANPHAM_DANHMUC+" TEXT, "
-                + COLUMN_SANPHAM_GIA + " INTEGER )";
+                + COLUMN_SANPHAM_DANHMUC+" TEXT ) ";
 
         String  script3  = "CREATE TABLE "+TABLE_CTHD+" ( "
                 + COLUMN_CTHD_SOHD+" TEXT, "
                 + COLUMN_CTHD_MASP+" TEXT, "
-                + COLUMN_CTHD_SL+" INTEGER )";
+                + COLUMN_CTHD_SL+" INTEGER, "
+                + COLUMN_CTHD_GIA+" INTEGER, "
+                + COLUMN_CTHD_GIANHAP+" INTEGER )";
+
+
         String  script4  = "CREATE TABLE "+TABLE_NHANVIEN+" ( "
                 + COLUMN_NHANVIEN_MANV+" TEXT PRIMARY KEY, "
                 + COLUMN_NHANVIEN_HOTEN+" TEXT, "
@@ -147,8 +157,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 + COLUMN_NHAPHANG_MAKH+" TEXT, "
                 + COLUMN_NHAPHANG_NGAYNHAP+" TEXT, "
                 + COLUMN_NHAPHANG_GIANHAP+" INTEGER, "
-                + COLUMN_NHAPHANG_GIABAN+" INTEGER, "
-                + COLUMN_NHAPHANG_SL+" INTEGER, "
+                + COLUMN_NHAPHANG_GIA+" INTEGER, "
+                + COLUMN_NHAPHANG_SOLUONG+" INTEGER, "
                 + COLUMN_NHAPHANG_NO+" INTEGER ) ";
 
         String script6 = " CREATE TABLE "+TABLE_DANHMUC+" ( "+
@@ -159,6 +169,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 COLUMN_DONVITINH_MADVT + " TEXT PRIMARY KEY,"+
                 COLUMN_DONVITINH_TENDVT +" TEXT ) ";
 
+        String script8 = " CREATE TABLE "+TABLE_KHO+" ( "
+                + COLUMN_KHO_MAKHO + " TEXT PRIMARY KEY,"
+                + COLUMN_KHO_MASP +" TEXT, "
+                + COLUMN_KHO_SOLUONG+" INTEGER, "
+                + COLUMN_KHO_GIA+" INTEGER, "
+                + COLUMN_KHO_GIANHAP+" INTEGER )";
+
         sqLiteDatabase.execSQL(script0);
         sqLiteDatabase.execSQL(script1);
         sqLiteDatabase.execSQL(script2);
@@ -167,7 +184,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(script5);
         sqLiteDatabase.execSQL(script6);
         sqLiteDatabase.execSQL(script7);
-
+        sqLiteDatabase.execSQL(script8);
     }
 
     @Override
@@ -180,17 +197,97 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NHAPHANG);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_DONVITINH);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_DANHMUC);
-
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_KHO);
         onCreate(sqLiteDatabase);
     }
 
-    public Cursor execSQLSelect(String sql,String[] args){
-        String selectQuery = "SELECT * FROM "+TABLE_NHAPHANG;
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        sqLiteDatabase.rawQuery(sql,args);
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
-        sqLiteDatabase.close();
+    public Cursor execSQLSelect(String sql,String[] args,SQLiteDatabase sqLiteDatabase){
+        Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
         return cursor;
+    }
+
+    public boolean addKhoHang(KhoHang khoHang){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_KHO_MASP,khoHang.getMaSP());
+        values.put(COLUMN_KHO_MAKHO,khoHang.getMaKho());
+        values.put(COLUMN_KHO_GIA,khoHang.getGia());
+        values.put(COLUMN_KHO_GIANHAP,khoHang.getGiaNhap());
+        values.put(COLUMN_KHO_SOLUONG,khoHang.getSoLuong());
+
+        long i = sqLiteDatabase.insert(TABLE_KHO, null, values);
+        sqLiteDatabase.close();
+        return i > 0;
+    }
+
+    public List<KhoHang> getListKhoHang(){
+        List<KhoHang> list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM "+TABLE_KHO;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+        if(cursor.moveToFirst()){
+            do {
+                list.add(
+                        new KhoHang(
+                                cursor.getString(0),
+                                cursor.getString(1),
+                                cursor.getInt(2),
+                                cursor.getLong(4),
+                                cursor.getLong(3)
+                                )
+                            );
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        sqLiteDatabase.close();
+        return list;
+    }
+
+    public KhoHang getKhoHang(String maSP){
+        String [] stringColumns = {
+                COLUMN_KHO_MAKHO,
+                COLUMN_KHO_MASP,
+                COLUMN_KHO_SOLUONG,
+                COLUMN_KHO_GIANHAP,
+                COLUMN_KHO_GIA,
+        };
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(TABLE_KHO,stringColumns,COLUMN_KHO_MASP + " = ?",
+                new String[]{maSP},null,null,null);
+        KhoHang khoHang =  null;
+
+        if(cursor.moveToFirst()) {
+            khoHang = new KhoHang(
+                    cursor.getString(0),
+                    cursor.getString(1),
+                    cursor.getInt(2),
+                    cursor.getLong(3),
+                    cursor.getLong(4)
+                    );
+            cursor.close();
+        }
+        return khoHang;
+    }
+
+    public int updateKhoaHang(KhoHang khoHang){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_KHO_MASP,khoHang.getMaSP());
+        values.put(COLUMN_KHO_SOLUONG,khoHang.getSoLuong());
+        values.put(COLUMN_KHO_GIANHAP,khoHang.getGiaNhap());
+        values.put(COLUMN_KHO_GIA,khoHang.getGia());
+        int i =  sqLiteDatabase.update(TABLE_KHO,values,COLUMN_KHO_MASP+ " = ?",
+                new String[]{khoHang.getMaSP()});
+        sqLiteDatabase.close();
+        return i;
+    }
+
+    public boolean deleteKhoHang(String maKhoHang){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        int i = sqLiteDatabase.delete(TABLE_KHO,COLUMN_KHO_MAKHO+" = ?",
+                new String[]{maKhoHang});
+        sqLiteDatabase.close();
+        return i>0;
     }
 
     public boolean addDanhMuc(String maDanhMuc,String tenDanhMuc){
@@ -237,7 +334,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         return i>0;
     }
-
+    public int getCountDanhMuc(){
+        String selectQuery = "SELECT * FROM "+TABLE_DANHMUC;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
 
     public boolean addDonViTinh(String maDonViTinh,String tenDonViTinh){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -264,6 +368,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public int getCountDonViTinh(){
+        String selectQuery = "SELECT * FROM "+TABLE_DONVITINH;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
     public int updateDonViTinh(String maDonViTinh,String tenDonViTinh){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -294,10 +406,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NHAPHANG_MANV,hoaDonNhap.getMaNV());
         values.put(COLUMN_NHAPHANG_MAKH,hoaDonNhap.getMaKH());
         values.put(COLUMN_NHAPHANG_NGAYNHAP,hoaDonNhap.getNgayNhap());
-        values.put(COLUMN_NHAPHANG_GIABAN,hoaDonNhap.getGiaBan());
-        values.put(COLUMN_NHAPHANG_GIANHAP,hoaDonNhap.getGiaNhap());
-        values.put(COLUMN_NHAPHANG_SL,hoaDonNhap.getSoLuong());
+        values.put(COLUMN_NHAPHANG_SOLUONG,hoaDonNhap.getSoLuongNhap());
         values.put(COLUMN_NHAPHANG_NO,hoaDonNhap.getHoaDonNhapNo());
+        values.put(COLUMN_NHAPHANG_GIA,hoaDonNhap.getGia());
+        values.put(COLUMN_NHAPHANG_GIANHAP,hoaDonNhap.getGiaNhap());
+
         long i = sqLiteDatabase.insert(TABLE_NHAPHANG, null, values);
         sqLiteDatabase.close();
         return i > 0;
@@ -310,10 +423,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 COLUMN_NHAPHANG_MANV,
                 COLUMN_NHAPHANG_MAKH,
                 COLUMN_NHAPHANG_NGAYNHAP,
-                COLUMN_NHAPHANG_GIANHAP,
-                COLUMN_NHAPHANG_GIABAN,
-                COLUMN_NHAPHANG_SL,
+                COLUMN_NHAPHANG_SOLUONG,
                 COLUMN_NHAPHANG_NO,
+                COLUMN_NHAPHANG_GIA,
+                COLUMN_NHAPHANG_GIANHAP,
         };
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(TABLE_NHAPHANG,stringColumns,COLUMN_NHAPHANG_SOHDNHAP + " = ?",
@@ -326,10 +439,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     cursor.getString(2),
                     cursor.getString(3),
                     cursor.getString(4),
-                    cursor.getLong(5),
-                    cursor.getLong(6),
-                    cursor.getInt(7),
-                    cursor.getInt(8));
+                    cursor.getInt(5),
+                    cursor.getInt(6),
+                    cursor.getLong(7),
+                    cursor.getLong(8)
+                    );
             cursor.close();
         }
         return hoaDonNhap;
@@ -347,10 +461,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4),
-                        cursor.getLong(5),
-                        cursor.getLong(6),
+                        cursor.getInt(8),
                         cursor.getInt(7),
-                        cursor.getInt(8));
+                        cursor.getLong(5),
+                        cursor.getLong(6)
+                        );
                 list.add(hoaDonNhap);
             }while (cursor.moveToNext());
             cursor.close();
@@ -375,11 +490,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NHAPHANG_MANV,hoaDonNhap.getMaNV());
         values.put(COLUMN_NHAPHANG_MAKH,hoaDonNhap.getMaKH());
         values.put(COLUMN_NHAPHANG_NGAYNHAP,hoaDonNhap.getNgayNhap());
-        values.put(COLUMN_NHAPHANG_GIABAN,hoaDonNhap.getGiaBan());
-        values.put(COLUMN_NHAPHANG_GIANHAP,hoaDonNhap.getGiaNhap());
-        values.put(COLUMN_NHAPHANG_SL,hoaDonNhap.getSoLuong());
+        values.put(COLUMN_NHAPHANG_SOLUONG,hoaDonNhap.getSoLuongNhap());
         values.put(COLUMN_NHAPHANG_NO,hoaDonNhap.getHoaDonNhapNo());
-
+        values.put(COLUMN_NHAPHANG_GIANHAP,hoaDonNhap.getGiaNhap());
+        values.put(COLUMN_NHAPHANG_GIA,hoaDonNhap.getGia());
         int i =  sqLiteDatabase.update(TABLE_NHAPHANG,values,COLUMN_NHAPHANG_SOHDNHAP+ " = ?",
                 new String[]{hoaDonNhap.getSoHDNhap()});
         sqLiteDatabase.close();
@@ -402,10 +516,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SANPHAM_DVT,sanPham.getDonViTinh());
         values.put(COLUMN_SANPHAM_NUOCSX,sanPham.getNuocSX());
         values.put(COLUMN_SANPHAM_CHITIET,sanPham.getChiTietSP());
-        values.put(COLUMN_SANPHAM_SOLUONG,sanPham.getSoLuongSP());
-        values.put(COLUMN_SANPHAM_GIA,sanPham.getGiaSP());
         values.put(COLUMN_SANPHAM_DANHMUC,sanPham.getLoaiSP());
         values.put(COLUMN_SANPHAM_IMAGE,sanPham.getImgSP());
+
         long i = sqLiteDatabase.insert(TABLE_SANPHAM, null, values);
         sqLiteDatabase.close();
         return i > 0;
@@ -413,32 +526,29 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public SanPham getSanPham(String maSP){
         String [] stringColumns = {
-                COLUMN_SANPHAM_MASP,
-                COLUMN_SANPHAM_TENSP,
-                COLUMN_SANPHAM_CHITIET,
-                COLUMN_SANPHAM_DVT,
-                COLUMN_SANPHAM_NUOCSX,
-                COLUMN_SANPHAM_GIA,
-                COLUMN_SANPHAM_SOLUONG,
-                COLUMN_SANPHAM_DANHMUC,
-                COLUMN_SANPHAM_IMAGE
+                        COLUMN_SANPHAM_MASP,
+                        COLUMN_SANPHAM_TENSP,
+                        COLUMN_SANPHAM_DVT,
+                        COLUMN_SANPHAM_NUOCSX,
+                        COLUMN_SANPHAM_CHITIET,
+                        COLUMN_SANPHAM_IMAGE,
+                        COLUMN_SANPHAM_DANHMUC,
         };
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(TABLE_SANPHAM,stringColumns,COLUMN_SANPHAM_MASP + " = ?",
                 new String[]{maSP},null,null,null);
         SanPham sanPham =  null;
+
         if(cursor.moveToFirst()) {
             sanPham = new SanPham(
                     cursor.getString(0),
                     cursor.getString(1),
+                    cursor.getString(2),
                     cursor.getString(3),
                     cursor.getString(4),
-                    cursor.getString(2),
-                    cursor.getLong(5),
-                    cursor.getInt(6),
-                    cursor.getBlob(8),
-                    cursor.getString(7)
-            );
+                    cursor.getString(6),
+                    cursor.getBlob(5)
+                    );
             cursor.close();
         }
         return sanPham;
@@ -456,10 +566,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4),
-                        cursor.getLong(8),
-                        cursor.getInt(5),
-                        cursor.getBlob(6),
-                        cursor.getString(7)
+                        cursor.getString(6),
+                        cursor.getBlob(5)
                 );
                 list.add(sanPham);
             }while (cursor.moveToNext());
@@ -484,11 +592,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SANPHAM_NUOCSX,sanPham.getNuocSX());
         values.put(COLUMN_SANPHAM_DVT,sanPham.getDonViTinh());
         values.put(COLUMN_SANPHAM_CHITIET,sanPham.getChiTietSP());
-        values.put(COLUMN_SANPHAM_SOLUONG,sanPham.getSoLuongSP());
-        values.put(COLUMN_SANPHAM_GIA,sanPham.getGiaSP());
         values.put(COLUMN_SANPHAM_DANHMUC,sanPham.getLoaiSP());
         values.put(COLUMN_SANPHAM_IMAGE,sanPham.getImgSP());
-
         int i =  sqLiteDatabase.update(TABLE_SANPHAM,values,COLUMN_SANPHAM_MASP+ " = ?",
                 new String[]{sanPham.getMaSP()});
 
@@ -516,12 +621,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         valuesHoaDon.put(COLUMN_HOADON_TRIGIA,hoaDon.getTriGia());
         valuesHoaDon.put(COLUMN_HOADON_NO,hoaDon.getHoaDonNo());
 
-
         ContentValues valuesCTHD = new ContentValues();
-        for(SanPham sanPham : hoaDon.getSanPhamList()) {
+        for(KhoHang khoHang : hoaDon.getKhoList()) {
             valuesCTHD.put(COLUMN_CTHD_SOHD,hoaDon.getSoHD());
-            valuesCTHD.put(COLUMN_CTHD_MASP,sanPham.getMaSP());
-            valuesCTHD.put(COLUMN_CTHD_SL,sanPham.getSoLuongSP());
+            valuesCTHD.put(COLUMN_CTHD_MASP,khoHang.getMaSP());
+            valuesCTHD.put(COLUMN_CTHD_SL,khoHang.getSoLuong());
+            valuesCTHD.put(COLUMN_CTHD_GIA,khoHang.getGia());
+            valuesCTHD.put(COLUMN_CTHD_GIANHAP,khoHang.getGiaNhap());
+
             long b = sqLiteDatabase.insert(TABLE_CTHD,null,valuesCTHD);
             if(b<0) return false;
         }
@@ -549,27 +656,39 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 +COLUMN_SANPHAM_DVT+","
                 +COLUMN_SANPHAM_NUOCSX+","
                 +COLUMN_SANPHAM_CHITIET+","
+                +COLUMN_CTHD_MASP+","
                 +COLUMN_CTHD_SL+","
-                +COLUMN_SANPHAM_GIA+","
+                +COLUMN_CTHD_GIA+","
+                +COLUMN_CTHD_GIANHAP+","
                 +COLUMN_SANPHAM_IMAGE+","
                 +COLUMN_SANPHAM_DANHMUC+" FROM "+TABLE_SANPHAM+","+TABLE_CTHD+" WHERE "
                 +COLUMN_CTHD_SOHD+" = ? AND "+COLUMN_CTHD_MASP+" = ?";
         Cursor cursorCTHD = sqLiteDatabase.rawQuery(sql,new String[]{SOHD,COLUMN_SANPHAM_MASP});
         List<SanPham> sanPhamList = new ArrayList<>();
+        List<KhoHang> khoList = new ArrayList<>();
+
         HoaDon hoaDon = null;
         if(cursorHoaDon.moveToFirst()) {
             if(cursorCTHD.moveToFirst()) {
                 do {
-                    SanPham sanPham = new SanPham(cursorCTHD.getString(0),
+                    SanPham sanPham = new SanPham(
+                        cursorCTHD.getString(0),
                             cursorCTHD.getString(1),
                             cursorCTHD.getString(2),
                             cursorCTHD.getString(3),
                             cursorCTHD.getString(4),
-                            cursorCTHD.getLong(6),
-                            cursorCTHD.getInt(5),
-                            cursorCTHD.getBlob(7),
-                            cursorCTHD.getString(8)
+                            cursorCTHD.getString(10),
+                            cursorCTHD.getBlob(9)
+
                     );
+                    KhoHang khoHang = new KhoHang(
+                            "1",
+                            cursorCTHD.getString(5),
+                            cursorCTHD.getInt(6),
+                            cursorCTHD.getLong(7),
+                            cursorCTHD.getLong(8)
+                            );
+                    khoList.add(khoHang);
                     sanPhamList.add(sanPham);
                 } while (cursorCTHD.moveToNext());
                 cursorCTHD.close();
@@ -582,9 +701,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     cursorHoaDon.getString(3),
                     cursorHoaDon.getLong(4),
                     sanPhamList,
+                    khoList,
                     cursorHoaDon.getInt(5)
             );
-
             cursorHoaDon.close();
         }
         return hoaDon;
@@ -604,26 +723,37 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         + COLUMN_SANPHAM_NUOCSX + ","
                         + COLUMN_SANPHAM_CHITIET + ","
                         + COLUMN_CTHD_SL + ","
-                        + COLUMN_SANPHAM_GIA +","
+                        + COLUMN_CTHD_MASP + ","
+                        + COLUMN_CTHD_GIANHAP + ","
+                        + COLUMN_CTHD_GIA + ","
                         + COLUMN_SANPHAM_IMAGE +","
                         + COLUMN_SANPHAM_DANHMUC +" FROM " + TABLE_CTHD + "," + TABLE_SANPHAM + " WHERE "
                         + COLUMN_CTHD_MASP + " = "+COLUMN_SANPHAM_MASP +" AND " + COLUMN_CTHD_SOHD + " = ?";
                 cursorCTHD = sqLiteDatabase.rawQuery(sql,new String[]{cursorHoaDon.getString(0)});
                 List<SanPham> sanPhamList = new ArrayList<>();
+                List<KhoHang> khoList = new ArrayList<>();
+
 
                 if (cursorCTHD.moveToFirst()) {
                     do {
-                        SanPham sanPham = new SanPham(cursorCTHD.getString(0),
+                        SanPham sanPham = new SanPham(
+                                cursorCTHD.getString(0),
                                 cursorCTHD.getString(1),
                                 cursorCTHD.getString(2),
                                 cursorCTHD.getString(3),
                                 cursorCTHD.getString(4),
-                                cursorCTHD.getLong(6),
+                                cursorCTHD.getString(10),
+                                cursorCTHD.getBlob(9)
+                        );
+                        KhoHang khoHang = new KhoHang(
+                                "1",
+                                cursorCTHD.getString(6),
                                 cursorCTHD.getInt(5),
-                                cursorCTHD.getBlob(7),
-                                cursorCTHD.getString(8)
+                                cursorCTHD.getLong(7),
+                                cursorCTHD.getLong(8)
                         );
                         sanPhamList.add(sanPham);
+                        khoList.add(khoHang);
                     } while (cursorCTHD.moveToNext());
                     cursorCTHD.close();
                 }
@@ -634,6 +764,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         cursorHoaDon.getString(2),
                         cursorHoaDon.getLong(4),
                         sanPhamList,
+                        khoList,
                         cursorHoaDon.getInt(5)
                 );
                 list.add(hoaDon);
@@ -677,7 +808,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     // CRUD Khach Hang
     public void initKhachHang(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        onUpgrade(sqLiteDatabase,1,1);
+        Log.i("cuonghi","intkhachhang");
         ContentValues values = new ContentValues();
         values.put(COLUMN_KHACHHANG_ID,"MaKH01");
         values.put(COLUMN_KHACHHANG_HOTEN,"Khách Lẻ");

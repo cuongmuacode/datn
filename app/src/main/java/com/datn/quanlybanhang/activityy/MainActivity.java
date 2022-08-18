@@ -1,9 +1,18 @@
 package com.datn.quanlybanhang.activityy;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,21 +20,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.adapter.MyViewPager2Adapter;
 import com.datn.quanlybanhang.fragment.FragmentXemThem;
 import com.datn.quanlybanhang.model.NhanVien;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
@@ -87,29 +86,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnItemSelectedListener(
-                new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if(id == R.id.nav_banhang){
-                    mViewPager2.setCurrentItem(0);
-                    mBottomNavigationView.getMenu().findItem(R.id.nav_banhang).setChecked(true);
-                }
-                else if(id == R.id.nav_hoadon){
-                    mViewPager2.setCurrentItem(1);
-                    mBottomNavigationView.getMenu().findItem(R.id.nav_hoadon).setChecked(true);
-                }
-                else if(id == R.id.nav_baocao){
-                    mViewPager2.setCurrentItem(2);
-                    mBottomNavigationView.getMenu().findItem(R.id.nav_baocao).setChecked(true);
-                }
-                else if(id == R.id.nav_xemthem){
-                    mViewPager2.setCurrentItem(3);
-                    mBottomNavigationView.getMenu().findItem(R.id.nav_xemthem).setChecked(true);
-                }
-                return true;
-            }
-        });
+                item -> {
+                    int id = item.getItemId();
+                    if(id == R.id.nav_banhang){
+                        mViewPager2.setCurrentItem(0);
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_banhang).setChecked(true);
+                    }
+                    else if(id == R.id.nav_hoadon){
+                        mViewPager2.setCurrentItem(1);
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_hoadon).setChecked(true);
+                    }
+                    else if(id == R.id.nav_baocao){
+                        mViewPager2.setCurrentItem(2);
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_baocao).setChecked(true);
+                    }
+                    else if(id == R.id.nav_xemthem){
+                        mViewPager2.setCurrentItem(3);
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_xemthem).setChecked(true);
+                    }
+                    return true;
+                });
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -148,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }
         else if(id == R.id.nav_chiase) {
-
+            Log.i("","");
         }
         else if(id == R.id.nav_gioithieu){
             Intent intent = new Intent(this, ActivityThongTin.class);
@@ -188,10 +184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        int i = 0;
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
             mDrawerLayout.closeDrawer(GravityCompat.START);
-            i++;
             return;
         }
         int id = mViewPager2.getCurrentItem();
@@ -199,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 3:
             case 2:
             case 1:
-                mViewPager2.setCurrentItem(0); i++; return;
+                mViewPager2.setCurrentItem(0); return;
         }
-        if(i == 0) super.onBackPressed();
+        super.onBackPressed();
     }
 
 

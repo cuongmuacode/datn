@@ -1,5 +1,6 @@
 package com.datn.quanlybanhang.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
@@ -21,15 +24,19 @@ public class SanPhamAdapterRecycler extends RecyclerView.Adapter<SanPhamAdapterR
 
     IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer;
     List<SanPham> sanPhamList;
-
-    public SanPhamAdapterRecycler(List<SanPham> sanPhamList) {
+    List<KhoHang> khoHangList;
+    Context context;
+    public SanPhamAdapterRecycler(List<SanPham> sanPhamList, Context context,List<KhoHang> khoHangList) {
         this.sanPhamList = sanPhamList;
+        this.khoHangList = khoHangList;
         notifyDataSetChanged();
+        this.context = context;
     }
 
-    public SanPhamAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList) {
+    public SanPhamAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList,Context context) {
         this.iClickItemListenerRecycer = iClickItemListenerRecycer;
         this.sanPhamList = sanPhamList;
+        this.context = context;
     }
 
 
@@ -43,38 +50,34 @@ public class SanPhamAdapterRecycler extends RecyclerView.Adapter<SanPhamAdapterR
 
     @Override
     public void onBindViewHolder(@NonNull  SanPhamViewHoler holder, int position) {
+        MySQLiteHelper database = new MySQLiteHelper(context);
         SanPham sanPham = sanPhamList.get(position);
+
         if(iClickItemListenerRecycer!=null){
             if(sanPham == null) return;
+            KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
             holder.textNameProduct.setText(sanPham.getTenSP());
-            String str = sanPham.getGiaSP()+" VND";
+            String str = khoHang.getGia()+" VND";
             holder.textGiaProduct.setText(str);
-            str = "Số lượng : "+sanPham.getSoLuongSP();
+            str = "Số lượng : "+khoHang.getSoLuong();
             holder.textViewSoLuong.setText(str);
 
             byte[] bytes = sanPham.getImgSP();
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             holder.imgProduct.setImageBitmap(bitmap);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iClickItemListenerRecycer.onClickChiTietModel(sanPham);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    iClickItemListenerRecycer.onClickItemModel(sanPham);
-                    return false;
-                }
+            holder.itemView.setOnClickListener(view -> iClickItemListenerRecycer.onClickChiTietModel(sanPham));
+            holder.itemView.setOnLongClickListener(view -> {
+                iClickItemListenerRecycer.onClickItemModel(sanPham);
+                return false;
             });
         }else{
             if(sanPham == null) return;
+            KhoHang khoHangk = khoHangList.get(position);
             holder.textNameProduct.setText(sanPham.getTenSP());
-            String str = sanPham.getGiaSP()+" VND x"+sanPham.getSoLuongSP();
+            String str ="Đơn giá : "+ khoHangk.getGia();
             holder.textGiaProduct.setText(str);
-            str = "Phải trả : "+sanPham.getSoLuongSP()*sanPham.getGiaSP()+" VND";
+            str = "Số lượng : "+khoHangk.getSoLuong();
             holder.textViewSoLuong.setText(str);
             byte[] bytes = sanPham.getImgSP();
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -90,11 +93,11 @@ public class SanPhamAdapterRecycler extends RecyclerView.Adapter<SanPhamAdapterR
     }
 
     public static class SanPhamViewHoler extends RecyclerView.ViewHolder{
-        private ImageView imgProduct;
-        private TextView textNameProduct;
-        private TextView textGiaProduct;
-        private TextView textViewSoLuong;
-        private TextView textViewRemove;
+        private final ImageView imgProduct;
+        private final TextView textNameProduct;
+        private final TextView textGiaProduct;
+        private final TextView textViewSoLuong;
+        private final TextView textViewRemove;
 
         public SanPhamViewHoler(@NonNull View itemView) {
             super(itemView);

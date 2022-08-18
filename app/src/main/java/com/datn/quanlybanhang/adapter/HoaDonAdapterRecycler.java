@@ -1,12 +1,10 @@
 package com.datn.quanlybanhang.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,9 +19,9 @@ import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRecycler.HoaDonViewHoler> {
 
@@ -47,11 +45,11 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
         return new HoaDonViewHoler(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull  HoaDonViewHoler holder, int position) {
         HoaDon hoaDon = hoaDonList.get(position);
         if(hoaDon == null) return;
-        holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
         holder.maHoaDon.setText(hoaDon.getSoHD());
         database = new MySQLiteHelper(context);
         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
@@ -63,25 +61,17 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
             holder.textKhacHang.setText("Khách : ");
         str = hoaDon.getTriGia().toString()+" VND";
         holder.textGiaProduct.setText(str);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("vi","VN"));
         str = ""+dateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD())));
         holder.textngayLapHD.setText(str);
         if(hoaDon.getHoaDonNo()==0)
             holder.textGiaProductNo.setText("Nợ");
         else
             holder.textGiaProductNo.setText("");
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hoaDonIClickItemListenerRecycer.onClickChiTietModel(hoaDon);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                hoaDonIClickItemListenerRecycer.onClickItemModel(hoaDon);
-                return false;
-            }
+        holder.itemView.setOnClickListener(view -> hoaDonIClickItemListenerRecycer.onClickChiTietModel(hoaDon));
+        holder.itemView.setOnLongClickListener(view -> {
+            hoaDonIClickItemListenerRecycer.onClickItemModel(hoaDon);
+            return false;
         });
 
     }

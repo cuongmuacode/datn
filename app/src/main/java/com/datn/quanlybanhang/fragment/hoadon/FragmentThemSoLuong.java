@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 
 public class FragmentThemSoLuong extends Fragment {
@@ -22,9 +23,11 @@ public class FragmentThemSoLuong extends Fragment {
     Button appCompatButton;
     Toast toast;
     SanPham selectSanPham;
-    public FragmentThemSoLuong(SanPham selectSanPham) {
+    KhoHang selectKhoHang;
+    public FragmentThemSoLuong(SanPham selectSanPham,KhoHang selectKhoHang) {
         // Required empty public constructor
         this.selectSanPham = selectSanPham;
+        this.selectKhoHang = selectKhoHang;
     }
 
     @Override
@@ -40,23 +43,21 @@ public class FragmentThemSoLuong extends Fragment {
         appCompatButton = view.findViewById(R.id.button_add_soluong);
         textInputEditText = view.findViewById(R.id.inputedittext_add_SoLuong);
         MySQLiteHelper database = new MySQLiteHelper(getContext());
-        SanPham sanPham = database.getSanPham(selectSanPham.getMaSP());
-        appCompatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(textInputEditText.getText().toString().trim().isEmpty()) {
-                        displayToast("Không được để trống");
-                    return;
-                }
-                if(sanPham.getSoLuongSP() < Integer.parseInt(textInputEditText.getText().toString()))
-                    displayToast("Chỉ còn "+sanPham.getSoLuongSP()+" sản phẩm!!");
-                else {
-                    selectSanPham.setSoLuongSP(
-                            Integer.parseInt(textInputEditText.getText().toString()));
-                    getActivity().onBackPressed();
-                }
-
+        KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
+        appCompatButton.setOnClickListener(view1 -> {
+            if(textInputEditText.getText().toString().trim().isEmpty()) {
+                    displayToast("Không được để trống");
+                return;
             }
+            if(khoHang.getSoLuong() < Integer.parseInt(textInputEditText.getText().toString()))
+                displayToast("Chỉ còn "+khoHang.getSoLuong()+" sản phẩm!!");
+            else {
+                selectKhoHang.setSoLuong(
+                        Integer.parseInt(textInputEditText.getText().toString()));
+                if(getActivity()!=null)
+                getActivity().onBackPressed();
+            }
+
         });
 
     }

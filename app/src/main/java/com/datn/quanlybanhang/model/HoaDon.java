@@ -8,19 +8,29 @@ public class HoaDon implements Serializable {
     private String soHD,ngayHD,maKH,maNV;
     private Long triGia;
     private List<SanPham> sanPhamList;
+    private List<KhoHang> khoList;
     private int hoaDonNo;
 
     public HoaDon() {
     }
 
-    public HoaDon(String soHD, String ngayHD, String maKH, String maNV, Long triGia, List<SanPham> sanPhamList, int hoaDonNo) {
+    public HoaDon(String soHD, String ngayHD, String maKH, String maNV, Long triGia, List<SanPham> sanPhamList, List<KhoHang> khoList, int hoaDonNo) {
         this.soHD = soHD;
         this.ngayHD = ngayHD;
         this.maKH = maKH;
         this.maNV = maNV;
         this.triGia = triGia;
         this.sanPhamList = sanPhamList;
+        this.khoList = khoList;
         this.hoaDonNo = hoaDonNo;
+    }
+
+    public List<KhoHang> getKhoList() {
+        return khoList;
+    }
+
+    public void setKhoList(List<KhoHang> khoList) {
+        this.khoList = khoList;
     }
 
     public int getHoaDonNo() {
