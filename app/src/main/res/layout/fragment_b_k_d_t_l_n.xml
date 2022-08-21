@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.baocao.FragmentBKKhachHang">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_textview_bg_2"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="5dp"
+        android:textStyle="bold"
+        android:paddingBottom="5dp"
+        android:text="Báo cáo khách hàng mua hàng"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/baocaotonghop_khach_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:text="dd/mm/yy"
+        android:background="@drawable/bg_textview"
+        android:textSize="17sp"
+        android:clickable="true"
+        android:paddingStart="25dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_date_range_24"
+        android:focusable="true" />
+
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
+        />
+
+
+</LinearLayout>
