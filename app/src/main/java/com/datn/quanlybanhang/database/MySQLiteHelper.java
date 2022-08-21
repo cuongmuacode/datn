@@ -292,7 +292,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public boolean addDanhMuc(String maDanhMuc,String tenDanhMuc){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Log.i("hicuong",maDanhMuc+tenDanhMuc);
         ContentValues values = new ContentValues();
         values.put(COLUMN_DANHMUC_MADM,maDanhMuc);
         values.put(COLUMN_DANHMUC_TENDM,tenDanhMuc);
@@ -808,7 +807,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     // CRUD Khach Hang
     public void initKhachHang(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Log.i("cuonghi","intkhachhang");
         ContentValues values = new ContentValues();
         values.put(COLUMN_KHACHHANG_ID,"MaKH01");
         values.put(COLUMN_KHACHHANG_HOTEN,"Khách Lẻ");

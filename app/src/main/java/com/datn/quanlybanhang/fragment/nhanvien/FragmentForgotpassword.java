@@ -23,6 +23,7 @@ public class FragmentForgotpassword extends Fragment {
     MySQLiteHelper database;
     Button buttonSend;
     EditText editTextEmail;
+    Toast toast;
     TextView textGetForgotPass;
     Random random = new Random(System.currentTimeMillis());
     int pass = Math.abs(random.nextInt());
@@ -45,29 +46,29 @@ public class FragmentForgotpassword extends Fragment {
         database =  new MySQLiteHelper(getContext());
         textGetForgotPass = view.findViewById(R.id.text_get_forgot_password);
         buttonSend = view.findViewById(R.id.button_send);
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            int processClick = 0;
-            @Override
-            public void onClick(View view) {
-                NhanVien nhanVien = database.getUserEmail(editTextEmail.getText().toString().trim());
-                if(nhanVien!=null) {
-                    nhanVien.setPassNV(pass+"");
-                    if(database.updateNhanVien(nhanVien)) {
-                        textGetForgotPass.setVisibility(View.VISIBLE);
-                        String str = "Mật khẩu mới :"+nhanVien.getPassNV();
-                        textGetForgotPass.setText(str);
-                        str = ""+nhanVien.getPassNV();
-                        editTextEmail.setText(str);
-                    }
-                }
-                else if (processClick < 5) {
-                    processClick++;
-                    Toast.makeText(getContext(), "Email không tồn tại!!!", Toast.LENGTH_SHORT).show();
-                }
+        buttonSend.setOnClickListener(view1 -> {
+            NhanVien nhanVien = database.getUserEmail(editTextEmail.getText().toString().trim());
+            if(nhanVien==null) {
+                displayToast("Email không tồn tại!!!");
+                return;
             }
+                nhanVien.setPassNV(pass+"");
+                if(database.updateNhanVien(nhanVien)) {
+                    textGetForgotPass.setVisibility(View.VISIBLE);
+                    String str = "Mật khẩu mới :"+nhanVien.getPassNV();
+                    textGetForgotPass.setText(str);
+                    str = ""+nhanVien.getPassNV();
+                    editTextEmail.setText(str);
+                }
+
         });
     }
 
-
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 }

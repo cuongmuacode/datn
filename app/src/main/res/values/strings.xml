@@ -65,6 +65,7 @@
     <string name="chitietSanPham_TenSP"><![CDATA[<html><body><b>Tên sản phẩm</b></body></html>]]></string>
     <string name="chitietSanPham_NuocSX"><![CDATA[<html><body><b>Nước sản xuất</b></body></html>]]></string>
     <string name="chitietSanPham_Gia"><![CDATA[<html><body><b>Giá sản phẩm</b></body></html>]]></string>
+    <string name="chitietSanPham_GiaNhap"><![CDATA[<html><body><b>Giá nhập</b></body></html>]]></string>
     <string name="chitietSanPham_DonViTinh"><![CDATA[<html><body><b>Đơn vị tính</b></body></html>]]></string>
     <string name="chitietSanPham_SoLuong"><![CDATA[<html><body><b>Số lượng</b></body></html>]]></string>
     <string name="chitietSanPham_DanhMuc"><![CDATA[<html><body><b>Loại</b></body></html>]]></string>

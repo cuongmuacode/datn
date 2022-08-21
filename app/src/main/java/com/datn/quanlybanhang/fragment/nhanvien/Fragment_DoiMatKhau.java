@@ -104,87 +104,74 @@ public class Fragment_DoiMatKhau extends Fragment {
             launcher.launch(intent);
         });
 
-        buttonDoiMatKhau.setOnClickListener(new View.OnClickListener() {
-            int Clickprosess = 0;
-            @Override
-            public void onClick(View view) {
-                if(getActivity()==null)return;
-                if(editTextPassCu.getText().toString().isEmpty()&&
-                        editTextPassMoi.getText().toString().isEmpty()&&
-                        editTextConfirmPass.getText().toString().isEmpty()){
+        buttonDoiMatKhau.setOnClickListener(view12 -> {
+            if(getActivity()==null)return;
+            if(editTextPassCu.getText().toString().trim().isEmpty()&&
+                    editTextPassMoi.getText().toString().trim().isEmpty()&&
+                    editTextConfirmPass.getText().toString().trim().isEmpty()){
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) circleImageView.getDrawable();
+                Bitmap bitmap1 = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap1.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                byte [] bytes1 = outputStream.toByteArray();
+                nhanVien.setByteImgs(bytes1);
+                if(database.updateNhanVien(nhanVien)) {
+                    try {
+                        File file = new File(getActivity().getCacheDir(), "User.txt");
+                        if (file.delete()){
+                            getActivity().setResult(10);
+                            Intent intent = new Intent(getContext(), ActivityLoginn.class);
+                            setDataCache(nhanVien);
+                            startActivity(intent);
+                            getActivity().finish();
+                            return;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else if(editTextPassCu.getText().toString().trim().isEmpty()||
+                    editTextPassMoi.getText().toString().trim().isEmpty()||
+                    editTextConfirmPass.getText().toString().trim().isEmpty()){
+                displayToast("Không được để trống !!!");
+                return;
+            }
+
+            if(!editTextPassCu.getText().toString().trim().equals(nhanVien.getPassNV())){
+                    displayToast("Mật khẩu cũ sai  !!!");
+                return;
+            }
+                if(!editTextPassMoi.getText().toString().trim().
+                        equals(editTextConfirmPass.getText().toString().trim())){
+                        displayToast("Mật khẩu mới không khớp !!!");
+                    return;
+                }
+
                     BitmapDrawable bitmapDrawable = (BitmapDrawable) circleImageView.getDrawable();
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    Bitmap bitmap1 = bitmapDrawable.getBitmap();
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-                    byte [] bytes = outputStream.toByteArray();
-                    nhanVien.setByteImgs(bytes);
-                    if(database.updateNhanVien(nhanVien)) {
+                    bitmap1.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+
+                    byte [] bytes1 = outputStream.toByteArray();
+
+                    nhanVien.setByteImgs(bytes1);
+                    nhanVien.setPassNV(editTextPassMoi.getText().toString());
+                    if(database.updateNhanVien(nhanVien)){
                         try {
                             File file = new File(getActivity().getCacheDir(), "User.txt");
-                            if (file.delete()){
+                            if (file.delete()) {
                                 getActivity().setResult(10);
                                 Intent intent = new Intent(getContext(), ActivityLoginn.class);
                                 setDataCache(nhanVien);
                                 startActivity(intent);
                                 getActivity().finish();
-                                return;
                             }
+                            getActivity().finish();
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                     }
-                }
-                else if(editTextPassCu.getText().toString().isEmpty()||
-                        editTextPassMoi.getText().toString().isEmpty()||
-                        editTextConfirmPass.getText().toString().isEmpty()){
-                    if (Clickprosess < 5) {
-                        Clickprosess++;
-                        Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Clickprosess = 0;
-                    return;
-                }
-
-                if(editTextPassCu.getText().toString().trim().equals(nhanVien.getPassNV())){
-                    if(editTextPassMoi.getText().toString().trim().
-                            equals(editTextConfirmPass.getText().toString().trim())){
-
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) circleImageView.getDrawable();
-                        Bitmap bitmap = bitmapDrawable.getBitmap();
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-
-                        byte [] bytes = outputStream.toByteArray();
-
-                        nhanVien.setByteImgs(bytes);
-                        nhanVien.setPassNV(editTextPassMoi.getText().toString());
-                        if(database.updateNhanVien(nhanVien)){
-                            try {
-                                File file = new File(getActivity().getCacheDir(), "User.txt");
-                                if (file.delete()) {
-                                    getActivity().setResult(10);
-                                    Intent intent = new Intent(getContext(), ActivityLoginn.class);
-                                    setDataCache(nhanVien);
-                                    startActivity(intent);
-                                    getActivity().finish();
-                                }
-                                getActivity().finish();
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-                    else {
-                        displayToast("Mật khẩu mới không khớp !!!");
-                    }
-                }
-                else {
-                 displayToast("Mật khẩu cũ sai  !!!");
-                }
-
-            }
         });
 
     }

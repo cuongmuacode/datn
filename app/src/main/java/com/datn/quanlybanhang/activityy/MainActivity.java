@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mViewPager2.setCurrentItem(0); return;
         }
         super.onBackPressed();
+
+
     }
 
 

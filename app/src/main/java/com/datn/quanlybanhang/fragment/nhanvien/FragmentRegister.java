@@ -40,10 +40,11 @@ public class FragmentRegister extends Fragment {
 
     EditText editTextEmail;
     EditText editTextUserName;
-    EditText editTextPhone ;
+    EditText editTextPhone;
     EditText editTextPass;
     EditText editTextConfirmPass;
     Button buttonSignup;
+    Toast toast;
     CircleImageView circleImageView;
 
     MySQLiteHelper database;
@@ -53,7 +54,7 @@ public class FragmentRegister extends Fragment {
 
     public FragmentRegister() {
         // Required empty public constructor
-        maNV = random.nextInt();
+        maNV = Math.abs(random.nextInt());
     }
 
 
@@ -77,18 +78,18 @@ public class FragmentRegister extends Fragment {
         circleImageView = view.findViewById(R.id.imgNhanVien);
 
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if(result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 Uri uri = result.getData().getData();
                 try {
-                    if(getActivity()==null)return;
+                    if (getActivity() == null) return;
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
                     options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeStream(inputStream,null, options);
-                    options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options,200,200);
+                    BitmapFactory.decodeStream(inputStream, null, options);
+                    options.inSampleSize = Fragment_Add_SanPham.calculateInSampleSize(options, 200, 200);
                     options.inJustDecodeBounds = false;
                     inputStream = getActivity().getContentResolver().openInputStream(uri);
-                    Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream,null, options);
+                    Bitmap smallBitmap = BitmapFactory.decodeStream(inputStream, null, options);
                     circleImageView.setImageBitmap(smallBitmap);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -102,88 +103,74 @@ public class FragmentRegister extends Fragment {
             launcher.launch(intent);
         });
 
-        database =  new MySQLiteHelper(getContext());
-        buttonSignup.setOnClickListener(new View.OnClickListener() {
-             int Clickprosess = 0;
-             @Override
-             public void onClick(View view) {
-                 if (editTextUserName.getText().toString().isEmpty() ||
-                         editTextEmail.getText().toString().isEmpty() ||
-                         editTextConfirmPass.getText().toString().isEmpty() ||
-                         editTextPass.getText().toString().isEmpty() ||
-                         editTextPhone.getText().toString().isEmpty()||circleImageView.getDrawable()==null) {
-                     if (Clickprosess < 5) {
-                         Clickprosess++;
-                         Toast.makeText(getContext(), "Không được để trống !!!", Toast.LENGTH_SHORT).show();
-                     }
+        database = new MySQLiteHelper(getContext());
+        buttonSignup.setOnClickListener(view12 -> {
+            if (editTextUserName.getText().toString().isEmpty() ||
+                    editTextEmail.getText().toString().isEmpty() ||
+                    editTextConfirmPass.getText().toString().isEmpty() ||
+                    editTextPass.getText().toString().isEmpty() ||
+                    editTextPhone.getText().toString().isEmpty() || circleImageView.getDrawable() == null) {
+                displayToast("Không được để trống !!!");
+                return;
+            }
+                if (!editTextPass.getText().toString().trim().equals(editTextConfirmPass.getText().toString().trim())) {
+                    displayToast("Mật khẩu không khớp !!!");
+                    return;
+                }
+                if (!isValidEmailAddress(editTextEmail.getText().toString().trim())) {
+                    displayToast("Email không đúng !!!");
+                    return;
+                }
+                if (database.getUserEmail(editTextEmail.getText().toString().trim()) != null) {
+                    displayToast("Email đã đăng ký rồi !!!");
+                    return;
+                }
+                if (database.getUser(editTextUserName.getText().toString().trim()) != null) {
+                    displayToast("Tài khoản đã tồn tại !!!");
+                    return;
+                }
 
-                 }
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) circleImageView.getDrawable();
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-                 else{
-                     if(editTextPass.getText().toString().trim().equals(editTextConfirmPass.getText().toString().trim())) {
-                        if(isValidEmailAddress(editTextEmail.getText().toString().trim())) {
-                            if(database.getUserEmail(editTextEmail.getText().toString().trim())==null){
-                                if(database.getUser(editTextUserName.getText().toString().trim())==null){
-
-                                    BitmapDrawable bitmapDrawable = (BitmapDrawable) circleImageView.getDrawable();
-                                        Bitmap bitmap = bitmapDrawable.getBitmap();
-                                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-
-                                    byte [] bytes = outputStream.toByteArray();
-                                    NhanVien nhanVien = new NhanVien(
-                                            "MaNV" + maNV,
-                                            editTextUserName.getText().toString().trim(),
-                                            editTextPhone.getText().toString().trim(),
-                                            editTextEmail.getText().toString().trim(),
-                                            0,
-                                            editTextPass.getText().toString().trim(),
-                                            bytes
-                                    );
-                                    if(database.addNhanVien(nhanVien))
-                                        replaceFragment(new FragmentLogin());
-                                    else
-                                        maNV = random.nextInt();
-                                }else if (Clickprosess < 5) {
-                                    Clickprosess++;
-                                    Toast.makeText(getContext(), "Tài khoản đã tồn tại !!!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                            }
-                            else if (Clickprosess < 5) {
-                                Clickprosess++;
-                                Toast.makeText(getContext(), "Email đã đăng ký rồi !!!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-                        else
-                            Toast.makeText(getContext(), "Email không đúng !!!", Toast.LENGTH_SHORT).show();
-
-                     }
-                     else if (Clickprosess < 5) {
-                             Clickprosess++;
-                             Toast.makeText(getContext(), "Mật khẩu không khớp !!!", Toast.LENGTH_SHORT).show();
-                        return;
-                     }
-                    Clickprosess = 0;
-                 }
-             }
-         });
+                byte[] bytes = outputStream.toByteArray();
+                NhanVien nhanVien = new NhanVien(
+                        "MaNV" + maNV,
+                        editTextUserName.getText().toString().trim(),
+                        editTextPhone.getText().toString().trim(),
+                        editTextEmail.getText().toString().trim(),
+                        0,
+                        editTextPass.getText().toString().trim(),
+                        bytes
+                );
+                if (database.addNhanVien(nhanVien))
+                    replaceFragment(new FragmentLogin());
+                else {
+                    maNV = Math.abs(random.nextInt());
+                    displayToast("Thử lại xem !!");
+                }
+        });
+    }
+        public void replaceFragment (Fragment fragment){
+            if (getActivity() == null) return;
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frameLayoutLogin, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
-    public void replaceFragment(Fragment fragment){
-        if(getActivity()==null) return;
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutLogin, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-    public  boolean isValidEmailAddress(String email) {
-        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-        Pattern p = Pattern.compile(ePattern);
-        Matcher m = p.matcher(email);
-        return m.matches();
-    }
-
+        public boolean isValidEmailAddress (String email){
+            String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+            Pattern p = Pattern.compile(ePattern);
+            Matcher m = p.matcher(email);
+            return m.matches();
+        }
+        public void displayToast (String message){
+            if (toast != null)
+                toast.cancel();
+            toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+            toast.show();
+        }
 }

@@ -65,7 +65,7 @@ public class Fragment_ChiTietSanPham extends Fragment  implements IAddEditModel<
                 "<p>"+getString(R.string.chitietSanPham_DonViTinh)+" : "+sanPham.getDonViTinh()+
                 "</p><p>"+getString(R.string.chitietSanPham_DanhMuc)+" : "+sanPham.getLoaiSP()+
                 "</p><p>"+getString(R.string.chitietSanPham_Gia)+" : "+khoHang.getGia()+
-                "</p><p>"+"Giá nhập"+" : "+khoHang.getGiaNhap()+
+                "</p><p>"+getString(R.string.chitietSanPham_SoLuong)+" : "+khoHang.getGiaNhap()+
                 "</p><p>"+getString(R.string.chitietSanPham_SoLuong)+" : "+khoHang.getSoLuong()+"</p>"));
 
         buttonSua.setOnClickListener(view1 -> replaceFragment(new Fragment_Add_SanPham(Fragment_ChiTietSanPham.this,sanPham)));

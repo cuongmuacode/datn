@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.fragment.widget.LoadingDialog;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhoHang;
 import com.github.mikephil.charting.charts.BarChart;
@@ -31,13 +32,20 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class FragmentBKKhachHang extends Fragment {
+public class FragmentBKDTLN extends Fragment {
+
+
     MySQLiteHelper database;
     String textDate = "";
     TextView textViewDate;
+    LoadingDialog loadingDialog;
     Calendar calendar = Calendar.getInstance(new Locale("vi","VN"));
     BarChart chart;
-
+    DatePickerDialog dialog;
+    public FragmentBKDTLN(LoadingDialog loadingDialog) {
+        this.loadingDialog = loadingDialog;
+        this.loadingDialog.startLoadingDialog();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +55,7 @@ public class FragmentBKKhachHang extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_b_k_khach_hang, container, false);
+        return inflater.inflate(R.layout.fragment_b_k_d_t_l_n, container, false);
     }
 
     @Override
@@ -55,7 +63,6 @@ public class FragmentBKKhachHang extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if(getActivity()==null) return;
         database = new MySQLiteHelper(getContext());
-
         textViewDate = view.findViewById(R.id.baocaotonghop_khach_date);
 
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -103,10 +110,12 @@ public class FragmentBKKhachHang extends Fragment {
 
         chart.groupBars(0,1-3*0.18f,0f);
         chart.invalidate();
+        loadingDialog.dismissDialog();
     }
 
     private void initDatePick() {
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            dialog.cancel();
 
             textDate = ""+year;
             String str = "Năm : "+year;
@@ -146,17 +155,20 @@ public class FragmentBKKhachHang extends Fragment {
 
             chart.groupBars(0,1-3*0.18f,0f);
             chart.invalidate();
+            loadingDialog.dismissDialog();
         };
 
         textViewDate.setOnClickListener((view1) -> {
+
             calendar.setTimeInMillis(System.currentTimeMillis());
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                DatePickerDialog dialog =
+                 dialog =
                         new DatePickerDialog(getContext(),dateSetListener,year,month,day);
+                loadingDialog.startLoadingDialog();
                 dialog.show();
             }
         });

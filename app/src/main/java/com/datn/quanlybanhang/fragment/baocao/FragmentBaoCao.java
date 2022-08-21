@@ -1,15 +1,7 @@
 
 package com.datn.quanlybanhang.fragment.baocao;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +11,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.HoaDonNhap;
-import com.datn.quanlybanhang.model.SanPham;
+import com.datn.quanlybanhang.model.KhoHang;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,30 +31,20 @@ public class FragmentBaoCao extends Fragment {
     TextView textViewDoanhThu;
     TextView textViewLoiNhuan;
     TextView textViewSoHoaDon;
-    TextView textViewGiaTri;
     TextView textViewTienNo;
     TextView textViewGiamGia;
     TextView textViewTienBan;
     TextView textViewTienVon;
-
     TextView textViewSoHoaDonNhap;
     TextView textViewVonNhap;
     TextView textViewTienNoNhap;
     TextView textViewGiamGiaNhap;
-
-
-
-
     ImageView imageView;
     Spinner spinner;
     MySQLiteHelper database;
+
     List<HoaDon> hoaDonList;
-    List<HoaDon> hoaDonListQuery =new ArrayList<>();
-    List<SanPham> sanPhamList = new ArrayList<>();
-
     List<HoaDonNhap> hoaDonNhapList;
-    List<HoaDonNhap> hoaDonNhapListQuery = new ArrayList<>();
-
 
     String textItemSprinner;
     List<String> listString;
@@ -81,7 +66,6 @@ public class FragmentBaoCao extends Fragment {
         textViewDoanhThu = view.findViewById(R.id.text_baocao_doanhthu);
         textViewLoiNhuan = view.findViewById(R.id.text_baocao_loinhuan);
         textViewSoHoaDon = view.findViewById(R.id.baocaoSoHoaDon);
-        textViewGiaTri = view.findViewById(R.id.baocaoGiaTri);
         textViewTienNo = view.findViewById(R.id.baocaoTienNo);
         textViewGiamGia = view.findViewById(R.id.baocaoGiamGia);
         textViewTienBan = view.findViewById(R.id.baocaoTienBan);
@@ -91,7 +75,6 @@ public class FragmentBaoCao extends Fragment {
         textViewVonNhap = view.findViewById(R.id.baocaoTienVonNhap);
         textViewTienNoNhap = view.findViewById(R.id.baocaoTienNoNhap);
         textViewGiamGiaNhap = view.findViewById(R.id.baocaoGiamGiaNhap);
-
         imageView = view.findViewById(R.id.sort_img_baocao);
         spinner = view.findViewById(R.id.spinnerBaoCaoFilter);
         database = new MySQLiteHelper(getContext());
@@ -100,10 +83,8 @@ public class FragmentBaoCao extends Fragment {
 
     @Override
     public void onStart() {
-        super.onStart();
-        spinner.setSelection(0);
         xuLyFilter();
-
+        super.onStart();
     }
     public void xuLyFilter(){
         listString = getMonth();
@@ -111,122 +92,96 @@ public class FragmentBaoCao extends Fragment {
                 , android.R.layout.simple_spinner_item,listString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                spinner.performClick();
+        imageView.setOnClickListener(view -> spinner.performClick());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", new Locale("vi", "VN"));
+        String currentMonth =  simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        int index = 0;
+        for(String month: listString){
+            if(month.toLowerCase().equals(currentMonth)){
+                spinner.setSelection(index);
             }
-        });
+            index++;
+        }
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM-yyyy", new Locale("vi", "VN"));
+            final SimpleDateFormat simpleDateFormatYear = new SimpleDateFormat("yyyy", new Locale("vi", "VN"));
+
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM-yyyy", new Locale("vi", "VN"));
-                SimpleDateFormat simpleDateFormatYear = new SimpleDateFormat("yyyy", new Locale("vi", "VN"));
                 textItemSprinner = listString.get(i).toLowerCase()+"-"+simpleDateFormatYear.format(new Date(System.currentTimeMillis()));
 
-
-                int soHoaDon;
+                int soHoaDon = 0;
                 long tienVon = 0, triGia = 0, loiNhuan,tienNo = 0;
-
-                soHoaDon = database.getCountHoaDon();
 
                 hoaDonList = database.getListHoaDon();
                 hoaDonNhapList = database.getListHoaDonNhap();
 
-                hoaDonListQuery.clear();
-                for (HoaDon hoaDon : hoaDonList){
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner)
-                            &&hoaDon.getHoaDonNo()==1)
-                        hoaDonListQuery.add(hoaDon);
+
+                for(HoaDon hoaDon : hoaDonList){
+                    List<KhoHang> khoHangList;
+                    long sumGia = 0,sumGiaNhap = 0,sumNo = 0;
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).
+                            equals(textItemSprinner)) {
+                        soHoaDon++;
+                        if(hoaDon.getHoaDonNo()==1) {
+                            khoHangList = hoaDon.getKhoList();
+                            for (KhoHang khoHang : khoHangList) {
+                                sumGia += khoHang.getSoLuong() * khoHang.getGia();
+                                sumGiaNhap += khoHang.getSoLuong() * khoHang.getGiaNhap();
+                            }
+                            triGia += sumGia;
+                            tienVon += sumGiaNhap;
+                        }
+                        else if(hoaDon.getHoaDonNo()==0){
+                            khoHangList = hoaDon.getKhoList();
+                            for (KhoHang khoHang : khoHangList) {
+                                sumNo = khoHang.getGia()*khoHang.getSoLuong();
+                            }
+                            tienNo += sumNo;
+                        }
+                    }
                 }
 
-//                for (HoaDon hoaDon : hoaDonListQuery){
-//                    for(SanPham sanPham : hoaDon.getSanPhamList()){
-//                        triGia += sanPham.getGiaSP()*sanPham.getSoLuongSP();
-//                        tienVon += sanPham.getGiaNhapSP()*sanPham.getSoLuongSP();
-//                    }
-//                }
-                loiNhuan = triGia - tienVon;
-                hoaDonListQuery.clear();
-                for (HoaDon hoaDon : hoaDonList){
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner)
-                            &&hoaDon.getHoaDonNo()==0)
-                        hoaDonListQuery.add(hoaDon);
-                }
-                for (HoaDon hoaDon : hoaDonListQuery){
-                    tienNo += hoaDon.getTriGia();
-                }
+                loiNhuan = triGia-tienVon;
+                String str = triGia+" VND";
+                textViewDoanhThu.setText(str);
+                textViewTienBan.setText(str);
+                str = loiNhuan+" VND";
+                textViewLoiNhuan.setText(str);
+                str = tienVon+" VND";
+                textViewTienVon.setText(str);
+                str = soHoaDon+" hóa đơn";
+                textViewSoHoaDon.setText(str);
+                str = tienNo+" VND";
+                textViewTienNo.setText(str);
+                str = "0 VND";
+                textViewGiamGia.setText(str);
 
-//                String sql = "Select CTHD_MaSP From HOADON,CTHD Where CTHD_SoHD == HOADON_Sohd";
-//                String sql1 = "Select *From SanPham Where SANPHAM_MASP in " +
-//                        "(Select CTHD_MaSP From HOADON,CTHD Where CTHD_SoHD == HOADON_Sohd)";
-//                String sql2 = "Select *From SanPham Where SANPHAM_MASP in (Select Distinct NHAPHANG_MASP From NHAPHANG)";
-//                SQLiteDatabase sqLiteDatabase = database.getReadableDatabase();
-//                Cursor cursor = database.execSQLSelect(sql2,null,sqLiteDatabase);
-//                if(cursor.moveToFirst()) {
-//                    do {
-//                        SanPham sanPham = new SanPham(
-//                                cursor.getString(0),
-//                                cursor.getString(1),
-//                                cursor.getString(2),
-//                                cursor.getString(3),
-//                                cursor.getString(4),
-//                                cursor.getLong(9),
-//                                cursor.getInt(5),
-//                                cursor.getBlob(6),
-//                                cursor.getString(7),
-//                                cursor.getLong(8)
-//                        );
-//                        sanPhamList.add(sanPham);
-//
-//                    }while (cursor.moveToNext());
-//                }
-//                sqLiteDatabase.close();
 
-                textViewDoanhThu.setText(triGia+" VND");
-                textViewLoiNhuan.setText(loiNhuan+" VND");
-
-                textViewTienBan.setText(triGia+ " VND");
-                textViewTienVon.setText(tienVon+" VND");
-
-                textViewSoHoaDon.setText(soHoaDon+" hóa đơn");
-                textViewGiaTri.setText(triGia+" VND");
-
-                textViewTienNo.setText(tienNo+" VND");
-                textViewGiamGia.setText("0 VND");
-
-                int soHoaDonNhap = database.getCountHoaDonNhap();
+                int soHoaDonNhap = 0;
                 long tienVonNhap = 0, tienNoNhap = 0;
 
-                hoaDonNhapListQuery.clear();
                 for (HoaDonNhap hoaDonNhap : hoaDonNhapList){
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).equals(textItemSprinner)
-                            &&hoaDonNhap.getHoaDonNhapNo()==1)
-                        hoaDonNhapListQuery.add(hoaDonNhap);
+                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).
+                            equals(textItemSprinner)){
+                        soHoaDonNhap++;
+                        if(hoaDonNhap.getHoaDonNhapNo()==1){
+                            tienVonNhap +=hoaDonNhap.getGiaNhap();
+                        }
+                        else if (hoaDonNhap.getHoaDonNhapNo()==0){
+                            tienNoNhap +=hoaDonNhap.getGiaNhap();
+                        }
+                    }
                 }
-                for(HoaDonNhap hoaDonNhap : hoaDonNhapListQuery){
-                    tienVonNhap += hoaDonNhap.getGiaNhap();
-                }
-
-                hoaDonNhapListQuery.clear();
-                for (HoaDonNhap hoaDonNhap : hoaDonNhapList){
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).equals(textItemSprinner)
-                            &&hoaDonNhap.getHoaDonNhapNo()==0)
-                        hoaDonNhapListQuery.add(hoaDonNhap);
-                }
-                for(HoaDonNhap hoaDonNhap : hoaDonNhapListQuery){
-                    tienNoNhap += hoaDonNhap.getGiaNhap();
-                }
-
-
-
-                textViewSoHoaDonNhap.setText(soHoaDonNhap+" hóa đơn");
-                textViewTienNoNhap.setText(tienNoNhap+" VND");
-                textViewVonNhap.setText(tienVonNhap+" VND");
-                textViewGiamGia.setText(" VND");
-
-
-
+                str = soHoaDonNhap+" hóa đơn";
+                textViewSoHoaDonNhap.setText(str);
+                str = tienNoNhap+" VND";
+                textViewTienNoNhap.setText(str);
+                str = tienVonNhap+" VND";
+                textViewVonNhap.setText(str);
+                str = "0 VND";
+                textViewGiamGiaNhap.setText(str);
             }
 
             @Override
@@ -251,4 +206,6 @@ public class FragmentBaoCao extends Fragment {
         list.add("Tháng 12");
         return list;
     }
+
+
 }

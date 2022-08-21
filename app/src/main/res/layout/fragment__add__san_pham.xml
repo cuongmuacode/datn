@@ -87,10 +87,6 @@
                 android:paddingEnd="10dp"
                 />
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:background="@drawable/bg_edittext"
-            android:layout_height="1dp"/>
 
         <EditText
             android:id="@+id/inputedittext_NuocSX"
