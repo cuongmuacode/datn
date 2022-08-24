@@ -17,9 +17,9 @@ import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +62,8 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
         str = hoaDon.getTriGia().toString()+" VND";
         holder.textGiaProduct.setText(str);
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("vi","VN"));
-        str = ""+dateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD())));
+        Timestamp timestamp = Timestamp.valueOf(hoaDon.getNgayHD());
+        str = ""+dateFormat.format(timestamp.getTime());
         holder.textngayLapHD.setText(str);
         if(hoaDon.getHoaDonNo()==0)
             holder.textGiaProductNo.setText("Nợ");

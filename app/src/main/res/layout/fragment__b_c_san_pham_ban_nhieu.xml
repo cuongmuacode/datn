@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragment.baocao.Fragment_BCSanPhamBanNhieu">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="50dp"
+        android:background="@drawable/bg_edittext"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawablePadding="20dp"
+        android:ems="10"
+        android:id="@+id/edit_sanpham_search_baocao"
+        android:hint="@string/edit_timkiem"
+        android:inputType="textPersonName"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:autofillHints="@string/icon" />
+        <Spinner
+            android:id="@+id/spinnerSanPhamBaoCao"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            />
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_SanPham_baocao"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

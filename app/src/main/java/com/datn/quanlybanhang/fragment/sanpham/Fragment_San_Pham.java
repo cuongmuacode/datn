@@ -75,6 +75,7 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
     public Fragment_San_Pham() {
     }
+
     public Fragment_San_Pham(IClickItemSanPham iClickItemSanPham) {
         this.iClickItemSanPham = iClickItemSanPham;
     }
@@ -88,7 +89,6 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     @Override
     public void onViewCreated(@NonNull  View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         editText = view.findViewById(R.id.edit_sanpham_search);
         recyclerView = view.findViewById(R.id.recycler_SanPham);
         imageView = view.findViewById(R.id.imageview_sanpham_sort);

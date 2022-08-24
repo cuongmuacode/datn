@@ -1,32 +1,30 @@
 package com.datn.quanlybanhang.activityy;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-
-import android.content.Intent;
-import android.os.Bundle;
-
-
-import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
-import com.datn.quanlybanhang.fragment.baocao.FragmentBaoCaoTongHop;
-import com.datn.quanlybanhang.fragment.xemthem.FragmentCaiDat;
-import com.datn.quanlybanhang.fragment.xemthem.danhmuc.FragmentDanhMuc;
-import com.datn.quanlybanhang.fragment.xemthem.donvitinh.FragmentDonViTinh;
+import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.fragment.FragmentGioiThieu;
 import com.datn.quanlybanhang.fragment.FragmentHuongDan;
-import com.datn.quanlybanhang.fragment.khachhang.FragmentKhachHang;
-import com.datn.quanlybanhang.R;
-import com.datn.quanlybanhang.fragment.xemthem.FragmentMayIn;
-import com.datn.quanlybanhang.fragment.hoadonnhap.FragmentNhapHang;
-import com.datn.quanlybanhang.fragment.nhanvien.FragmentTaiKhoan;
 import com.datn.quanlybanhang.fragment.FragmentXemThem;
+import com.datn.quanlybanhang.fragment.baocao.FragmentBaoCaoTongHop;
+import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
 import com.datn.quanlybanhang.fragment.hoadon.Fragment_ChiTietHoaDon;
+import com.datn.quanlybanhang.fragment.hoadonnhap.FragmentNhapHang;
+import com.datn.quanlybanhang.fragment.khachhang.FragmentKhachHang;
+import com.datn.quanlybanhang.fragment.nhanvien.FragmentTaiKhoan;
 import com.datn.quanlybanhang.fragment.nhanvien.Fragment_DoiMatKhau;
 import com.datn.quanlybanhang.fragment.sanpham.Fragment_San_Pham;
+import com.datn.quanlybanhang.fragment.xemthem.FragmentCaiDat;
+import com.datn.quanlybanhang.fragment.xemthem.FragmentMayIn;
+import com.datn.quanlybanhang.fragment.xemthem.danhmuc.FragmentDanhMuc;
+import com.datn.quanlybanhang.fragment.xemthem.donvitinh.FragmentDonViTinh;
 import com.datn.quanlybanhang.model.HoaDon;
 
 public class ActivityThongTin extends AppCompatActivity {

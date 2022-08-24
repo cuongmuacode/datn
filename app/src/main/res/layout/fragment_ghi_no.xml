@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.baocao.FragmentGhiNo">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:orientation="vertical"
+    tools:context=".fragment.baocao.FragmentBaoCaoGhiNo">
+        <TextView
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:id="@+id/textbaocaokhachhangno"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:text="Báo cáo khách hàng nợ " />
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="50dp"
+        android:background="@drawable/bg_edittext"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawablePadding="20dp"
+        android:ems="10"
+        android:id="@+id/edit_khachhang_search_baocao"
+        android:hint="@string/edit_timkiem"
+        android:inputType="textPersonName"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:autofillHints="@string/icon" />
+    <Spinner
+        android:id="@+id/spinnerKhachhangBaoCao"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textSize="20sp"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyler_bao_caokhachno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-</FrameLayout>
+
+</LinearLayout>

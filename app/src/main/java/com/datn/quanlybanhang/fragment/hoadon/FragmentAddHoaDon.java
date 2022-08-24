@@ -36,8 +36,11 @@ import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
 import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -230,10 +233,12 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
 
         buttonAdd.setOnClickListener(view -> {
 
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS",new Locale("vi","VN"));
+            Timestamp timestamp = Timestamp.valueOf(simpleDateFormat.format(System.currentTimeMillis()));
             if(!sanPhamList.isEmpty()){
                 hoaDon = new HoaDon(
                         "HD" + soHD,
-                        System.currentTimeMillis()+"",
+                        simpleDateFormat.format(timestamp),
                         selectKhachhang.getMaKH(),
                         MainActivity.nhanVien.getMaNV(),
                         triGia,
@@ -264,11 +269,12 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         });
 
         buttonNo.setOnClickListener(view -> {
-
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS",new Locale("vi","VN"));
+            Timestamp timestamp = Timestamp.valueOf(simpleDateFormat.format(System.currentTimeMillis()));
             if(!sanPhamList.isEmpty()){
                 hoaDon = new HoaDon(
                         "HD" + soHD,
-                        System.currentTimeMillis()+"",
+                        simpleDateFormat.format(timestamp),
                         selectKhachhang.getMaKH(),
                         MainActivity.nhanVien.getMaNV(),
                         triGia,

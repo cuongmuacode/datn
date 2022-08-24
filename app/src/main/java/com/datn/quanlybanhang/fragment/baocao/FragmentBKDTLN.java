@@ -24,10 +24,8 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,7 +81,7 @@ public class FragmentBKDTLN extends Fragment {
         barDataSetLoiNhuan.setColor(Color.YELLOW);
 
         BarDataSet barDataSetDoanhThuNo = new BarDataSet(getListBarEntry(0,true),"Khách Nợ");
-        barDataSetLoiNhuan.setColor(Color.YELLOW);
+        barDataSetLoiNhuan.setColor(Color.BLUE);
 
         BarData data = new BarData(barDataSetDoanhThu,barDataSetLoiNhuan,barDataSetDoanhThuNo);
         chart.setData(data);
@@ -128,7 +126,7 @@ public class FragmentBKDTLN extends Fragment {
             barDataSetLoiNhuan.setColor(Color.YELLOW);
 
             BarDataSet barDataSetDoanhThuNo = new BarDataSet(getListBarEntry(0,true),"Khách Nợ");
-            barDataSetLoiNhuan.setColor(Color.YELLOW);
+            barDataSetLoiNhuan.setColor(Color.BLUE);
 
             BarData data = new BarData(barDataSetDoanhThu,barDataSetLoiNhuan,barDataSetDoanhThuNo);
             chart.clear();
@@ -168,7 +166,6 @@ public class FragmentBKDTLN extends Fragment {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                  dialog =
                         new DatePickerDialog(getContext(),dateSetListener,year,month,day);
-                loadingDialog.startLoadingDialog();
                 dialog.show();
             }
         });
@@ -192,33 +189,19 @@ public class FragmentBKDTLN extends Fragment {
     }
 
     BarEntry getBarEntry(String month,int no,boolean check){
-        final SimpleDateFormat simpleDateFormatMonth = new SimpleDateFormat("MM", new Locale("vi", "VN"));
         long doanhThu = 0,von = 0;
-        for(HoaDon hoaDon : getListHoaDonYear(textDate,no)){
-            if(simpleDateFormatMonth.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(month)){
-                doanhThu +=hoaDon.getTriGia();
-                for(KhoHang khoHang: hoaDon.getKhoList()){
-                 von += khoHang.getSoLuong()* khoHang.getGiaNhap();
-                }
-            }
+        for(HoaDon hoaDon : database.getListHoaDonYear(textDate+month)){
+            if(hoaDon.getHoaDonNo() == no) {
+                 for (KhoHang khoHang : hoaDon.getKhoList()) {
+                     doanhThu += khoHang.getSoLuong() * khoHang.getGia();
+                     von += khoHang.getSoLuong() * khoHang.getGiaNhap();
+                 }
+             }
         }
-        return  new BarEntry(Integer.parseInt(month),(check) ? doanhThu:von);
+
+        return  new BarEntry(Integer.parseInt(month),(check) ? doanhThu:doanhThu-von);
     }
 
-
-    List<HoaDon> getListHoaDonYear(String strDate,int no){
-        List<HoaDon> hoaDonListQurey = new ArrayList<>();
-        final SimpleDateFormat simpleDateFormatYear = new SimpleDateFormat("yyyy", new Locale("vi", "VN"));
-        for(HoaDon hoaDon : database.getListHoaDon()){
-            if (simpleDateFormatYear.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).
-                equals(strDate)) {
-                if(hoaDon.getHoaDonNo()==no) {
-                   hoaDonListQurey.add(hoaDon);
-                }
-            }
-        }
-        return hoaDonListQurey;
-    }
 
     List<String> getListMonth(){
         List<String> listMonth = new ArrayList<>();

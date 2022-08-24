@@ -2,12 +2,6 @@ package com.datn.quanlybanhang.fragment.hoadonnhap;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.datn.quanlybanhang.R;
 import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
@@ -31,6 +31,9 @@ import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -118,13 +121,14 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
                 }
 
             if (selectSanPham != null) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS",new Locale("vi","VN"));
                 if (!selectKhachHang.getMaKH().equals("MaKH01")) {
                     KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
                     hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
                                 selectSanPham.getMaSP(),
                                 MainActivity.nhanVien.getMaNV(),
                                 selectKhachHang.getMaKH(),
-                                "" + System.currentTimeMillis(),
+                            simpleDateFormat.format(new Timestamp(System.currentTimeMillis())),
                                 0,
                                 Integer.parseInt(tIETextSoLuong.getText().toString()),
                                 Long.parseLong(tIETextGiaNhap.getText().toString()),
@@ -166,12 +170,14 @@ public class FragmentNhapHang extends Fragment implements IClickItemSanPham {
                  return;
              }
              if (selectSanPham != null) {
+                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS",new Locale("vi","VN"));
+
                  KhoHang khoHang = database.getKhoHang(selectSanPham.getMaSP());
                  hoaDonNhap = new HoaDonNhap("HDN" + soHDNhap,
                              selectSanPham.getMaSP(),
                              MainActivity.nhanVien.getMaNV(),
                              selectKhachHang.getMaKH(),
-                             "" + System.currentTimeMillis(),
+                             simpleDateFormat.format(new Timestamp(System.currentTimeMillis())),
                              1,
                              Integer.parseInt(tIETextSoLuong.getText().toString()),
                              Long.parseLong(tIETextGiaNhap.getText().toString()),

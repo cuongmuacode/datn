@@ -32,10 +32,10 @@ import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,7 +87,6 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
         spinner = view.findViewById(R.id.spinnerHoaDonFilter);
         xuLySearch();
         xuLySort();
-
     }
 
 
@@ -101,6 +100,7 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 textItemSprinner = listSpiner.get(i).toLowerCase();
                 SimpleDateFormat simpleDateFormat =new SimpleDateFormat("MMMM", new Locale("vi", "VN"));
+
                 if(textItemSprinner.equals("tất cả")){
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
@@ -115,9 +115,11 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
                 }
                 else{
                     hoaDonListQuery.clear();
-                    for(HoaDon hoaDon : hoaDonList)
-                        if(simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).equals(textItemSprinner))
+                    for(HoaDon hoaDon : hoaDonList){
+                        Timestamp timestamp = Timestamp.valueOf(hoaDon.getNgayHD());
+                        if(simpleDateFormat.format(timestamp.getTime()).equals(textItemSprinner))
                             hoaDonListQuery.add(hoaDon);
+                    }
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
                 }

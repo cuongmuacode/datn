@@ -16,14 +16,14 @@ import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.model.KhoHang;
 import com.datn.quanlybanhang.model.SanPham;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class FragmentCaiDat extends Fragment {
+public class  FragmentCaiDat extends Fragment {
     Random random = new Random(System.currentTimeMillis());
     MySQLiteHelper database;
 
@@ -62,8 +62,11 @@ public class FragmentCaiDat extends Fragment {
             }
 
             long triGia = 0;
+            int z= 1;
             for(KhoHang khoHang:khoHangHoaDon){
-                triGia +=Math.abs(random.nextInt(khoHang.getSoLuong()-1))*khoHang.getGia();
+                int a = khoHang.getSoLuong()-random.nextInt(z++);
+                khoHang.setSoLuong(a);
+                triGia +=a*khoHang.getGia();
             }
 
 
@@ -74,11 +77,11 @@ public class FragmentCaiDat extends Fragment {
                 for(int j = 0;j<=9;j++){
                     selectKhachHang = khachHangs.get(Math.abs(random.nextInt(khachHangs.size()-1)));
                     String str = "16"+i+""+j+""+"006111111";
-                    Date time = new Date(Long.parseLong(str));
-                    System.out.println(sdf.format(time));
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS",new Locale("vi","VN"));
+                    Timestamp timestamp = Timestamp.valueOf(simpleDateFormat.format(Long.parseLong(str)));
                     HoaDon hoaDon = new HoaDon(
                             "HD"+Math.abs(random.nextLong()),
-                            str,
+                            simpleDateFormat.format(timestamp),
                             selectKhachHang.getMaKH(),
                             "MaNV01",
                             triGia,

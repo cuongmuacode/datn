@@ -59,9 +59,10 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
 
 
     IClickItemSanPham iClickItemSanPham;
+
     public FragmentKhachHang() {
-        // Required empty public constructor
     }
+
     public FragmentKhachHang(IClickItemSanPham iClickItemSanPham) {
         // Required empty public constructor
         this.iClickItemSanPham = iClickItemSanPham;

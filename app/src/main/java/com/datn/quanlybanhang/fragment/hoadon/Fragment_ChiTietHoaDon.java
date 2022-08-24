@@ -25,9 +25,9 @@ import com.datn.quanlybanhang.model.NhanVien;
 import com.datn.quanlybanhang.model.SanPham;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,7 +117,8 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
         String str = "Số hóa đơn : "+hoaDon.getSoHD();
         textSoHoaDon.setText(str);
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy '| Giờ : ' HH:mm",new Locale("vi", "VN"));
-        str = "Ngày : "+dateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD())));
+        Timestamp timestamp = Timestamp.valueOf(hoaDon.getNgayHD());
+        str = "Ngày : "+dateFormat.format(timestamp.getTime());
         textNgayHD.setText(str);
         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
         NhanVien nhanVien = database.getNhanVien(hoaDon.getMaNV());

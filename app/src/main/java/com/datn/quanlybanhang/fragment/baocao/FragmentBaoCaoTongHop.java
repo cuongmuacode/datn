@@ -21,6 +21,7 @@ public class FragmentBaoCaoTongHop extends Fragment {
     TextView textTonKho;
     TextView textCongNo;
     TextView textDoanhThu;
+    TextView textViewThongkeSP;
 
 
     @Override
@@ -41,18 +42,23 @@ public class FragmentBaoCaoTongHop extends Fragment {
         textTonKho = view.findViewById(R.id.baocaotonghop_tonkho);
         textDoanhThu = view.findViewById(R.id.baocaotonghop_doanhthu_loinhuan);
         textKhachMuaHang = view.findViewById(R.id.baocaotonghop_khachhang);
+        textViewThongkeSP = view.findViewById(R.id.thongketonghop_sanphambanchay);
+
         if(getActivity()==null) return;
         textCongNo.setOnClickListener((view1 -> {
-
+            replaceFragment(new FragmentBaoCaoGhiNo());
         }));
 
         textTonKho.setOnClickListener((view1 -> {
-
         }));
 
         textKhachMuaHang.setOnClickListener((view1 -> {
 
         }));
+        textViewThongkeSP.setOnClickListener((view1 -> {
+            replaceFragment(new Fragment_BCSanPhamBanNhieu());
+        }));
+
         textDoanhThu.setOnClickListener((view1 -> {
             LoadingDialog loadingDialog= new LoadingDialog(getActivity());
             replaceFragment(new FragmentBKDTLN(loadingDialog));

@@ -21,9 +21,9 @@ import com.datn.quanlybanhang.model.NhanVien;
 import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,7 +101,7 @@ public class HoaDonNhapAdapterRecycler extends RecyclerView.Adapter<HoaDonNhapAd
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy ' |  Giờ : 'HH:mm",new Locale("vi","VN"));
         String str;
         if(khachHang!=null&&nhanVien!=null) {
-         str = "Khách hàng : "+khachHang.getTenKH()+"\nNhân viên : "+nhanVien.getHoTenNV()+"\nNgày : "+dateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap())));
+         str = "Khách hàng : "+khachHang.getTenKH()+"\nNhân viên : "+nhanVien.getHoTenNV()+"\nNgày : "+dateFormat.format(Timestamp.valueOf(hoaDonNhap.getNgayNhap()));
             holder.textKhacHang.setText(str);
         }
         String checkNo = "";

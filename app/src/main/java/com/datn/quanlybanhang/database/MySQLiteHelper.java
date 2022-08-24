@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.datn.quanlybanhang.model.DanhMuc;
 import com.datn.quanlybanhang.model.DonViTinh;
@@ -201,7 +200,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public Cursor execSQLSelect(String sql,String[] args,SQLiteDatabase sqLiteDatabase){
+    public Cursor execSQLSelect(String sql,SQLiteDatabase sqLiteDatabase){
         Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
         return cursor;
     }
@@ -713,6 +712,71 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         List<HoaDon> list = new ArrayList<>();
         String sqlHoaDon="SELECT *FROM "+TABLE_HOADON;
         Cursor cursorHoaDon = sqLiteDatabase.rawQuery(sqlHoaDon,null);
+        Cursor cursorCTHD;
+        if(cursorHoaDon.moveToFirst()) {
+            do {
+                String sql = "SELECT "+ COLUMN_SANPHAM_MASP + ","
+                        + COLUMN_SANPHAM_TENSP + ","
+                        + COLUMN_SANPHAM_DVT + ","
+                        + COLUMN_SANPHAM_NUOCSX + ","
+                        + COLUMN_SANPHAM_CHITIET + ","
+                        + COLUMN_CTHD_SL + ","
+                        + COLUMN_CTHD_MASP + ","
+                        + COLUMN_CTHD_GIANHAP + ","
+                        + COLUMN_CTHD_GIA + ","
+                        + COLUMN_SANPHAM_IMAGE +","
+                        + COLUMN_SANPHAM_DANHMUC +" FROM " + TABLE_CTHD + "," + TABLE_SANPHAM + " WHERE "
+                        + COLUMN_CTHD_MASP + " = "+COLUMN_SANPHAM_MASP +" AND " + COLUMN_CTHD_SOHD + " = ?";
+                cursorCTHD = sqLiteDatabase.rawQuery(sql,new String[]{cursorHoaDon.getString(0)});
+                List<SanPham> sanPhamList = new ArrayList<>();
+                List<KhoHang> khoList = new ArrayList<>();
+
+
+                if (cursorCTHD.moveToFirst()) {
+                    do {
+                        SanPham sanPham = new SanPham(
+                                cursorCTHD.getString(0),
+                                cursorCTHD.getString(1),
+                                cursorCTHD.getString(2),
+                                cursorCTHD.getString(3),
+                                cursorCTHD.getString(4),
+                                cursorCTHD.getString(10),
+                                cursorCTHD.getBlob(9)
+                        );
+                        KhoHang khoHang = new KhoHang(
+                                "1",
+                                cursorCTHD.getString(6),
+                                cursorCTHD.getInt(5),
+                                cursorCTHD.getLong(7),
+                                cursorCTHD.getLong(8)
+                        );
+                        sanPhamList.add(sanPham);
+                        khoList.add(khoHang);
+                    } while (cursorCTHD.moveToNext());
+                    cursorCTHD.close();
+                }
+                HoaDon hoaDon = new HoaDon(
+                        cursorHoaDon.getString(0),
+                        cursorHoaDon.getString(3),
+                        cursorHoaDon.getString(1),
+                        cursorHoaDon.getString(2),
+                        cursorHoaDon.getLong(4),
+                        sanPhamList,
+                        khoList,
+                        cursorHoaDon.getInt(5)
+                );
+                list.add(hoaDon);
+            } while (cursorHoaDon.moveToNext());
+            cursorHoaDon.close();
+        }
+        return list;
+    }
+
+    public List<HoaDon> getListHoaDonYear(String textYear){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        List<HoaDon> list = new ArrayList<>();
+        String sqlHoaDon="SELECT * FROM HOADON WHERE strftime('%Y%m',HOADON_NGAYHD) = ?";
+        Cursor cursorHoaDon = sqLiteDatabase.rawQuery(sqlHoaDon,new String[]{textYear});
         Cursor cursorCTHD;
         if(cursorHoaDon.moveToFirst()) {
             do {

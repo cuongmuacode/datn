@@ -21,5 +21,4 @@
         android:paddingBottom="5dp"
         android:textSize="20sp"
         android:focusable="true" />
-
 </LinearLayout>

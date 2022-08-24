@@ -20,6 +20,7 @@ import com.datn.quanlybanhang.model.HoaDon;
 import com.datn.quanlybanhang.model.HoaDonNhap;
 import com.datn.quanlybanhang.model.KhoHang;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +96,7 @@ public class FragmentBaoCao extends Fragment {
         imageView.setOnClickListener(view -> spinner.performClick());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", new Locale("vi", "VN"));
-        String currentMonth =  simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        String currentMonth =  simpleDateFormat.format(new Timestamp(System.currentTimeMillis()));
         int index = 0;
         for(String month: listString){
             if(month.toLowerCase().equals(currentMonth)){
@@ -114,14 +115,13 @@ public class FragmentBaoCao extends Fragment {
                 int soHoaDon = 0;
                 long tienVon = 0, triGia = 0, loiNhuan,tienNo = 0;
 
-                hoaDonList = database.getListHoaDon();
                 hoaDonNhapList = database.getListHoaDonNhap();
-
+                hoaDonList = database.getListHoaDon();
 
                 for(HoaDon hoaDon : hoaDonList){
                     List<KhoHang> khoHangList;
                     long sumGia = 0,sumGiaNhap = 0,sumNo = 0;
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDon.getNgayHD()))).
+                    if (simpleDateFormat.format(Timestamp.valueOf(hoaDon.getNgayHD())).
                             equals(textItemSprinner)) {
                         soHoaDon++;
                         if(hoaDon.getHoaDonNo()==1) {
@@ -163,7 +163,7 @@ public class FragmentBaoCao extends Fragment {
                 long tienVonNhap = 0, tienNoNhap = 0;
 
                 for (HoaDonNhap hoaDonNhap : hoaDonNhapList){
-                    if (simpleDateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap()))).
+                    if (simpleDateFormat.format(Timestamp.valueOf(hoaDonNhap.getNgayNhap())).
                             equals(textItemSprinner)){
                         soHoaDonNhap++;
                         if(hoaDonNhap.getHoaDonNhapNo()==1){
