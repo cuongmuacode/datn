@@ -128,6 +128,8 @@
         matHangAdapterRecycler = new MatHangAdapterRecycler(this,listSanPham,getContext());
         recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
         xuLySort();
+        xulyEditText();
+
     }
 
 
@@ -146,7 +148,7 @@
         }
         if(!checkState)
            countSanPhamm();
-        xulyEditText();
+
     }
 
 
@@ -290,16 +292,10 @@
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                    matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham,context);
                     recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-
+                    matHangAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     filterListSanPham.clear();
@@ -315,7 +311,11 @@
                     }
                     recyclerViewBanHang.setAdapter(new MatHangAdapterRecycler(FragmentBanHang.this,filterListSanPham,context));
                 }
-                matHangAdapterRecycler.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -349,7 +349,7 @@
             }
         });
     }
-     public static String removeAccent(String s) {
+     public  String removeAccent(String s) {
          String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
          Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
          return pattern.matcher(temp).replaceAll("");

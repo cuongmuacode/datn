@@ -33,7 +33,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -116,17 +115,10 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                    hoaDonNhapAdapterRecycler = new HoaDonNhapAdapterRecycler(hoaDonNhaps,getContext(),
-                            Fragment_HoaDonNhap.this);
                     recyclerView.setAdapter(hoaDonNhapAdapterRecycler);
-
+                    hoaDonNhapAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     filterListHoaDonNhap.clear();
@@ -146,7 +138,12 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
                     recyclerView.setAdapter(new HoaDonNhapAdapterRecycler(filterListHoaDonNhap,getContext(),
                             Fragment_HoaDonNhap.this));
                 }
-                hoaDonNhapAdapterRecycler.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }

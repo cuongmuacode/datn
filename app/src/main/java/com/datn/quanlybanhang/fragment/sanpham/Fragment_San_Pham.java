@@ -178,15 +178,11 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                    sanPhamAdapterRecycler = new SanPhamAdapterRecycler(Fragment_San_Pham.this,listSanPham,context);
                     recyclerView.setAdapter(sanPhamAdapterRecycler);
+                    sanPhamAdapterRecycler.notifyDataSetChanged();
+
                 }
                 else{
                     filterListSanPham.clear();
@@ -202,7 +198,11 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
                     }
                     recyclerView.setAdapter(new SanPhamAdapterRecycler(Fragment_San_Pham.this,filterListSanPham,context));
                 }
-                sanPhamAdapterRecycler.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
             }
         });
     }
@@ -311,7 +311,7 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
         toast.show();
     }
 
-    public static String removeAccent(String s) {
+    public  String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");

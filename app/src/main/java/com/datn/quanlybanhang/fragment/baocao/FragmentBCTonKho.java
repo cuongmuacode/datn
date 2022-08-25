@@ -107,15 +107,10 @@ public class FragmentBCTonKho extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                     bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoList,database);
                     recyclerView.setAdapter(bcTonKhoAdapterRecycler);
+                    bcTonKhoAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     tonKhoListQurey.clear();
@@ -127,10 +122,14 @@ public class FragmentBCTonKho extends Fragment {
                                 removeAccent(khoHang.getMaSP()).toLowerCase().contains(search))
                             tonKhoListQurey.add(khoHang);
                     }
-                     bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoListQurey,database);
+                    bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoListQurey,database);
                     recyclerView.setAdapter(bcTonKhoAdapterRecycler);
                 }
-                bcTonKhoAdapterRecycler.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }

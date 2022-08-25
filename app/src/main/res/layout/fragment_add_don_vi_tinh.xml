@@ -12,6 +12,7 @@
         android:layout_height="60dp"
         android:paddingStart="20dp"
         android:paddingEnd="10dp"
+        android:maxLength="20"
         android:hint="Tên đơn vị tính"
         android:background="@drawable/bg_edittext"
         />

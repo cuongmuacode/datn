@@ -1,3 +1,4 @@
+
 package com.datn.quanlybanhang.fragment.hoadon;
 
 
@@ -33,11 +34,13 @@ import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecycer<HoaDon> {
     RecyclerView recyclerViewHoaDon;
@@ -176,12 +179,7 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
@@ -192,13 +190,21 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
                     for(HoaDon hoaDon: hoaDonList){
                         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
 
-                        if(khachHang.getTenKH().contains(search)||
+                        if(khachHang.getTenKH().contains(search)||khachHang.getTenKH().toLowerCase().contains(search.toLowerCase())||
+                                removeAccent(khachHang.getTenKH()).contains(search)||
+                                removeAccent(khachHang.getTenKH().toLowerCase()).contains(search.toLowerCase())||
+
                                 (hoaDon.getTriGia()+"").contains(search))
                             hoaDonListQuery.add(hoaDon);
                     }
                     recyclerViewHoaDon.setAdapter(new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this));
                 }
                 hoaDonAdapterRecycler.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -264,5 +270,10 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
         list.add("Tháng 11");
         list.add("Tháng 12");
         return list;
+    }
+    public  String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("");
     }
 }

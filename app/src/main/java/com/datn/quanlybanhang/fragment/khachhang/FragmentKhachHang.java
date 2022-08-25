@@ -184,20 +184,11 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.toString().isEmpty()) {
-                    khachHangAdapterRecycler = new KhachHangAdapterRecycler(listKhachHang,FragmentKhachHang.this);
-                    recyclerView.setAdapter(khachHangAdapterRecycler);
-                    khachHangAdapterRecycler.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 filterListKhachHang.clear();
                 if(search.isEmpty()) {
-                    khachHangAdapterRecycler = new KhachHangAdapterRecycler(listKhachHang,FragmentKhachHang.this);
                     recyclerView.setAdapter(khachHangAdapterRecycler);
+                    khachHangAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     for(KhachHang khachHang : listKhachHang){
@@ -210,6 +201,11 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
                     }
                     recyclerView.setAdapter(new KhachHangAdapterRecycler(filterListKhachHang,FragmentKhachHang.this));
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -273,7 +269,7 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
-    public static String removeAccent(String s) {
+    public  String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");

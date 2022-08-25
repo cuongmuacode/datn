@@ -132,16 +132,10 @@ public class FragmentBaoCaoGhiNo extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                    bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangList);
                     recyclerView.setAdapter(bcKhachNoAdapterRecycler);
-
+                    bcKhachNoAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     khoHangListSearch.clear();
@@ -151,9 +145,13 @@ public class FragmentBaoCaoGhiNo extends Fragment {
                     }
                     bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangListSearch);
                     recyclerView.setAdapter(bcKhachNoAdapterRecycler);
-
                 }
-                bcKhachNoAdapterRecycler.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+
             }
         });
 

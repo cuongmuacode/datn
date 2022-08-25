@@ -135,15 +135,10 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String search = editable.toString();
+                String search = charSequence.toString();
                 if(search.isEmpty()) {
-                     bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangList,database);
                     recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
+                    bcSanPhamNhieuAdapterRecycler.notifyDataSetChanged();
                 }
                 else{
                     khoHangListSearch.clear();
@@ -151,10 +146,15 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
                         if(khoHang.getMaKho().contains(search))
                             khoHangListSearch.add(khoHang);
                     }
-                     bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangListSearch,database);
+                    bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangListSearch,database);
                     recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
                 }
-                bcSanPhamNhieuAdapterRecycler.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+
             }
         });
 

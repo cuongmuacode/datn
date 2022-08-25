@@ -9,6 +9,7 @@
         android:id="@+id/tenDanhMuc"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:maxLength="15"
         android:hint="Tên danh mục"
         android:paddingStart="20dp"
         android:paddingEnd="0dp"
