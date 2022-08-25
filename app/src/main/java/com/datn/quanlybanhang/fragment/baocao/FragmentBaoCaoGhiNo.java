@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,23 +96,24 @@ public class FragmentBaoCaoGhiNo extends Fragment {
 
                 month = listMonth.get(i).toLowerCase().substring(listMonth.get(i).length() - 2, listMonth.get(i).length());
                 textDate = simpleDateFormat.format(new Date(System.currentTimeMillis())) + month;
-                str = "Select KHACHHANG_HOTEN,sum(HOADON_TRIGIA)" +
+                str = "Select KHACHHANG_HOTEN,KHACHHANG_SODT,sum(HOADON_TRIGIA)" +
                         " From KHACHHANG,HOADON " +
                         "Where KHACHHANG_Id = HOADON_MAKH and strftime('%Y%m',HOADON_NGAYHD) = '"+textDate+ "' and HOADON_NO = 0"+
-                        " Group By KHACHHANG_HOTEN Order By 'SOLUONG' DESC ";
+                        " Group By KHACHHANG_HOTEN,KHACHHANG_SODT  ";
 
                 Cursor cursor =  database.execSQLSelect(str,database.getReadableDatabase());
                 if(cursor.moveToFirst()) {
                     do {
-                        KhoHang khoHang = new KhoHang(
-                                cursor.getString(0),"",1,1,cursor.getLong(1));
-                        khoHangList.add(khoHang);
+                        Log.i("cuonghi",""+cursor.getString(0));
+                        khoHangList.add(new KhoHang(
+                                cursor.getString(0)+"",cursor.getString(1),1,1,cursor.getLong(2)));
                     } while (cursor.moveToNext());
                 }
                 database.close();
 
                 bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangList);
                 recyclerView.setAdapter(bcKhachNoAdapterRecycler);
+                bcKhachNoAdapterRecycler.notifyDataSetChanged();
             }
 
             @Override

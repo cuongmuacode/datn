@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragment.baocao.FragmentBCTonKho">
+    <TextView
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:id="@+id/textbaocaoTonkho"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center_vertical"
+        android:text="" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_edittext"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawablePadding="20dp"
+        android:ems="10"
+        android:id="@+id/edit_tonkho_search_baocao"
+        android:hint="@string/edit_timkiem"
+        android:inputType="textPersonName"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:autofillHints="@string/icon" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reycler_baocaoTonKho"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        />
+</LinearLayout>

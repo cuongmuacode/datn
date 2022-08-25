@@ -41,7 +41,7 @@ public class FragmentBaoCaoTongHop extends Fragment {
         textCongNo = view.findViewById(R.id.baocaotonghop_congno);
         textTonKho = view.findViewById(R.id.baocaotonghop_tonkho);
         textDoanhThu = view.findViewById(R.id.baocaotonghop_doanhthu_loinhuan);
-        textKhachMuaHang = view.findViewById(R.id.baocaotonghop_khachhang);
+//        textKhachMuaHang = view.findViewById(R.id.baocaotonghop_khachhang);
         textViewThongkeSP = view.findViewById(R.id.thongketonghop_sanphambanchay);
 
         if(getActivity()==null) return;
@@ -50,11 +50,12 @@ public class FragmentBaoCaoTongHop extends Fragment {
         }));
 
         textTonKho.setOnClickListener((view1 -> {
+            replaceFragment(new FragmentBCTonKho());
         }));
 
-        textKhachMuaHang.setOnClickListener((view1 -> {
-
-        }));
+//        textKhachMuaHang.setOnClickListener((view1 -> {
+//
+//        }));
         textViewThongkeSP.setOnClickListener((view1 -> {
             replaceFragment(new Fragment_BCSanPhamBanNhieu());
         }));

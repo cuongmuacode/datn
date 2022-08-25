@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +27,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -140,24 +135,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected( MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.nav_huongdan){
-            Intent intent = new Intent(this, ActivityThongTin.class);
-            intent.putExtra("Data", FragmentXemThem.ACT_HUONGDAN);
-            if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            startActivity(intent);
-        }
-        else if(id == R.id.nav_chiase) {
-            Log.i("","");
-        }
-        else if(id == R.id.nav_gioithieu){
-            Intent intent = new Intent(this, ActivityThongTin.class);
-            intent.putExtra("Data", FragmentXemThem.ACT_GIOITHIEU);
-            if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            startActivity(intent);
-        }
-        else if(id == R.id.nav_dangxuat){
+//        if(id == R.id.nav_huongdan){
+//            Intent intent = new Intent(this, ActivityThongTin.class);
+//            intent.putExtra("Data", FragmentXemThem.ACT_HUONGDAN);
+//            if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+//                mDrawerLayout.closeDrawer(GravityCompat.START);
+//            startActivity(intent);
+//        }
+//        else if(id == R.id.nav_chiase) {
+//            Log.i("","");
+//        }
+//         if(id == R.id.nav_gioithieu){
+//            Intent intent = new Intent(this, ActivityThongTin.class);
+//            intent.putExtra("Data", FragmentXemThem.ACT_GIOITHIEU);
+//            if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+//                mDrawerLayout.closeDrawer(GravityCompat.START);
+//            startActivity(intent);
+//        }
+         if(id == R.id.nav_dangxuat){
             Intent intent = new Intent(this, ActivityLoginn.class);
             if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
                 mDrawerLayout.closeDrawer(GravityCompat.START);

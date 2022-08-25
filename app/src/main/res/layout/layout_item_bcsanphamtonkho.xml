@@ -2,38 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:layout_height="match_parent">
+    android:paddingEnd="5dp"
+    android:paddingStart="5dp"
+    android:layout_height="wrap_content">
     <TextView
         android:id="@+id/baocao_tensanphamtonkho"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:minHeight="35dp"
         android:text="Tên sản phẩm"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:gravity="center_vertical"
         />
     <TextView
         android:id="@+id/baocao_sanphamtonkhoa"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:minHeight="35dp"
         android:text="Tồn kho"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:gravity="center_vertical"
         />
     <TextView
-        android:id="@+id/baocao_ngaynhap"
+        android:id="@+id/baocao_sanphamtonkhoaDaBan"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Ngày nhập"
-        android:textSize="20dp"
-        android:gravity="center_vertical"
-        />
-    <TextView
-        android:id="@+id/baocao_soluongnhap"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Số lượng nhập"
-        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:minHeight="35dp"
+        android:text="Đã bán"
+        android:textSize="17dp"
         android:gravity="center_vertical"
         />
 

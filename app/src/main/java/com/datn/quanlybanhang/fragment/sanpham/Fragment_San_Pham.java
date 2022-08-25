@@ -316,4 +316,5 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");
     }
+
 }

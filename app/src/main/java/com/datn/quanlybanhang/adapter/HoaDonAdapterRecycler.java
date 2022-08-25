@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,15 +54,15 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
         String str;
         if(khachHang!=null) {
-            str = "Khách : " + khachHang.getTenKH();
+            str = "Khách: " + khachHang.getTenKH();
             holder.textKhacHang.setText(str);
         }else
-            holder.textKhacHang.setText("Khách : ");
-        str = hoaDon.getTriGia().toString()+" VND";
+            holder.textKhacHang.setText("Khách: ");
+        str = "Tổng tiền: "+hoaDon.getTriGia().toString()+" VND";
         holder.textGiaProduct.setText(str);
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("vi","VN"));
         Timestamp timestamp = Timestamp.valueOf(hoaDon.getNgayHD());
-        str = ""+dateFormat.format(timestamp.getTime());
+        str = "Ngày lập: "+dateFormat.format(timestamp.getTime());
         holder.textngayLapHD.setText(str);
         if(hoaDon.getHoaDonNo()==0)
             holder.textGiaProductNo.setText("Nợ");
@@ -86,7 +85,6 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
 
 
     public static class HoaDonViewHoler extends RecyclerView.ViewHolder{
-        ImageView imageView;
         TextView maHoaDon;
         TextView textKhacHang;
         TextView textGiaProduct;
@@ -96,7 +94,6 @@ public class HoaDonAdapterRecycler extends RecyclerView.Adapter<HoaDonAdapterRec
 
         public HoaDonViewHoler( View itemView) {
             super(itemView);
-            imageView =  itemView.findViewById(R.id.imgHoaDon);
             maHoaDon = itemView.findViewById(R.id.idHoaDon);
             textKhacHang = itemView.findViewById(R.id.hoaDonKhachhang);
             textGiaProduct = itemView.findViewById(R.id.productGiahoadon);

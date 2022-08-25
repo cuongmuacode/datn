@@ -28,11 +28,15 @@
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
             />
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_textview"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_SanPham_baocao"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

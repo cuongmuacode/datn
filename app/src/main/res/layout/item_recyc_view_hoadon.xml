@@ -8,13 +8,15 @@
 
     <ImageView
         android:id="@+id/imgHoaDon"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_baseline_receipt_long_24"
         android:contentDescription="@string/icon" />
     <LinearLayout
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -34,23 +36,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="jajfsdkljafdasdfasdfjasjfkasdfjkaskfjasfdkljasfdlakjsfdlsakjalsdjkfasljkfasldjkfaslfjkđalkjfdslạk" />
-            <TextView
-                android:id="@+id/ngayHoadon"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:paddingStart="15dp"
-                android:text="30/02/20002"
-                />
-            <ImageView
-                android:id="@+id/imgMoreHoaDon"
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:src="@drawable/ic_baseline_arrow_forward_ios_24"
-                android:layout_height="wrap_content"
-                />
-
+                android:textSize="17dp"
+                android:text="hi" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/ngayHoadon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="30/02/20002"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="jajfsdkljafdasdfasdfjasjfkasdfjkaskfjasfdkljasfdlakjsfdlsakjalsdjkfasljkfasldjkfaslfjkđalkjfdslạk" />
+                android:text="hi" />
             <TextView
                 android:id="@+id/productGiahoadonNo"
                 android:layout_width="wrap_content"

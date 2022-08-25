@@ -3,18 +3,18 @@
     >
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_gioithieu"
-            android:title="@string/nav_gioithieu"
-            android:icon="@drawable/ic_baseline_info_24"
-            />
-        <item android:id="@+id/nav_huongdan"
-            android:title="@string/nav_huongdan"
-            android:icon="@drawable/ic_baseline_history_24"
-            />
-        <item android:id="@+id/nav_chiase"
-            android:icon="@drawable/ic_baseline_share_24"
-            android:title="@string/nav_chiase"
-            />
+<!--        <item android:id="@+id/nav_gioithieu"-->
+<!--            android:title="@string/nav_gioithieu"-->
+<!--            android:icon="@drawable/ic_baseline_info_24"-->
+<!--            />-->
+<!--        <item android:id="@+id/nav_huongdan"-->
+<!--            android:title="@string/nav_huongdan"-->
+<!--            android:icon="@drawable/ic_baseline_history_24"-->
+<!--            />-->
+<!--        <item android:id="@+id/nav_chiase"-->
+<!--            android:icon="@drawable/ic_baseline_share_24"-->
+<!--            android:title="@string/nav_chiase"-->
+<!--            />-->
 
         <item android:id="@+id/nav_doimatkhau"
             android:icon="@drawable/ic_baseline_lock_open_24"

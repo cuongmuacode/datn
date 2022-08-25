@@ -47,6 +47,9 @@ public class BCSanPhamNhieuAdapterRecycler extends RecyclerView.Adapter<BCSanPha
 
     @Override
     public int getItemCount() {
+
+        if(khoHangList == null)
+            return 0;
         return khoHangList.size();
     }
 
