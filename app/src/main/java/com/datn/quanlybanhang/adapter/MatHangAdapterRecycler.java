@@ -71,8 +71,6 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
             holder.textSoLuong.setText(str);
             str = "Giá : "+khoHang.getGia()+" VND";
             holder.textGiaProduct.setText(str);
-
-
             holder.textRemove.setBackgroundResource(R.drawable.ic_baseline_close_24);
             holder.textRemove.setOnClickListener(view -> iClickitemHoaDon.onClickItemModel(sanPham,1));
             holder.itemView.setOnClickListener(view -> iClickitemHoaDon.onClickItemModel(sanPham,2));
@@ -80,6 +78,7 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
 
         if(iClickItemListenerRecycer!=null) {
             holder.itemView.setOnClickListener(view -> iClickItemListenerRecycer.onClickItemModel(sanPham));
+            holder.textRemove.setVisibility(View.GONE);
         }
     }
 

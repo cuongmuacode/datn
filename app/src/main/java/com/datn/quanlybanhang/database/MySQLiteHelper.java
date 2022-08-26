@@ -339,6 +339,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 
@@ -373,6 +374,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
     public int updateDonViTinh(String maDonViTinh,String tenDonViTinh){
@@ -445,6 +447,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return hoaDonNhap;
     }
     public List<HoaDonNhap> getListHoaDonNhap(){
@@ -479,6 +482,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 
@@ -550,6 +554,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return sanPham;
     }
     public List<SanPham> getListSanPham(){
@@ -581,6 +586,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 
@@ -595,7 +601,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SANPHAM_IMAGE,sanPham.getImgSP());
         int i =  sqLiteDatabase.update(TABLE_SANPHAM,values,COLUMN_SANPHAM_MASP+ " = ?",
                 new String[]{sanPham.getMaSP()});
-
         sqLiteDatabase.close();
         return i;
     }
@@ -705,6 +710,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             );
             cursorHoaDon.close();
         }
+        sqLiteDatabase.close();
         return hoaDon;
     }
 
@@ -770,6 +776,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursorHoaDon.moveToNext());
             cursorHoaDon.close();
         }
+        sqLiteDatabase.close();
         return list;
     }
 
@@ -835,6 +842,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursorHoaDon.moveToNext());
             cursorHoaDon.close();
         }
+        sqLiteDatabase.close();
         return list;
     }
 
@@ -844,6 +852,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 
@@ -1035,6 +1044,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return nhanVien;
     }
     public NhanVien getUser(String hoTenNhanVien){
@@ -1063,6 +1073,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             );
             cursor.close();
         }
+        sqLiteDatabase.close();
+
         return nhanVien;
     }
     public NhanVien getUserEmail(String emailNhanVien){
@@ -1091,6 +1103,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return nhanVien;
     }
 
@@ -1125,6 +1138,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 

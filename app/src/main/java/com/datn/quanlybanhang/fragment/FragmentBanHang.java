@@ -120,8 +120,6 @@ import java.util.regex.Pattern;
         xulyEditText();
 
     }
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -137,7 +135,6 @@ import java.util.regex.Pattern;
         }
         if(!checkState)
            countSanPhamm();
-
     }
 
 
