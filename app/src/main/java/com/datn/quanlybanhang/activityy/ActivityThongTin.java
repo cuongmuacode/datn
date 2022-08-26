@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.fragment.FragmentBanHang;
 import com.datn.quanlybanhang.fragment.FragmentGioiThieu;
 import com.datn.quanlybanhang.fragment.FragmentHuongDan;
 import com.datn.quanlybanhang.fragment.FragmentXemThem;
@@ -99,8 +100,7 @@ public class ActivityThongTin extends AppCompatActivity {
                 break;
             case FragmentXemThem.ACT_SHOP:
                 getSupportActionBar().setTitle(R.string.nav_don_hang);
-                bundle = intent.getBundleExtra("Fragment");
-                managerFragmentAll((FragmentAddHoaDon) bundle.getSerializable("BundleFragment"));
+                managerFragmentAll((FragmentAddHoaDon)FragmentBanHang.iClickItemSanPham);
                 break;
             case FragmentXemThem.ACT_CHITIETHOADON:
                 getSupportActionBar().setTitle(R.string.nav_don_hang);

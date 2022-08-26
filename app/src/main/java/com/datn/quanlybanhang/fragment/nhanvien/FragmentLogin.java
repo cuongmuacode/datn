@@ -86,6 +86,7 @@ public class FragmentLogin extends Fragment  {
                     intent.putExtra("DataUser",bundle);
                     setDataCache(nhanVien);
                     startActivity(intent);
+            loadingDialog.dismissDialog();
                     getActivity().finish();
 
             });

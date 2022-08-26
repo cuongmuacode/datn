@@ -1,53 +1,51 @@
  package com.datn.quanlybanhang.fragment;
 
- import android.app.Activity;
  import android.content.Context;
- import android.content.Intent;
- import android.os.Bundle;
- import android.text.Editable;
- import android.text.TextWatcher;
- import android.view.ContextMenu;
- import android.view.LayoutInflater;
- import android.view.Menu;
- import android.view.MenuInflater;
- import android.view.MenuItem;
- import android.view.View;
- import android.view.ViewGroup;
- import android.view.inputmethod.InputMethodManager;
- import android.widget.AdapterView;
- import android.widget.ArrayAdapter;
- import android.widget.EditText;
- import android.widget.FrameLayout;
- import android.widget.ImageView;
- import android.widget.Spinner;
- import android.widget.TextView;
- import android.widget.Toast;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
- import androidx.activity.result.ActivityResultLauncher;
- import androidx.activity.result.contract.ActivityResultContracts;
- import androidx.annotation.NonNull;
- import androidx.annotation.Nullable;
- import androidx.fragment.app.Fragment;
- import androidx.recyclerview.widget.DividerItemDecoration;
- import androidx.recyclerview.widget.LinearLayoutManager;
- import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
- import com.datn.quanlybanhang.R;
- import com.datn.quanlybanhang.activityy.ActivityThongTin;
- import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
- import com.datn.quanlybanhang.database.MySQLiteHelper;
- import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
- import com.datn.quanlybanhang.model.DanhMuc;
- import com.datn.quanlybanhang.model.KhoHang;
- import com.datn.quanlybanhang.model.SanPham;
- import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
- import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
+import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.activityy.ActivityThongTin;
+import com.datn.quanlybanhang.adapter.MatHangAdapterRecycler;
+import com.datn.quanlybanhang.database.MySQLiteHelper;
+import com.datn.quanlybanhang.fragment.hoadon.FragmentAddHoaDon;
+import com.datn.quanlybanhang.model.DanhMuc;
+import com.datn.quanlybanhang.model.KhoHang;
+import com.datn.quanlybanhang.model.SanPham;
+import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
+import com.datn.quanlybanhang.myinterface.IClickItemSanPham;
 
- import java.text.Normalizer;
- import java.util.ArrayList;
- import java.util.Collections;
- import java.util.List;
- import java.util.regex.Pattern;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 
  public class FragmentBanHang extends Fragment implements IClickItemListenerRecycer<SanPham>{
@@ -67,7 +65,7 @@
     public static int countSanPham = 1;
     Toast toast;
     Context context;
-    public static IClickItemSanPham iClickItemSanPham = new FragmentAddHoaDon();
+    public static IClickItemSanPham iClickItemSanPham= new FragmentAddHoaDon();
 
     public FragmentBanHang() {
         // Required empty public constructor
@@ -77,16 +75,7 @@
     }
 
 
-     ActivityResultLauncher<Intent> intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-         if(result.getResultCode()== Activity.RESULT_OK) {
-             iClickItemSanPham = new FragmentAddHoaDon();
-             countSanPham = 0;
-             countSanPhamm();
-             countSanPham = 1;
-             checkState = true;
 
-         }
-     });
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -179,11 +168,8 @@
          frameLayoutRoot.setOnClickListener(v -> {
              Intent intent = new Intent(getContext(), ActivityThongTin.class);
              intent.putExtra("Data", FragmentXemThem.ACT_SHOP);
-             Bundle bundle = new Bundle();
-             bundle.putSerializable("BundleFragment",(FragmentAddHoaDon) iClickItemSanPham);
-             intent.putExtra("Fragment",bundle);
-             intentActivityResultLauncher.launch(intent);
-
+             startActivity(intent);
+             Log.i("cuonghi","hi");
          });
 
          item1.setOnMenuItemClickListener(item2 -> {

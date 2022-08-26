@@ -265,6 +265,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return khoHang;
     }
 
@@ -919,6 +920,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             );
             cursor.close();
         }
+        sqLiteDatabase.close();
         return khachHang;
     }
 
@@ -949,6 +951,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
         int count = cursor.getCount();
         cursor.close();
+        sqLiteDatabase.close();
         return count;
     }
 

@@ -3,6 +3,7 @@ package com.datn.quanlybanhang.fragment.hoadon;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,16 +51,16 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     private RecyclerView recyclerView;
     private Button buttonAdd;
     private Button buttonNo;
+    Toast toast;
+    private MySQLiteHelper database;
     private MatHangAdapterRecycler matHangAdapterRecycler;
     public SanPham selectSanPham;
     public KhachHang selectKhachhang;
     public HoaDon hoaDon;
-    private MySQLiteHelper database;
     private TextView textSoHoaDon;
     private TextView textTenKhachhang;
     private TextView textTenNhanVien;
     private TextView textTongTien;
-    Toast toast;
     private Random random = new Random(System.currentTimeMillis());
     private Long soHD;
     long triGia = 0;
@@ -100,6 +101,9 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
         textTenKhachhang = view.findViewById(R.id.tv_tenkhachhang);
         textTongTien = view.findViewById(R.id.tongtienhoadon);
         textTenNhanVien = view.findViewById(R.id.tenNhanVienHoaDon);
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
+                .detectLeakedClosableObjects()
+                .build());
         database = new MySQLiteHelper(getContext());
         xulyall();
     }
@@ -131,17 +135,17 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
                 }
                 sanPhamList.add(sanPham);
                 khoHangList.add(khoHang);
-                FragmentBanHang.countSanPham++;
-            }
+                FragmentBanHang.countSanPham++; }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.gc();
-        FragmentBanHang.iClickItemSanPham =  new FragmentAddHoaDon(FragmentAddHoaDon.this.sanPhamList,FragmentAddHoaDon.this.khoHangList,
-                FragmentAddHoaDon.this.selectSanPham,FragmentAddHoaDon.this.selectKhachhang,FragmentAddHoaDon.this.hoaDon,
-                FragmentAddHoaDon.this.random,FragmentAddHoaDon.this.soHD);
+        FragmentBanHang.iClickItemSanPham = this;
+
+//                FragmentBanHang.iClickItemSanPham =  new FragmentAddHoaDon(FragmentAddHoaDon.this.sanPhamList,FragmentAddHoaDon.this.khoHangList,
+//          FragmentAddHoaDon.this.selectSanPham,FragmentAddHoaDon.this.selectKhachhang,FragmentAddHoaDon.this.hoaDon,
+//                FragmentAddHoaDon.this.random,FragmentAddHoaDon.this.soHD);
     }
 
     @Override
@@ -152,13 +156,18 @@ public class FragmentAddHoaDon extends Fragment implements IClickItemSanPham,Ser
     @Override
     public void onClickItemModel(SanPham sanPham, int check) {
         if(check == 1){
-            if(getActivity()!=null)
-                getActivity().setResult(Activity.RESULT_CANCELED);
+//            if(getActivity()!=null)
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//
             sanPhamList.remove(sanPham);
+            KhoHang khoHang1 = null;
             for (KhoHang khoHang : khoHangList){
                 if(khoHang.getMaSP().equals(sanPham.getMaSP())){
-                    khoHangList.remove(khoHang);
+                    khoHang1 = khoHang;
                 }
+            }
+            if(khoHang1 != null){
+                khoHangList.remove(khoHang1);
             }
             if(FragmentBanHang.countSanPham>0)
                 FragmentBanHang.countSanPham--;

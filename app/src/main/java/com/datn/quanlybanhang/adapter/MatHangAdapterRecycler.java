@@ -19,9 +19,10 @@ import com.datn.quanlybanhang.model.SanPham;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 import com.datn.quanlybanhang.myinterface.iClickitemHoaDon;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterRecycler.ProductViewHoler>{
+public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterRecycler.ProductViewHoler> implements Serializable {
 
     iClickitemHoaDon<SanPham> iClickitemHoaDon;
     IClickItemListenerRecycer<SanPham>  iClickItemListenerRecycer;
@@ -35,11 +36,13 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
         this.sanPhamList = sanPhamList;
         this.khoHangList = khoHangList;
         this.context = context;
+        database = new MySQLiteHelper(context);
     }
     public MatHangAdapterRecycler(IClickItemListenerRecycer<SanPham> iClickItemListenerRecycer, List<SanPham> sanPhamList,Context context ) {
         this.iClickItemListenerRecycer = iClickItemListenerRecycer;
         this.sanPhamList = sanPhamList;
         this.context = context;
+        database = new MySQLiteHelper(context);
     }
     @NonNull
     @Override
@@ -53,7 +56,6 @@ public class MatHangAdapterRecycler extends RecyclerView.Adapter<MatHangAdapterR
     public void onBindViewHolder(@NonNull  ProductViewHoler holder, int position) {
         SanPham sanPham = sanPhamList.get(position);
         if(sanPham == null) return;
-        database = new MySQLiteHelper(context);
         KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
         String str="Số  lượng : "+khoHang.getSoLuong();
         holder.textNameProduct.setText(sanPham.getTenSP());
