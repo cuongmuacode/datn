@@ -1,11 +1,11 @@
 package com.datn.quanlybanhang.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -65,6 +67,8 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
     public static int countSanPham = 1;
     String search = "";
     Toast toast;
+    int i = 1;
+    int currentSpriner;
     Context context;
     public static IClickItemSanPham iClickItemSanPham = new FragmentAddHoaDon();
 
@@ -76,6 +80,16 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
         check = b;
     }
 
+    ActivityResultLauncher<Intent> intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if(result.getResultCode()== Activity.RESULT_OK) {
+            iClickItemSanPham = new FragmentAddHoaDon();
+            countSanPham = 0;
+            countSanPhamm();
+            countSanPham = 1;
+            checkState = true;
+
+        }
+    });
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,8 +125,8 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
     @Override
     public void onStart() {
         super.onStart();
-        listSanPham.clear();
-        listSanPham.addAll(database.getListSanPham());
+
+        listSanPham= database.getListSanPham();
         matHangAdapterRecycler.notifyDataSetChanged();
         spinner.setSelection(0);
         if (countSanPham <= 0) {
@@ -153,8 +167,7 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
         frameLayoutRoot.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ActivityThongTin.class);
             intent.putExtra("Data", FragmentXemThem.ACT_SHOP);
-            startActivity(intent);
-            Log.i("cuonghi", "hi");
+            intentActivityResultLauncher.launch(intent);
         });
 
         item1.setOnMenuItemClickListener(item2 -> {
@@ -230,8 +243,7 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                listSanPham.clear();
+                currentSpriner = i;
                 listSanPham = database.getListSanPham();
 
                 if (!listString.get(i).equals("Tất cả mặt hàng")) {
@@ -244,8 +256,9 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
                     listSanPham.clear();
                     listSanPham.addAll(sanPhamSpinners);
                 }
-                matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this, listSanPham, context);
+                matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham , context);
                 recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
+                matHangAdapterRecycler.notifyDataSetChanged();
             }
 
             @Override
@@ -262,10 +275,13 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 search = charSequence.toString();
-                if (search.isEmpty()) {
+                if(search.isEmpty()) {
+                    listSanPham = database.getListSanPham();
+                    matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this,listSanPham , context);
                     recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
-                    matHangAdapterRecycler.notifyDataSetChanged();
+                    spinner.setSelection(0);
                 }
+
             }
 
             @Override
@@ -274,9 +290,10 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
             }
         });
 
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
+        editText.setOnFocusChangeListener((view, b) -> {
+
+            if(getContext()==null)return;
+            if(editText==view){
                 if (!b) {
                     filterListSanPham.clear();
                     for (SanPham sanPham : listSanPham) {
@@ -289,45 +306,46 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
                                 (khoHang.getGia() + "").contains(search))
                             filterListSanPham.add(sanPham);
                     }
-                    recyclerViewBanHang.setAdapter(new MatHangAdapterRecycler(FragmentBanHang.this, filterListSanPham, context));
-                    matHangAdapterRecycler.notifyDataSetChanged();
+                    if (!filterListSanPham.isEmpty())
+                        listSanPham = filterListSanPham;
+                    else
+                        listSanPham.clear();
+                    matHangAdapterRecycler = new MatHangAdapterRecycler(FragmentBanHang.this, listSanPham, context);
+                    recyclerViewBanHang.setAdapter(matHangAdapterRecycler);
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    return;
+
+                } else {
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                    editText.setText("");
                 }
-                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         });
 
     }
 
     private void xuLySort() {
-        imageView.setOnClickListener(new View.OnClickListener() {
-            int i = 1;
-
-            @Override
-            public void onClick(View view) {
-                if (i == 1) {
-                    imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
-                    displayToast("Sắp xếp từ A - Z");
-                    Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham.getTenSP().toLowerCase().compareTo(sanPham1.getTenSP().toLowerCase()));
-                    i = 2;
-                } else if (i == 2) {
-                    displayToast("Sắp xếp từ Z - A");
-                    imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
-                    Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham1.getTenSP().toLowerCase().compareTo(sanPham.getTenSP().toLowerCase()));
-                    i = 3;
-                } else if (i == 3) {
-                    displayToast("Sắp xếp mặc định");
-                    imageView.setImageResource(R.drawable.baseline_sort_by_alpha_24);
-                    listSanPham.clear();
-                    listSanPham.addAll(database.getListSanPham());
-                    spinner.setSelection(0);
-                    i = 1;
-                }
-                matHangAdapterRecycler.notifyDataSetChanged();
+        imageView.setOnClickListener(view -> {
+            if (i == 1) {
+                imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
+                displayToast("Sắp xếp từ A - Z");
+                Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham.getTenSP().toLowerCase().compareTo(sanPham1.getTenSP().toLowerCase()));
+                i = 2;
+            } else if (i == 2) {
+                displayToast("Sắp xếp từ Z - A");
+                imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
+                Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham1.getTenSP().toLowerCase().compareTo(sanPham.getTenSP().toLowerCase()));
+                i = 3;
+            } else if (i == 3) {
+                displayToast("Sắp xếp mặc định");
+                imageView.setImageResource(R.drawable.baseline_sort_by_alpha_24);
+                listSanPham.clear();
+                listSanPham.addAll(database.getListSanPham());
+                spinner.setSelection(0);
+                i = 1;
             }
+            matHangAdapterRecycler.notifyDataSetChanged();
         });
     }
 

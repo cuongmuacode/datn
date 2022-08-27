@@ -79,21 +79,22 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     public Fragment_San_Pham(IClickItemSanPham iClickItemSanPham) {
         this.iClickItemSanPham = iClickItemSanPham;
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment__san__pham, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull  View view, @Nullable  Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         editText = view.findViewById(R.id.edit_sanpham_search);
         recyclerView = view.findViewById(R.id.recycler_SanPham);
         imageView = view.findViewById(R.id.imageview_sanpham_sort);
         spinner = view.findViewById(R.id.spinnerSanPham);
-        if(getContext()==null) return;
+        if (getContext() == null) return;
         context = getContext();
         xuLyRecyclerView();
         xulyEditText();
@@ -103,7 +104,7 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem menuItem = menu.add(1,R.id.menu_right_add,1,R.string.nav_add).setOnMenuItemClickListener(menuItem1 -> {
+        MenuItem menuItem = menu.add(1, R.id.menu_right_add, 1, R.string.nav_add).setOnMenuItemClickListener(menuItem1 -> {
             replaceFragment(new Fragment_Add_SanPham(Fragment_San_Pham.this));
             return true;
         });
@@ -113,19 +114,18 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     }
 
     @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull  View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if(getActivity()!=null)
-        getActivity().getMenuInflater().inflate(R.menu.menu_model,menu);
+        if (getActivity() != null)
+            getActivity().getMenuInflater().inflate(R.menu.menu_model, menu);
     }
-
 
 
     private void xulyEditText() {
         List<DanhMuc> listDanhMuc = database.getListDanhMuc();
         List<String> listStringDanhMuc = new ArrayList<>();
         listStringDanhMuc.add("Tất cả mặt hàng");
-        for(DanhMuc danhMuc : listDanhMuc){
+        for (DanhMuc danhMuc : listDanhMuc) {
             listStringDanhMuc.add(danhMuc.getTenDanhMuc());
         }
 
@@ -147,9 +147,10 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
                     listSanPham.clear();
                     listSanPham.addAll(sanPhamSpinners);
                 }
-                sanPhamAdapterRecycler = new SanPhamAdapterRecycler(Fragment_San_Pham.this,listSanPham,context);
+                sanPhamAdapterRecycler = new SanPhamAdapterRecycler(Fragment_San_Pham.this, listSanPham, context);
                 recyclerView.setAdapter(sanPhamAdapterRecycler);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -157,32 +158,35 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
         });
 
         editText.setOnFocusChangeListener((view, b) -> {
-            if(getContext()==null)return;
+            if (getContext() == null) return;
             if (view == editText) {
-                if (b) {
-                    // Open keyboard
-                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                if (!b) {
 
-
-                        filterListSanPham.clear();
-                        for(SanPham sanPham : listSanPham) {
-                            KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
-                            if (sanPham.getTenSP().contains(search) ||
-                                    sanPham.getTenSP().toLowerCase().contains(search) ||
-                                    sanPham.getTenSP().contains(search) ||
-                                    removeAccent(sanPham.getTenSP()).contains(search) ||
-                                    removeAccent(sanPham.getTenSP()).toLowerCase().contains(search) ||
-                                    (khoHang.getGia() + "").contains(search))
-                                filterListSanPham.add(sanPham);
-                        }
-                        recyclerView.setAdapter(new SanPhamAdapterRecycler(Fragment_San_Pham.this,filterListSanPham,context));
+                    filterListSanPham.clear();
+                    for (SanPham sanPham : listSanPham) {
+                        KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
+                        if (sanPham.getTenSP().contains(search) ||
+                                sanPham.getTenSP().toLowerCase().contains(search) ||
+                                sanPham.getTenSP().contains(search) ||
+                                removeAccent(sanPham.getTenSP()).contains(search) ||
+                                removeAccent(sanPham.getTenSP()).toLowerCase().contains(search) ||
+                                (khoHang.getGia() + "").contains(search))
+                            filterListSanPham.add(sanPham);
+                    }
+                    listSanPham.clear();
+                    listSanPham.addAll(filterListSanPham);
+                    sanPhamAdapterRecycler = new SanPhamAdapterRecycler(Fragment_San_Pham.this, listSanPham, context);
+                    recyclerView.setAdapter(sanPhamAdapterRecycler);
                     sanPhamAdapterRecycler.notifyDataSetChanged();
-                    return;
-                }
                     // Close keyboard
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    return;
+                }
+                // Open keyboard
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                editText.setText("");
 
             }
         });
@@ -194,8 +198,11 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-               search = charSequence.toString();
-                if(search.isEmpty()) {
+                search = charSequence.toString();
+                if (search.isEmpty()) {
+                    listSanPham = database.getListSanPham();
+                    spinner.setSelection(0);
+                    sanPhamAdapterRecycler = new SanPhamAdapterRecycler(Fragment_San_Pham.this, listSanPham, context);
                     recyclerView.setAdapter(sanPhamAdapterRecycler);
                     sanPhamAdapterRecycler.notifyDataSetChanged();
                 }
@@ -208,47 +215,45 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
         });
     }
 
-    private void  xuLyRecyclerView() {
-        if(getContext()!=null) {
+    private void xuLyRecyclerView() {
+        if (getContext() != null) {
             database = new MySQLiteHelper(getContext());
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         }
         listSanPham = database.getListSanPham();
-        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(this,listSanPham,context);
+        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(this, listSanPham, context);
         recyclerView.setAdapter(sanPhamAdapterRecycler);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        spinner.setSelection(0);
     }
 
     private void xuLySort() {
         imageView.setOnClickListener(new View.OnClickListener() {
-           int i = 1;
+            int i = 1;
+
             @Override
             public void onClick(View view) {
-                if(i==1){
+                if (i == 1) {
                     displayToast("Sắp xếp A - Z");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_downward_24);
                     Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham.getTenSP().compareTo(sanPham1.getTenSP()));
-                    i=2;
-                }
-                else if(i==2){
+                    i = 2;
+                } else if (i == 2) {
                     displayToast("Sắp xếp Z - A");
                     imageView.setImageResource(R.drawable.ic_baseline_arrow_upward_24);
                     Collections.sort(listSanPham, (sanPham, sanPham1) -> sanPham1.getTenSP().compareTo(sanPham.getTenSP()));
-                    i=3;
-                }
-                else if(i==3){
+                    i = 3;
+                } else if (i == 3) {
                     displayToast("Sắp xếp mặc định");
                     imageView.setImageResource(R.drawable.baseline_sort_by_alpha_24);
-                        listSanPham.clear();
-                        listSanPham.addAll(database.getListSanPham());
-                        spinner.setSelection(0);
-                    i=1;
+                    listSanPham.clear();
+                    listSanPham.addAll(database.getListSanPham());
+                    spinner.setSelection(0);
+                    i = 1;
                 }
                 sanPhamAdapterRecycler.notifyDataSetChanged();
             }
@@ -256,8 +261,8 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     }
 
 
-    public void replaceFragment(Fragment fragment){
-        if(getActivity()==null)return;
+    public void replaceFragment(Fragment fragment) {
+        if (getActivity() == null) return;
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.framelayoutcontentthongtin, fragment);
@@ -268,18 +273,17 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
     @Override
     public boolean processModel(SanPham sanPham, int i) {
-         if(i == ADD_SAN_PHAM){
-             String stringMaSP = "MaSP"+soMaSP;
-             String stringMaKHO = "MaKHO"+soMaKHO;
-             sanPham.setMaSP(stringMaSP);
-            if(database.addSanPham(sanPham)) {
-                KhoHang khoHang = new KhoHang(stringMaKHO,sanPham.getMaSP(),0,0,0);
-                if(database.addKhoHang(khoHang)){
+        if (i == ADD_SAN_PHAM) {
+            String stringMaSP = "MaSP" + soMaSP;
+            String stringMaKHO = "MaKHO" + soMaKHO;
+            sanPham.setMaSP(stringMaSP);
+            if (database.addSanPham(sanPham)) {
+                KhoHang khoHang = new KhoHang(stringMaKHO, sanPham.getMaSP(), 0, 0, 0);
+                if (database.addKhoHang(khoHang)) {
                     soMaSP = Math.abs(random.nextLong());
                 }
                 soMaKHO = Math.abs(random.nextLong());
-            }
-            else {
+            } else {
                 soMaSP = Math.abs(random.nextLong());
                 return false;
             }
@@ -297,22 +301,23 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
     @Override
     public void onClickChiTietModel(SanPham sanPham) {
-        if(iClickItemSanPham!=null) {
-            iClickItemSanPham.onClickSanPham(sanPham,null);
-            if(getActivity()!=null)
+        if (iClickItemSanPham != null) {
+            iClickItemSanPham.onClickSanPham(sanPham, null);
+            if (getActivity() != null)
                 getActivity().onBackPressed();
             return;
         }
         replaceFragment(new Fragment_ChiTietSanPham(sanPham));
     }
+
     public void displayToast(String message) {
-        if(toast != null)
+        if (toast != null)
             toast.cancel();
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 
-    public  String removeAccent(String s) {
+    public String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");

@@ -19,6 +19,7 @@
             android:inputType="text|textNoSuggestions"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
+            android:maxLength="50"
             android:imeOptions="actionSearch"
             android:autofillHints="@string/icon" />
         <LinearLayout

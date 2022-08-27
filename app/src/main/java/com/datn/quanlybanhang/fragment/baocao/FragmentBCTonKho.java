@@ -40,12 +40,14 @@ public class FragmentBCTonKho extends Fragment {
     RecyclerView recyclerView;
     TextView textView;
     MySQLiteHelper database;
+    String search = "";
     List<KhoHang> tonKhoList = new ArrayList<>();
     List<KhoHang> tonKhoListQurey = new ArrayList<>();
 
     public FragmentBCTonKho() {
         // Required empty public constructor
     }
+
     BCTonKhoAdapterRecycler bcTonKhoAdapterRecycler;
 
     @Override
@@ -61,39 +63,53 @@ public class FragmentBCTonKho extends Fragment {
         textView = view.findViewById(R.id.textbaocaoTonkho);
         editText = view.findViewById(R.id.edit_tonkho_search_baocao);
         recyclerView = view.findViewById(R.id.reycler_baocaoTonKho);
-        database= new MySQLiteHelper(getContext());
+        database = new MySQLiteHelper(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM", new Locale("vi", "VN"));
-        String str = "Báo cáo tồn kho thàng "+simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        String str = "Báo cáo tồn kho thàng " + simpleDateFormat.format(new Date(System.currentTimeMillis()));
         textView.setText(str);
 
         str = "Select SANPHAM_MASP,SANPHAM_TENSP,KHO_SOLUONG" +
                 " From SANPHAM,KHO " +
                 " Where SANPHAM_MASP = KHO_MASP ";
 
-        Cursor cursor =  database.execSQLSelect(str,database.getReadableDatabase());
-        if(cursor.moveToFirst()) {
+        Cursor cursor = database.execSQLSelect(str, database.getReadableDatabase());
+        if (cursor.moveToFirst()) {
             do {
-                Log.i("cuonghi",""+cursor.getString(0));
-                tonKhoList.add(new KhoHang(cursor.getString(0),cursor.getString(1),cursor.getInt(2),1,1));
+                Log.i("cuonghi", "" + cursor.getString(0));
+                tonKhoList.add(new KhoHang(cursor.getString(0), cursor.getString(1), cursor.getInt(2), 1, 1));
             } while (cursor.moveToNext());
         }
         database.close();
-        bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoList,database);
+        bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoList, database);
         recyclerView.setAdapter(bcTonKhoAdapterRecycler);
         xuLyEditText();
     }
-    void xuLyEditText(){
+
+    void xuLyEditText() {
         editText.setOnFocusChangeListener((view, b) -> {
-            if(getContext()==null)return;
+            if (getContext() == null) return;
             if (view == editText) {
                 if (b) {
                     // Open keyboard
+                    editText.setText("");
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             showSoftInput(editText, InputMethodManager.SHOW_FORCED);
                 } else {
                     // Close keyboard
+                    tonKhoListQurey.clear();
+                    for (KhoHang khoHang : tonKhoList) {
+                        if (khoHang.getMaSP().contains(search) ||
+                                khoHang.getMaSP().toLowerCase().contains(search) ||
+                                khoHang.getMaSP().contains(search) ||
+                                removeAccent(khoHang.getMaSP()).contains(search) ||
+                                removeAccent(khoHang.getMaSP()).toLowerCase().contains(search))
+                            tonKhoListQurey.add(khoHang);
+                    }
+                    bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoListQurey, database);
+                    recyclerView.setAdapter(bcTonKhoAdapterRecycler);
+
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
@@ -107,24 +123,12 @@ public class FragmentBCTonKho extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
-                if(search.isEmpty()) {
-                    recyclerView.setAdapter(bcTonKhoAdapterRecycler);
-                    bcTonKhoAdapterRecycler.notifyDataSetChanged();
-                }
-                else{
-                    tonKhoListQurey.clear();
-                    for(KhoHang khoHang : tonKhoList){
-                        if(khoHang.getMaSP().contains(search)||
-                                khoHang.getMaSP().toLowerCase().contains(search)||
-                                khoHang.getMaSP().contains(search)||
-                                removeAccent(khoHang.getMaSP()).contains(search)||
-                                removeAccent(khoHang.getMaSP()).toLowerCase().contains(search))
-                            tonKhoListQurey.add(khoHang);
-                    }
-                    bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoListQurey,database);
+                search = charSequence.toString();
+                if (search.isEmpty()) {
+                    bcTonKhoAdapterRecycler = new BCTonKhoAdapterRecycler(tonKhoList,database);
                     recyclerView.setAdapter(bcTonKhoAdapterRecycler);
                 }
+
             }
 
             @Override
@@ -133,6 +137,7 @@ public class FragmentBCTonKho extends Fragment {
             }
         });
     }
+
     public static String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

@@ -1,5 +1,6 @@
 package com.datn.quanlybanhang.fragment.baocao;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -24,11 +26,13 @@ import com.datn.quanlybanhang.adapter.BCSanPhamNhieuAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.KhoHang;
 
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class Fragment_BCSanPhamBanNhieu extends Fragment {
 
@@ -40,6 +44,8 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
     MySQLiteHelper database;
     BCSanPhamNhieuAdapterRecycler bcSanPhamNhieuAdapterRecycler;
     List<String> listMonth;
+    String search;
+
     public Fragment_BCSanPhamBanNhieu() {
         // Required empty public constructor
     }
@@ -58,15 +64,16 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
         spinner = view.findViewById(R.id.spinnerSanPhamBaoCao);
         editText = view.findViewById(R.id.edit_sanpham_search_baocao);
         listMonth = getMonth();
-        if(getContext()==null)return;;
-        database= new MySQLiteHelper(getContext());
+        if (getContext() == null) return;
+        ;
+        database = new MySQLiteHelper(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,listMonth);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listMonth);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-    xulysanpham();
-    xuLySearch();
+        xulysanpham();
+        xuLySearch();
     }
 
     private List<String> getMonth() {
@@ -86,36 +93,34 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
         return list;
     }
 
-    void xulysanpham(){
+    void xulysanpham() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String month  = "";
+                String month = "";
                 String str = "";
                 khoHangList.clear();
                 String textDate = "";
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", new Locale("vi", "VN"));
 
-                    month = listMonth.get(i).toLowerCase().substring(listMonth.get(i).length() - 2, listMonth.get(i).length());
-                    textDate = simpleDateFormat.format(new Date(System.currentTimeMillis())) + month;
-                     str = "Select SANPHAM_TENSP,Sum(CTHD_SL) as SOLUONG " +
-                            " From CTHD,SANPHAM,HOADON " +
-                            "Where SANPHAM_MASP = CTHD_MASP and HOADON_SOHD = CTHD_SOHD and strftime('%Y%m',HOADON_NGAYHD) = '"+textDate+ "' "+
-                            " Group By SANPHAM_TENSP Order By 'SOLUONG' DESC LIMIT 10";
+                month = listMonth.get(i).toLowerCase().substring(listMonth.get(i).length() - 2, listMonth.get(i).length());
+                textDate = simpleDateFormat.format(new Date(System.currentTimeMillis())) + month;
+                str = "Select SANPHAM_TENSP,Sum(CTHD_SL) as SOLUONG " +
+                        " From CTHD,SANPHAM,HOADON " +
+                        "Where SANPHAM_MASP = CTHD_MASP and HOADON_SOHD = CTHD_SOHD and strftime('%Y%m',HOADON_NGAYHD) = '" + textDate + "' " +
+                        " Group By SANPHAM_TENSP Order By 'SOLUONG' DESC LIMIT 10";
 
 
-
-                Cursor cursor =  database.execSQLSelect(str,database.getReadableDatabase());
-                if(cursor.moveToFirst()) {
+                Cursor cursor = database.execSQLSelect(str, database.getReadableDatabase());
+                if (cursor.moveToFirst()) {
                     do {
                         KhoHang khoHang = new KhoHang(
-                                cursor.getString(0),"",cursor.getInt(1),1,1);
+                                cursor.getString(0), "", cursor.getInt(1), 1, 1);
                         khoHangList.add(khoHang);
                     } while (cursor.moveToNext());
                 }
                 database.close();
-
-                 bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangList,database);
+                bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangList, database);
                 recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
             }
 
@@ -126,6 +131,7 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
         });
 
     }
+
     private void xuLySearch() {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,19 +141,11 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
-                if(search.isEmpty()) {
+                 search = charSequence.toString();
+                if (search.isEmpty()) {
+                    bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangList,database);
                     recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
                     bcSanPhamNhieuAdapterRecycler.notifyDataSetChanged();
-                }
-                else{
-                    khoHangListSearch.clear();
-                    for(KhoHang khoHang: khoHangList){
-                        if(khoHang.getMaKho().contains(search))
-                            khoHangListSearch.add(khoHang);
-                    }
-                    bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangListSearch,database);
-                    recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
                 }
             }
 
@@ -158,5 +156,36 @@ public class Fragment_BCSanPhamBanNhieu extends Fragment {
             }
         });
 
+        editText.setOnFocusChangeListener((view, b) -> {
+            if (getContext() == null) return;
+            if(view == editText) {
+                if(!b){
+                    khoHangListSearch.clear();
+                    for (KhoHang khoHang : khoHangList) {
+                        if (khoHang.getMaKho().contains(search) ||
+                                khoHang.getMaKho().toLowerCase().contains(search) ||
+                                removeAccent(khoHang.getMaKho()).contains(search) ||
+                                removeAccent(khoHang.getMaKho()).toLowerCase().contains(search)
+                        )
+                            khoHangListSearch.add(khoHang);
+                    }
+                    bcSanPhamNhieuAdapterRecycler = new BCSanPhamNhieuAdapterRecycler(khoHangListSearch, database);
+                    recyclerView.setAdapter(bcSanPhamNhieuAdapterRecycler);
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    return;
+                }
+                editText.setText("");
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+
+            }
+        });
+
+    }
+    public String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("");
     }
 }

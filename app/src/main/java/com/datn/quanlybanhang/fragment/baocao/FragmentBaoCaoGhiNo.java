@@ -1,5 +1,6 @@
 package com.datn.quanlybanhang.fragment.baocao;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -25,11 +27,13 @@ import com.datn.quanlybanhang.adapter.BCKhachNoAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.KhoHang;
 
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 
 public class FragmentBaoCaoGhiNo extends Fragment {
@@ -39,6 +43,7 @@ public class FragmentBaoCaoGhiNo extends Fragment {
     RecyclerView recyclerView;
     Spinner spinner;
     MySQLiteHelper database;
+    String search = "";
     BCKhachNoAdapterRecycler bcKhachNoAdapterRecycler;
     List<String> listMonth;
 
@@ -110,7 +115,6 @@ public class FragmentBaoCaoGhiNo extends Fragment {
                     } while (cursor.moveToNext());
                 }
                 database.close();
-
                 bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangList);
                 recyclerView.setAdapter(bcKhachNoAdapterRecycler);
                 bcKhachNoAdapterRecycler.notifyDataSetChanged();
@@ -132,18 +136,9 @@ public class FragmentBaoCaoGhiNo extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
-                if(search.isEmpty()) {
-                    recyclerView.setAdapter(bcKhachNoAdapterRecycler);
-                    bcKhachNoAdapterRecycler.notifyDataSetChanged();
-                }
-                else{
-                    khoHangListSearch.clear();
-                    for(KhoHang khoHang: khoHangList){
-                        if(khoHang.getMaKho().contains(search))
-                            khoHangListSearch.add(khoHang);
-                    }
-                    bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangListSearch);
+                search = charSequence.toString();
+                if(search.isEmpty()){
+                    bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangList);
                     recyclerView.setAdapter(bcKhachNoAdapterRecycler);
                 }
             }
@@ -151,9 +146,37 @@ public class FragmentBaoCaoGhiNo extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
 
-
             }
         });
 
+        editText.setOnFocusChangeListener((view, b) -> {
+            if (getContext() == null) return;
+            if (view == editText) {
+                if (!b) {
+                        khoHangListSearch.clear();
+                        for(KhoHang khoHang: khoHangList){
+                            if(khoHang.getMaKho().contains(search)||
+                                    khoHang.getMaKho().toLowerCase().contains(search)||
+                                    removeAccent(khoHang.getMaKho()).toLowerCase().contains(search)||
+                                    removeAccent(khoHang.getMaKho()) .contains(search))
+                                khoHangListSearch.add(khoHang);
+                        }
+                        bcKhachNoAdapterRecycler = new BCKhachNoAdapterRecycler(khoHangListSearch);
+                        recyclerView.setAdapter(bcKhachNoAdapterRecycler);
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    return;
+                }
+                editText.setText("");
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+            }
+        });
+
+    }
+    public String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("");
     }
 }

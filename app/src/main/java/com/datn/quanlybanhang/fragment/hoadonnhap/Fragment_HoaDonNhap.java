@@ -29,11 +29,11 @@ import com.datn.quanlybanhang.model.KhachHang;
 import com.datn.quanlybanhang.model.NhanVien;
 import com.datn.quanlybanhang.myinterface.IClickItemListenerRecycer;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,6 +48,7 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
     List<HoaDonNhap> filterListHoaDonNhap = new ArrayList<>();
     HoaDonNhap selectHoaDonNhap;
     Toast toast;
+    String search = "";
     public Fragment_HoaDonNhap() {
         // Required empty public constructor
     }
@@ -98,14 +99,38 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
             if (view == editText) {
                 if (b) {
                     // Open keyboard
+                    editText.setText("");
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+
                 } else {
+                      filterListHoaDonNhap.clear();
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm",new Locale("vi","VN"));
+                        for(HoaDonNhap hoaDonNhap : hoaDonNhaps){
+                            KhachHang khachHang = database.getKhachHang(hoaDonNhap.getMaKH());
+                            NhanVien nhanVien = database.getNhanVien(hoaDonNhap.getMaNV());
+
+                            String dateSTR = dateFormat.format(Timestamp.valueOf(hoaDonNhap.getNgayNhap()));
+                            if((hoaDonNhap.getGiaNhap()+"").contains(search)||
+                                    (hoaDonNhap.getGia()+"").contains(search)||
+                                    dateSTR.contains(search)||
+                                    nhanVien.getHoTenNV().contains(search)||
+                                    khachHang.getTenKH().contains(search))
+                                filterListHoaDonNhap.add(hoaDonNhap);
+                        }
+                        hoaDonNhaps.clear();
+                        hoaDonNhaps.addAll(filterListHoaDonNhap);
+                        hoaDonNhapAdapterRecycler = new HoaDonNhapAdapterRecycler(hoaDonNhaps,getContext(),
+                                Fragment_HoaDonNhap.this);
+                        recyclerView.setAdapter(hoaDonNhapAdapterRecycler);
+                        hoaDonNhapAdapterRecycler.notifyDataSetChanged();
                     // Close keyboard
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    }
+
                 }
-            }
+
         });
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -115,30 +140,15 @@ public class Fragment_HoaDonNhap extends Fragment implements IClickItemListenerR
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
-                if(search.isEmpty()) {
+                search = charSequence.toString();
+                if(search.isEmpty()){
+                        hoaDonNhaps = database.getListHoaDonNhap();
+                    hoaDonNhapAdapterRecycler = new HoaDonNhapAdapterRecycler(hoaDonNhaps,getContext(),
+                            Fragment_HoaDonNhap.this);
                     recyclerView.setAdapter(hoaDonNhapAdapterRecycler);
-                    hoaDonNhapAdapterRecycler.notifyDataSetChanged();
-                }
-                else{
-                    filterListHoaDonNhap.clear();
-                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm",new Locale("vi","VN"));
-                    for(HoaDonNhap hoaDonNhap : hoaDonNhaps){
-                        KhachHang khachHang = database.getKhachHang(hoaDonNhap.getMaKH());
-                        NhanVien nhanVien = database.getNhanVien(hoaDonNhap.getMaNV());
+                        hoaDonNhapAdapterRecycler.notifyDataSetChanged();
 
-                        String dateSTR = dateFormat.format(new Date(Long.parseLong(hoaDonNhap.getNgayNhap())));
-                        if((hoaDonNhap.getGiaNhap()+"").contains(search)||
-                                (hoaDonNhap.getGia()+"").contains(search)||
-                                dateSTR.contains(search)||
-                                nhanVien.getHoTenNV().contains(search)||
-                                khachHang.getTenKH().contains(search))
-                            filterListHoaDonNhap.add(hoaDonNhap);
-                    }
-                    recyclerView.setAdapter(new HoaDonNhapAdapterRecycler(filterListHoaDonNhap,getContext(),
-                            Fragment_HoaDonNhap.this));
                 }
-
             }
 
             @Override

@@ -5,50 +5,54 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragment.baocao.FragmentBaoCaoGhiNo">
-        <TextView
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            android:id="@+id/textbaocaokhachhangno"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:text="Báo cáo khách hàng nợ " />
-    <EditText
+
+    <TextView
+        android:id="@+id/textbaocaokhachhangno"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:text="Báo cáo khách hàng nợ "
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edit_khachhang_search_baocao"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:autofillHints="@string/icon"
         android:background="@drawable/bg_edittext"
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:drawablePadding="20dp"
         android:ems="10"
-        android:id="@+id/edit_khachhang_search_baocao"
         android:hint="@string/edit_timkiem"
-        android:inputType="textPersonName"
+        android:imeOptions="actionSearch"
+        android:inputType="text|textNoSuggestions"
+        android:maxLength="50"
         android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        android:autofillHints="@string/icon" />
+        android:paddingEnd="0dp" />
+
     <Spinner
         android:id="@+id/spinnerKhachhangBaoCao"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:textSize="20sp"
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="0dp"
-        />
+        android:textSize="20sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/bg_textview"
-        />
+        android:background="@drawable/bg_textview" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyler_bao_caokhachno"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp" />
 
 
 </LinearLayout>

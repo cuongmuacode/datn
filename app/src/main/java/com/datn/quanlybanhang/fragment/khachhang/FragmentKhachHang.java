@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -109,12 +108,6 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (getActivity() != null)
-            getActivity().getMenuInflater().inflate(R.menu.menu_model, menu);
-    }
 
     @Override
     public void onClickItemModel(KhachHang khachHang) {
@@ -150,32 +143,30 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
     }
 
     private void xulyEditText() {
-
         editText.setOnFocusChangeListener((view, b) -> {
             if (getContext() == null) return;
             if (view == editText) {
                 if (!b) {
                     filterListKhachHang.clear();
 
-                        for (KhachHang khachHang : listKhachHang) {
-                            if (removeAccent(khachHang.getTenKH().toLowerCase()).contains(search) ||
-                                    removeAccent(khachHang.getTenKH()).contains(search) ||
-                                    khachHang.getTenKH().contains(search) ||
-                                    khachHang.getTenKH().toLowerCase().contains(search) ||
-                                    (khachHang.getSoDT().toLowerCase()).contains(search))
-                                filterListKhachHang.add(khachHang);
-                        }
-                        recyclerView.setAdapter(new KhachHangAdapterRecycler(filterListKhachHang, FragmentKhachHang.this));
-
-                    // Open keyboard
-                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                    return;
-                }
-                    // Close keyboard
+                    for (KhachHang khachHang : listKhachHang) {
+                        if (removeAccent(khachHang.getTenKH().toLowerCase()).contains(search) ||
+                                removeAccent(khachHang.getTenKH()).contains(search) ||
+                                khachHang.getTenKH().contains(search) ||
+                                khachHang.getTenKH().toLowerCase().contains(search) ||
+                                (khachHang.getSoDT().toLowerCase()).contains(search))
+                            filterListKhachHang.add(khachHang);
+                    }
+                    listKhachHang = filterListKhachHang;
+                    khachHangAdapterRecycler = new KhachHangAdapterRecycler(listKhachHang, FragmentKhachHang.this);
+                            recyclerView.setAdapter(khachHangAdapterRecycler);
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
+                    return;
+                }
+                editText.setText("");
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         });
         editText.addTextChangedListener(new TextWatcher() {
@@ -188,6 +179,8 @@ public class FragmentKhachHang extends Fragment implements IClickItemListenerRec
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 search = charSequence.toString();
                 if (search.isEmpty()) {
+                    listKhachHang = database.getListKhachHang();
+                    khachHangAdapterRecycler = new KhachHangAdapterRecycler(listKhachHang, FragmentKhachHang.this);
                     recyclerView.setAdapter(khachHangAdapterRecycler);
                     khachHangAdapterRecycler.notifyDataSetChanged();
                 }

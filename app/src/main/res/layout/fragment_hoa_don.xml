@@ -40,17 +40,20 @@
             android:contentDescription="@string/icon" />
     </LinearLayout>
     <EditText
-        android:id="@+id/search_hoadon"
-        android:background="@drawable/bg_edittext"
-        android:paddingStart="20dp"
-        android:paddingEnd="10dp"
-        android:drawablePadding="10dp"
-        android:drawableStart="@drawable/ic_baseline_search_24"
-        android:hint="  Tìm kiếm"
-        android:inputType="text|textNoSuggestions"
-        android:imeOptions="actionSearch"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:background="@drawable/bg_edittext"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawablePadding="20dp"
+        android:ems="10"
+        android:id="@+id/search_hoadon"
+        android:hint="@string/edit_timkiem"
+        android:maxLength="50"
+        android:inputType="text|textNoSuggestions"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:imeOptions="actionSearch"
+        android:autofillHints="@string/icon" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHoaDon"
         android:layout_width="match_parent"

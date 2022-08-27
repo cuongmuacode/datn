@@ -927,7 +927,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     cursor.getString(3),
                     cursor.getString(5)
             );
-            cursor.close();
         }
         sqLiteDatabase.close();
         return khachHang;

@@ -13,8 +13,10 @@
             android:drawableStart="@drawable/ic_baseline_search_24"
             android:drawablePadding="20dp"
             android:ems="10"
+            android:maxLength="50"
             android:hint="@string/edit_timkiem"
-            android:inputType="textPersonName"
+            android:inputType="text|text|textNoSuggestions"
+            android:imeOptions="actionSearch"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
             android:autofillHints="@string/icon" />

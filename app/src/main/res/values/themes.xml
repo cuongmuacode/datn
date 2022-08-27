@@ -5,11 +5,16 @@
         <item name="colorPrimary">@color/md_green_200</item>
         <item name="colorPrimaryVariant">@color/md_grey_600</item>
         <item name="colorOnPrimary">@color/md_blue_grey_900</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/md_green_100</item>
         <item name="colorSecondaryVariant">@color/md_green_300</item>
         <item name="colorOnSecondary">@color/md_blue_grey_900</item>
         <item name="colorOnBackground">@color/white</item>
+
+        <item name="backgroundColor">@color/md_blue_grey_700</item>
+        <item name="background">@color/md_grey_600</item>
+
 
 
 

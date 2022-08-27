@@ -10,7 +10,11 @@
         <item name="colorSecondaryVariant">@color/md_grey_101</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorOnBackground">@color/md_grey_900</item>
-        <!-- Status bar color. -->
+
+        <item name="backgroundColor">@color/md_amber_50</item>
+        <item name="background">@color/md_grey_700</item>
+
+    <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
