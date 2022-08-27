@@ -47,6 +47,8 @@
         android:drawablePadding="10dp"
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:hint="  Tìm kiếm"
+        android:inputType="text|textNoSuggestions"
+        android:imeOptions="actionSearch"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
     <androidx.recyclerview.widget.RecyclerView

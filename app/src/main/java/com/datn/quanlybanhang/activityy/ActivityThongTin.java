@@ -2,6 +2,7 @@ package com.datn.quanlybanhang.activityy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class ActivityThongTin extends AppCompatActivity {
             setActionToolbaActivity();
             getIntentAll();
     }
+
 
     private void setActionToolbaActivity() {
         Toolbar toolbar = findViewById(R.id.toolbar1);
@@ -135,6 +137,11 @@ public class ActivityThongTin extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
 
     }
 }

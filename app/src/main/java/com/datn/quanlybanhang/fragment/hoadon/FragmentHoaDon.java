@@ -2,6 +2,7 @@
 package com.datn.quanlybanhang.fragment.hoadon;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -56,6 +58,7 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
     List<String> listSpiner;
     Fragment_ChiTietHoaDon fragment_chiTietHoaDon;
     int i = 3;
+    String search = "";
     EditText editText;
     String textItemSprinner;
 
@@ -171,6 +174,32 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
     }
 
     private void xuLySearch() {
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b) {
+                    hoaDonListQuery.clear();
+                    for (HoaDon hoaDon : hoaDonList) {
+                        KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
+
+                        if (khachHang.getTenKH().contains(search) || khachHang.getTenKH().toLowerCase().contains(search.toLowerCase()) ||
+                                removeAccent(khachHang.getTenKH()).contains(search) ||
+                                removeAccent(khachHang.getTenKH().toLowerCase()).contains(search.toLowerCase()) ||
+
+                                (hoaDon.getTriGia() + "").contains(search))
+                            hoaDonListQuery.add(hoaDon);
+                    }
+                    recyclerViewHoaDon.setAdapter(new HoaDonAdapterRecycler(getContext(), hoaDonListQuery, FragmentHoaDon.this));
+                    hoaDonAdapterRecycler.notifyDataSetChanged();
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    return;
+                }
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+            }
+        });
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -179,27 +208,12 @@ public class  FragmentHoaDon extends Fragment implements IClickItemListenerRecyc
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
+                search = charSequence.toString();
                 if(search.isEmpty()) {
                     hoaDonAdapterRecycler = new HoaDonAdapterRecycler(getContext(),hoaDonList,FragmentHoaDon.this);
                     recyclerViewHoaDon.setAdapter(hoaDonAdapterRecycler);
-
                 }
-                else{
-                    hoaDonListQuery.clear();
-                    for(HoaDon hoaDon: hoaDonList){
-                        KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
 
-                        if(khachHang.getTenKH().contains(search)||khachHang.getTenKH().toLowerCase().contains(search.toLowerCase())||
-                                removeAccent(khachHang.getTenKH()).contains(search)||
-                                removeAccent(khachHang.getTenKH().toLowerCase()).contains(search.toLowerCase())||
-
-                                (hoaDon.getTriGia()+"").contains(search))
-                            hoaDonListQuery.add(hoaDon);
-                    }
-                    recyclerViewHoaDon.setAdapter(new HoaDonAdapterRecycler(getContext(),hoaDonListQuery,FragmentHoaDon.this));
-                }
-                hoaDonAdapterRecycler.notifyDataSetChanged();
             }
 
             @Override

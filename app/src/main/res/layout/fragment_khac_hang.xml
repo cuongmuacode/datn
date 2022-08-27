@@ -15,6 +15,7 @@
             android:ems="10"
             android:hint="@string/edit_timkiem"
             android:inputType="textPersonName"
+            android:imeOptions="actionSearch"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
             android:autofillHints="@string/icon" />

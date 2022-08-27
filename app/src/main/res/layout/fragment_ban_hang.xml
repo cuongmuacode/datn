@@ -16,9 +16,10 @@
             android:ems="10"
             android:id="@+id/edit_sanpham_search_banhang"
             android:hint="@string/edit_timkiem"
-            android:inputType="textPersonName"
+            android:inputType="text|textNoSuggestions"
             android:paddingStart="20dp"
             android:paddingEnd="0dp"
+            android:imeOptions="actionSearch"
             android:autofillHints="@string/icon" />
         <LinearLayout
             android:orientation="horizontal"

@@ -67,7 +67,7 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
     public static final int SUA_SAN_PHAM = 1;
     public static final int ADD_SAN_PHAM = 2;
     Context context;
-
+    String search = "";
     Toast toast;
     String textItemSprinner;
 
@@ -163,11 +163,27 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
                     // Open keyboard
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                } else {
+
+
+                        filterListSanPham.clear();
+                        for(SanPham sanPham : listSanPham) {
+                            KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
+                            if (sanPham.getTenSP().contains(search) ||
+                                    sanPham.getTenSP().toLowerCase().contains(search) ||
+                                    sanPham.getTenSP().contains(search) ||
+                                    removeAccent(sanPham.getTenSP()).contains(search) ||
+                                    removeAccent(sanPham.getTenSP()).toLowerCase().contains(search) ||
+                                    (khoHang.getGia() + "").contains(search))
+                                filterListSanPham.add(sanPham);
+                        }
+                        recyclerView.setAdapter(new SanPhamAdapterRecycler(Fragment_San_Pham.this,filterListSanPham,context));
+                    sanPhamAdapterRecycler.notifyDataSetChanged();
+                    return;
+                }
                     // Close keyboard
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                }
+
             }
         });
         editText.addTextChangedListener(new TextWatcher() {
@@ -178,25 +194,10 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String search = charSequence.toString();
+               search = charSequence.toString();
                 if(search.isEmpty()) {
                     recyclerView.setAdapter(sanPhamAdapterRecycler);
                     sanPhamAdapterRecycler.notifyDataSetChanged();
-
-                }
-                else{
-                    filterListSanPham.clear();
-                    for(SanPham sanPham : listSanPham){
-                        KhoHang khoHang = database.getKhoHang(sanPham.getMaSP());
-                        if(sanPham.getTenSP().contains(search)||
-                                sanPham.getTenSP().toLowerCase().contains(search)||
-                                sanPham.getTenSP().contains(search)||
-                                removeAccent(sanPham.getTenSP()).contains(search)||
-                                removeAccent(sanPham.getTenSP()).toLowerCase().contains(search)||
-                                (khoHang.getGia()+"").contains(search))
-                            filterListSanPham.add(sanPham);
-                    }
-                    recyclerView.setAdapter(new SanPhamAdapterRecycler(Fragment_San_Pham.this,filterListSanPham,context));
                 }
 
             }
