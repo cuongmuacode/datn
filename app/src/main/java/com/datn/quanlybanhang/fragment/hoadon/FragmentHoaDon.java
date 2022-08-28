@@ -79,6 +79,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
         super.onViewCreated(view, savedInstanceState);
         textViewHoaDonFilter = view.findViewById(R.id.textHoaDonFilter);
         imageViewSort = view.findViewById(R.id.sort_img_hoadon);
+        editText = view.findViewById(R.id.search_hoadon);
         recyclerViewHoaDon = view.findViewById(R.id.recyclerHoaDon);
         if (getContext() == null) return;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -86,7 +87,6 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL);
         recyclerViewHoaDon.addItemDecoration(dividerItemDecoration);
         database = new MySQLiteHelper(getContext());
-        editText = view.findViewById(R.id.search_hoadon);
         spinner = view.findViewById(R.id.spinnerHoaDonFilter);
         imageViewSort.setImageResource(R.drawable.ic_baseline_sort_24);
         hoaDonList = database.getListHoaDon();
@@ -226,7 +226,7 @@ public class FragmentHoaDon extends Fragment implements IClickItemListenerRecyce
                     hoaDonAdapterRecycler.notifyDataSetChanged();
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                } else {
+                } if(b){
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             showSoftInput(editText, InputMethodManager.SHOW_FORCED);
                     editText.setText("");

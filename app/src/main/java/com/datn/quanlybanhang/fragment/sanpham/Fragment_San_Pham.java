@@ -182,11 +182,12 @@ public class Fragment_San_Pham extends Fragment implements IClickItemListenerRec
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
                     return;
+                }if(b) {
+                    // Open keyboard
+                    ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                            showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                    editText.setText("");
                 }
-                // Open keyboard
-                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
-                        showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-                editText.setText("");
 
             }
         });

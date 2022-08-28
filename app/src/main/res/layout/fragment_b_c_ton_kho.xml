@@ -24,6 +24,7 @@
         android:ems="10"
         android:id="@+id/edit_tonkho_search_baocao"
         android:hint="@string/edit_timkiem"
+        android:maxLength="50"
         android:inputType="textPersonName"
         android:paddingStart="20dp"
         android:paddingEnd="0dp"

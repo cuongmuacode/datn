@@ -81,7 +81,7 @@ public class FragmentBKDTLN extends Fragment {
         barDataSetLoiNhuan.setColor(Color.YELLOW);
 
         BarDataSet barDataSetDoanhThuNo = new BarDataSet(getListBarEntry(0,true),"Khách Nợ");
-        barDataSetLoiNhuan.setColor(Color.BLUE);
+
 
         BarData data = new BarData(barDataSetDoanhThu,barDataSetLoiNhuan,barDataSetDoanhThuNo);
         chart.setData(data);
@@ -126,7 +126,6 @@ public class FragmentBKDTLN extends Fragment {
             barDataSetLoiNhuan.setColor(Color.YELLOW);
 
             BarDataSet barDataSetDoanhThuNo = new BarDataSet(getListBarEntry(0,true),"Khách Nợ");
-            barDataSetLoiNhuan.setColor(Color.BLUE);
 
             BarData data = new BarData(barDataSetDoanhThu,barDataSetLoiNhuan,barDataSetDoanhThuNo);
             chart.clear();

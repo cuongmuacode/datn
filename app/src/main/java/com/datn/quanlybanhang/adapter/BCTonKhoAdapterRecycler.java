@@ -38,11 +38,11 @@ public class BCTonKhoAdapterRecycler extends RecyclerView.Adapter<BCTonKhoAdapte
         KhoHang khoHang = listTonKho.get(position);
         String str = "Tên sản phẩm : "+khoHang.getMaSP();
         holder.textTenSanPham.setText(str);
-        str = "Số lương tồn : "+khoHang.getSoLuong();
+        str = "Số Lượng tồn : "+khoHang.getSoLuong();
         holder.textSoLuongSanPhamTon.setText(str);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM", new Locale("vi", "VN"));
         str = "Select sum(CTHD_SL)" +
-                " From CTHD,HOADON " +
+                " From CTHD,HOAD`ON " +
                 " Where strftime('%Y%m',HOADON_NGAYHD) = '"+ simpleDateFormat.format(new Timestamp(System.currentTimeMillis()))+"' and CTHD_SOHD = HOADON_SOHD and CTHD_MASP = '" +khoHang.getMaKho() +"'";
 
         Cursor cursor =  database.execSQLSelect(str,database.getReadableDatabase());
@@ -64,7 +64,6 @@ public class BCTonKhoAdapterRecycler extends RecyclerView.Adapter<BCTonKhoAdapte
     public static class BCTonKhoHoler extends RecyclerView.ViewHolder {
         TextView textTenSanPham;
         TextView textSoLuongSanPhamTon;
-        TextView textSoLuongNhapl;
         TextView textDaBan;
 
         public BCTonKhoHoler(@NonNull View itemView) {

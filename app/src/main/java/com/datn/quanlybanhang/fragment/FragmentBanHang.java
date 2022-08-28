@@ -315,7 +315,7 @@ public class FragmentBanHang extends Fragment implements IClickItemListenerRecyc
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
-                } else {
+                } if(b) {
                     ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
                             showSoftInput(editText, InputMethodManager.SHOW_FORCED);
                     editText.setText("");

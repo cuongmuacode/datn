@@ -3,63 +3,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.hoadon.FragmentHoaDon"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_edittext"
-        android:layout_height="wrap_content">
+    android:orientation="vertical"
+    tools:context=".fragment.hoadon.FragmentHoaDon">
 
-        <TextView
-            android:paddingStart="20dp"
-            android:id="@+id/textHoaDonFilter"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:text="Hóa đơn : " />
-        <Spinner
-            android:id="@+id/spinnerHoaDonFilter"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="start|center"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:id="@+id/sort_img_hoadon"
-            android:layout_width="wrap_content"
-            android:clickable="true"
-            android:paddingBottom="5dp"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_baseline_sort_24"
-            android:focusable="true"
-            android:contentDescription="@string/icon" />
-    </LinearLayout>
     <EditText
+        android:id="@+id/search_hoadon"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:autofillHints="@string/icon"
         android:background="@drawable/bg_edittext"
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:drawablePadding="20dp"
         android:ems="10"
-        android:id="@+id/search_hoadon"
+        android:focusable="true"
         android:hint="@string/edit_timkiem"
-        android:maxLength="50"
-        android:inputType="text|textNoSuggestions"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
         android:imeOptions="actionSearch"
-        android:autofillHints="@string/icon" />
+        android:inputType="text|textNoSuggestions"
+        android:maxLength="50"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"></EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinnerHoaDonFilter"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="start|center"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp" />
+
+        <ImageView
+            android:id="@+id/sort_img_hoadon"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:contentDescription="@string/icon"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:src="@drawable/ic_baseline_sort_24" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHoaDon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:paddingEnd="10dp"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:paddingStart="10dp"
-        android:layout_marginBottom="?attr/actionBarSize" />
+        android:paddingEnd="10dp" />
 </LinearLayout>

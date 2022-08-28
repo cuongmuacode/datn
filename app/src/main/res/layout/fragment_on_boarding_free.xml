@@ -31,6 +31,6 @@
         android:paddingEnd="30dp"
         android:textSize="20dp"
         android:gravity="center"
-        android:text="Quản lý bán hàng tại cửa hàng thông qua App, tinh tiền, in hóa đơn nhanh chóng, quản lý đơn hàng, theo dõi báo cáo bán hàng mọi lúc."
+        android:text="Quản lý bán hàng tại cửa hàng thông qua phần mềm ứng dụng, tính tiền, in hóa đơn nhanh chóng, quản lý đơn hàng, theo dõi báo cáo bán hàng mọi lúc."
         />
 </LinearLayout>

@@ -67,7 +67,7 @@ public class FragmentBCTonKho extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM", new Locale("vi", "VN"));
-        String str = "Báo cáo tồn kho thàng " + simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        String str = "Báo cáo tồn kho tháng " + simpleDateFormat.format(new Date(System.currentTimeMillis()));
         textView.setText(str);
 
         str = "Select SANPHAM_MASP,SANPHAM_TENSP,KHO_SOLUONG" +
