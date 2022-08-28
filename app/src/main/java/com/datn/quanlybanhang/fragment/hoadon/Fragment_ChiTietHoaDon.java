@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.quanlybanhang.R;
+import com.datn.quanlybanhang.activityy.MainActivity;
 import com.datn.quanlybanhang.adapter.SanPhamAdapterRecycler;
 import com.datn.quanlybanhang.database.MySQLiteHelper;
 import com.datn.quanlybanhang.model.HoaDon;
@@ -72,71 +73,76 @@ public class Fragment_ChiTietHoaDon extends Fragment implements Serializable {
         recyclerView = view.findViewById(R.id.ChiTiet_recycer_hoadon);
         buttonThanhToan = view.findViewById(R.id.buttonthanhtoanchitieethoadon);
         buttonXoa = view.findViewById(R.id.buttonxoachitiethoadon);
-        if(getContext()==null) return;
-            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
-            recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-            database = new MySQLiteHelper(getContext());
-        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(sanPhamList,getContext(),khoHangList);
+        if (getContext() == null) return;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), RecyclerView.VERTICAL, false));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
+        database = new MySQLiteHelper(getContext());
+        sanPhamAdapterRecycler = new SanPhamAdapterRecycler(sanPhamList, getContext(), khoHangList);
         recyclerView.setAdapter(sanPhamAdapterRecycler);
 
 
-            buttonXoa.setVisibility(View.VISIBLE);
-            buttonXoa.setOnClickListener(view1 -> {
+        buttonXoa.setVisibility(View.VISIBLE);
+        buttonXoa.setOnClickListener(view1 -> {
+            if (MainActivity.nhanVien.getQuyen() == 1) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.nav_model_xoa);
                 builder.setMessage("Bạn có chắc không ?");
                 builder.setCancelable(true);
                 builder.setPositiveButton("Có", (dialogInterface, i) -> {
                     database.deleteHoaDon(hoaDon);
-                    if(getActivity()!=null)
+                    if (getActivity() != null)
                         getActivity().onBackPressed();
                     displayToast("Thành công !!!");
                 });
                 builder.setNegativeButton("Không", (dialogInterface, i) -> dialogInterface.cancel());
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-            });
+            }
+            else {
+                displayToast("Bạn không có quyền xóa");
+            }
+        });
 
 
-        if(hoaDon.getHoaDonNo()==0){
+        if (hoaDon.getHoaDonNo() == 0) {
             buttonThanhToan.setVisibility(View.VISIBLE);
             buttonThanhToan.setOnClickListener(view12 -> {
                 hoaDon.setHoaDonNo(1);
-                if(database.updateHoaDon(hoaDon)>0){
-                  if(getActivity()!=null)
-                    getActivity().onBackPressed();
+                if (database.updateHoaDon(hoaDon) > 0) {
+                    if (getActivity() != null)
+                        getActivity().onBackPressed();
                     displayToast("Thành công !!!");
                 }
             });
-        }
-        else if(hoaDon.getHoaDonNo()==1){
+        } else if (hoaDon.getHoaDonNo() == 1) {
             buttonThanhToan.setVisibility(View.GONE);
         }
 
 
-        String str = "Số hóa đơn : "+hoaDon.getSoHD();
+        String str = "Số hóa đơn : " + hoaDon.getSoHD();
         textSoHoaDon.setText(str);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy '| Giờ : ' HH:mm",new Locale("vi", "VN"));
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy '| Giờ : ' HH:mm", new Locale("vi", "VN"));
         Timestamp timestamp = Timestamp.valueOf(hoaDon.getNgayHD());
-        str = "Ngày : "+dateFormat.format(timestamp.getTime());
+        str = "Ngày : " + dateFormat.format(timestamp.getTime());
         textNgayHD.setText(str);
         KhachHang khachHang = database.getKhachHang(hoaDon.getMaKH());
         NhanVien nhanVien = database.getNhanVien(hoaDon.getMaNV());
         str = "Tên nhân viên : ";
-        if(nhanVien!=null) {
-                str = str + nhanVien.getHoTenNV();
-                textTenNhanVien.setText(str);
-            }
+        if (nhanVien != null) {
+            str = str + nhanVien.getHoTenNV();
+            textTenNhanVien.setText(str);
+        }
         str = "Tên khách hàng : ";
-            if(khachHang!=null) {
-                str = str + khachHang.getTenKH();
-                tenKhachHang.setText(str);
-            }
-            str = hoaDon.getTriGia()+" VND";
-            textTongTien.setText(str);
+        if (khachHang != null) {
+            str = str + khachHang.getTenKH();
+            tenKhachHang.setText(str);
+        }
+        str = hoaDon.getTriGia() + " VND";
+        textTongTien.setText(str);
     }
+
     public void displayToast(String message) {
-        if(toast != null)
+        if (toast != null)
             toast.cancel();
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
